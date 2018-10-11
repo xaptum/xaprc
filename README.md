@@ -4,12 +4,16 @@ This repo contains the Linux firmware and host Linux kernel drivers
 for the Xaptum router cards.
 
 The router card itself runs embedded Linux, so the majority of the
-firmware is userspace services and configuration.  Services that are
-useful outside of the router card, like the `enftun` client, are
-developed in separate repositories.
+firmware is userspace services and configuration.
 
-The kernel driver and firmware are managed in the same repo because
-their behaviors are tightly coupled.
+Services that are useful outside of the router card, like the `enftun`
+client, are developed in separate repositories. The kernel driver and
+firmware are managed in the same repo because their behaviors are
+tightly coupled.
+
+The Buildroot external tree to assemble the full firmware image is
+located in a separate
+[repo](https://github.com/xaptum/xaptum-buildroot).
 
 ## Supported Products
 
