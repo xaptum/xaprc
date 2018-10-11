@@ -1,0 +1,3 @@
+obj-m += xaprc.o
+
+xaprc-y += xaprc-core.o
