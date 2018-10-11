@@ -25,7 +25,7 @@ located in a separate
 ## Organization
 
 Requirements, specifications, and design documents are located on the
-project [Wiki](https://github.com/xaptum/wiki).
+project [Wiki](https://github.com/xaptum/xaprc/wiki).
 
 Modifications or questions should be discussed via
 [Issues](https://github.com/xaptum/xaprc/issues) on this repo.
