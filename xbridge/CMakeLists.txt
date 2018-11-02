@@ -32,6 +32,13 @@ install(
   DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+configure_file(src/xbridge-setup.in src/xbridge-setup @ONLY)
+
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/src/xbridge-setup
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
 if (BUILD_SYSTEMD)
-# add_subdirectory(systemd)
+  add_subdirectory(systemd)
 endif()
