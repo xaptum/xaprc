@@ -1,0 +1,12 @@
+[Unit]
+Description=setup for xbridge service
+BindsTo=xbridge.service
+
+[Service]
+Type=oneshot
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/xbridge-setup start
+ExecStop=@CMAKE_INSTALL_FULL_BINDIR@/xbridge-setup stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
