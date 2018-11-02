@@ -32,11 +32,12 @@ install(
   DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-configure_file(src/xbridge-setup.in src/xbridge-setup @ONLY)
+configure_file(src/xbridge-setup.in xbridge-setup @ONLY)
 
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/src/xbridge-setup
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/xbridge-setup
   DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
 if (BUILD_SYSTEMD)
