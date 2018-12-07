@@ -21,6 +21,8 @@
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <netinet/in.h>
+#include <linux/types.h>
 
 #define LogDebug(format, ...) syslog(LOG_DEBUG, format, ##__VA_ARGS__)
 #define LogCrit(format, ...) syslog(LOG_CRIT, format, ##__VA_ARGS__)
@@ -30,6 +32,13 @@
 
 int quit = 0;
 int stats = 0;
+
+struct pcapDeviceInfo {
+    const char *name;
+    pcap_t     *descr;
+    int         fd;
+    enum { eL2DoneTouch, eL2Strip, eL2Prepend } l2handling;
+};
 
 void signal_handler(int n)
 {
@@ -75,34 +84,94 @@ void showStats(pcap_t *p, const char *iface)
 
 void callback(u_char *user, const struct pcap_pkthdr *header, const u_char *data)
 {
-    if (header->caplen == header->len) {
-        if (0 != pcap_sendpacket((pcap_t*) user, data, header->len)) {
-            LogCrit("pcap_sendpacket(): %s", pcap_geterr((pcap_t*) user));
-        }
-    } else
+    struct ethernetHeader {
+        unsigned char dst[6], src[6];
+        __u16         ether_type;
+    };
+
+    static u_char buf[8192];
+    static int    have_eheader = 0;
+
+    struct pcapDeviceInfo *iface = (struct pcapDeviceInfo *) user;
+
+    if (header->caplen != header->len) {
         LogCrit("Received %d bytes, captured only %d", header->len, header->caplen);
+        return;
+    }
+
+    switch (iface->l2handling) {
+    case eL2DoneTouch: // Just pass L2 data along - used in pass-through mode
+        if (0 != pcap_sendpacket(iface->descr, data, header->len)) {
+            LogCrit("pcap_sendpacket(): %s", pcap_geterr(iface->descr));
+        }
+        break;
+
+    case eL2Strip: // Strip L2 data when sending packets to enf0
+        if (ntohs(((struct ethernetHeader*)data)->ether_type) == 0x86dd) {
+            // An IPv6 Ethernet frame
+
+            if (0 == have_eheader) {
+                // Prepare Ethernet header which will be prepended when receiving
+                // packets from enf0
+
+                struct ethernetHeader *h = (struct ethernetHeader *) buf;
+                memcpy(h->dst, ((struct ethernetHeader*)data)->src, 6);
+                memcpy(h->src, ((struct ethernetHeader*)data)->dst, 6);
+                h->ether_type = ((struct ethernetHeader*)data)->ether_type;
+                have_eheader = 1;
+            }
+
+            // Send packet, but strip Ethernet header (which is 14 bytes)
+            if (0 != pcap_sendpacket(iface->descr,
+                                     data+14,
+                                     header->len-14)) {
+                LogCrit("pcap_sendpacket(): %s", pcap_geterr(iface->descr));
+            }
+        }
+        break;
+
+    case eL2Prepend: // Add (prepend) L2 header data to packets to host
+        if (0 != have_eheader) {
+
+            // Copy packet data after local Ethernet header
+            memcpy(buf+sizeof(struct ethernetHeader),data,header->len);
+
+            // Then send IPv6 packet data
+            if (0 != pcap_sendpacket(iface->descr,
+                                     buf,
+                                     sizeof(struct ethernetHeader)+header->len)) {
+                LogCrit("pcap_sendpacket(): %s", pcap_geterr(iface->descr));
+            }
+        }
+        break;
+    }
 }
 
 int main(int argc, char **argv)
 {
-    const char * host_if = "usb0";
-    const char * wireless_if = "wlan0";
+    struct pcapDeviceInfo host_if = { .name = "usb0", .l2handling = eL2DoneTouch };
+    struct pcapDeviceInfo net_if = { .name = "wlan0", .l2handling = eL2DoneTouch };
+
     int snaplen = 8192;
     int opt;
 
-    while(-1 != (opt = getopt(argc, argv, "h:w:s:"))) {
+    while(-1 != (opt = getopt(argc, argv, "2h:n:s:"))) {
         switch(opt) {
+        case '2':
+            net_if.l2handling = eL2Strip; // Strip L2 data from each packet
+            host_if.l2handling = eL2Prepend; // Add L2 data to each packet
+            break;
         case 'h':
-            host_if = optarg;
+            host_if.name = optarg;
             break;
         case 's':
             snaplen = atoi(optarg);
             break;
-        case 'w':
-            wireless_if = optarg;
+        case 'n':
+            net_if.name = optarg;
             break;
         default:
-            fprintf(stderr, "Usage: %s [-h host_if] [-w wireless_if] [-s snaplen]\n", argv[0]);
+            fprintf(stderr, "Usage: %s [-2] [-h host_if] [-n net_if] [-s snaplen]\n", argv[0]);
             exit(EXIT_FAILURE);
         }
     }
@@ -110,13 +179,13 @@ int main(int argc, char **argv)
     openlog("xbridge", LOG_PID, LOG_LOCAL0);
     LogInfo("Starting up");
 
-    pcap_t *descr1 = createDesc(host_if, snaplen, 1);
-    int fd1 = pcap_get_selectable_fd(descr1);
+    host_if.descr = createDesc(host_if.name, snaplen, 1);
+    host_if.fd = pcap_get_selectable_fd(host_if.descr);
 
-    pcap_t *descr2 = createDesc(wireless_if, snaplen, 0);
-    int fd2 = pcap_get_selectable_fd(descr2);
+    net_if.descr = createDesc(net_if.name, snaplen, 0);
+    net_if.fd = pcap_get_selectable_fd(net_if.descr);
 
-    int maxfd = MAX(fd1,fd2);
+    int maxfd = MAX(host_if.fd,net_if.fd);
 
     fd_set r_set;
 
@@ -126,8 +195,8 @@ int main(int argc, char **argv)
 
     while (!quit) {
         FD_ZERO(&r_set);
-        FD_SET(fd1, &r_set);
-        FD_SET(fd2, &r_set);
+        FD_SET(host_if.fd, &r_set);
+        FD_SET(net_if.fd, &r_set);
 
         int iret = select(maxfd + 1, &r_set, NULL, NULL, NULL);
 
@@ -136,29 +205,29 @@ int main(int argc, char **argv)
         }
 
         if (iret > 0) {
-            if (FD_ISSET(fd1, &r_set)) {
-                pcap_dispatch(descr1, 9, callback, (u_char*)descr2);
+            if (FD_ISSET(host_if.fd, &r_set)) {
+                pcap_dispatch(host_if.descr, 9, callback, (u_char*) &net_if);
             }
 
-            if (FD_ISSET(fd2, &r_set)) {
-                pcap_dispatch(descr2, 9, callback, (u_char*)descr1);
+            if (FD_ISSET(net_if.fd, &r_set)) {
+                pcap_dispatch(net_if.descr, 9, callback, (u_char*) &host_if);
             }
         }
 
         if (stats) {
-            showStats(descr1, host_if);
-            showStats(descr2, wireless_if);
+            showStats(host_if.descr, host_if.name);
+            showStats(net_if.descr, net_if.name);
             stats = 0;
         }
     }
 
     LogInfo("Terminating...");
 
-    showStats(descr1, host_if);
-    showStats(descr2, wireless_if);
+    showStats(host_if.descr, host_if.name);
+    showStats(net_if.descr, net_if.name);
 
-    pcap_close(descr1);
-    pcap_close(descr2);
+    pcap_close(host_if.descr);
+    pcap_close(net_if.descr);
 
     LogInfo("Terminated");
 
