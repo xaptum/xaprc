@@ -1,11 +1,13 @@
 [Unit]
-Description=setup for xbridge service
+Description=setup for xbridge service (pass-through mode)
+Requires=wpa_supplicant-nl80211@wlan0.service
+After=wpa_supplicant-nl80211@wlan0.service
 BindsTo=xbridge.service
 
 [Service]
 Type=oneshot
-ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/xbridge-setup start
-ExecStop=@CMAKE_INSTALL_FULL_BINDIR@/xbridge-setup stop
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/xbridge-setup start wlan0
+ExecStop=@CMAKE_INSTALL_FULL_BINDIR@/xbridge-setup stop wlan0
 RemainAfterExit=yes
 
 [Install]

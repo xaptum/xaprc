@@ -14,18 +14,31 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+NETIF=${2:-wlan0}
+
 start() {
   MAC=`cat /sys/class/net/wlan0/address`
   modprobe g_ether host_addr=$MAC
   ip link set dev usb0 up
+
+  if [ $NETIF != "wlan0" ]; then
+    # Need to start dhcp on wlan0 interface, so enf0 can use
+    # wlan0 to connect to ENF
+    udhcpc -i wlan0 -R -p /run/udhcpc
+  fi
 }
 
 stop() {
+  if [ $NETIF != "wlan0" ]; then
+    # Only need an IP on wlan0 while secure mode is active
+    kill `cat /run/udhcpc`
+  fi
+
   ip link set dev usb0 down
   modprobe -r g_ether
 }
 
 case $1 in
   start|stop) "$1" ;;
-  *) echo "Usage: $0 start|stop" ;;
+  *) echo "Usage: $0 start|stop netif" ;;
 esac

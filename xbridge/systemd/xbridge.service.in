@@ -1,5 +1,5 @@
 [Unit]
-Description=xbridge service
+Description=xbridge service (pass-through mode)
 After=xbridge-setup.service
 BindsTo=xbridge-setup.service
 
