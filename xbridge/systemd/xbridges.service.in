@@ -1,0 +1,17 @@
+[Unit]
+Description=xbridge service (secure mode)
+BindsTo=xbridges-setup.service
+After=xbridges-setup.service
+BindsTo=enftun@enf0.service
+After=enftun@enf0.service
+
+[Service]
+Type=simple
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/xbridge -2 -n enf0
+ProtectSystem=true
+ProtectHome=true
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
