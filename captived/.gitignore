@@ -1,0 +1,12 @@
+/build
+
+# Eclipse files
+.project
+.cproject
+
+.settings
+
+# gtags
+GPATH
+GRTAGS
+GTAGS
