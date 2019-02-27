@@ -39,8 +39,6 @@ rest_resource_router_mode::rest_resource_router_mode (std::string uri,
 // TODO - do we need the *arg here?
 void
 rest_resource_router_mode::callback(struct evhttp_request *req, void *arg){
-
-
     const char *cmdtype;
     struct evkeyvalq *headers;
     struct evkeyval *header;
