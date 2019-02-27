@@ -1,19 +1,19 @@
 #include <algorithm>
+#include <event2/buffer.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <jansson.h>
 #include <locale>
 #include <sstream>
+#include <unistd.h>
 
-#include <boost/variant.hpp>
-
-#include <event2/buffer.h>
-#include <jansson.h>
 #include "defines.h"
 #include "http_server.h"
 
 namespace captiverc {
 
+#ifdef DEBUG
 ////////////////////////////////////////////////////////////////////////////////
 //  test_cb
 //  Callback used to handle sending the control address response.
@@ -83,6 +83,7 @@ void http_server::test_cb(struct evhttp_request *req, void *arg) {
 
     evhttp_send_reply(req, 200, "OK", evb);
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //  not_found_cb
@@ -91,46 +92,6 @@ void http_server::test_cb(struct evhttp_request *req, void *arg) {
 void http_server::not_found_cb (struct evhttp_request *req, void *arg){
     evhttp_send_error(req, HTTP_NOTFOUND, "Not Found");
 }
-
-
-////////////////////////////////////////////////////////////////////////////////
-//  full_status_cb
-//  Callback used to send all available status information.
-////////////////////////////////////////////////////////////////////////////////
-// void http_server::full_status_cb(struct evhttp_request *req, void *arg) {
-//     const char *cmdtype;
-//     struct evkeyvalq *headers;
-//     struct evkeyval *header;
-//     struct evbuffer *buf;
-
-//     // we don't care what type of http request this is... we'll just return the
-//     // value as if it were a "get"
-
-//     // clear the input buffer if we were sent data
-//     // Do we need to do this?  Docs were not really clear.
-//     buf = evhttp_request_get_input_buffer(req);
-//     while (evbuffer_get_length(buf)) {
-//         int n = evbuffer_drain(buf, evbuffer_get_length(buf));
-//         if (n < 0)
-//             std::cout << "Error occurred while emptying input buffer"
-//                       << std::endl;
-//     }
-
-//     // buffer for the response
-//     struct evbuffer *evb = evbuffer_new();
-
-//     std::string json = get_status();
-//     evbuffer_add(evb, json.c_str(), json.length());
-
-//     evhttp_add_header(evhttp_request_get_output_headers(req),
-//                       "Content-Type",
-//                       "application/json");
-
-//     evhttp_send_reply(req, 200, "OK", evb);
-// }
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /// get_payload
@@ -184,6 +145,30 @@ http_server::register_callback (std::string uri,
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// get_control_address
+// Read the control address from the config file and return it as a string.
+// If the address is not found, issue an error and loop.
+////////////////////////////////////////////////////////////////////////////////
+std::string
+http_server::get_control_address(){
+    std::string return_value;
+
+    while (true) {
+        std::ifstream infile(FILE_ENF_CONTROL_ADDRESS);
+        if (infile.is_open()){
+            std::getline(infile, return_value);
+            infile.close();
+            return return_value;
+        }
+        usleep (1000000);   // sleep for 1 sec
+    }
+
+    return "::1";       // dead code - return loopback
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 //  Constructor
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,8 +181,7 @@ http_server::http_server(const int port)
 
     evhttp_set_gencb(httpd_.get(), &not_found_cb, this);
 
-    //evhttp_set_cb(httpd_.get(), "/test", test_cb, NULL);
-
+#ifdef DEBUG
     // test using arg for the instance variable
     evhttp_set_cb(
             httpd_.get(),
@@ -207,19 +191,17 @@ http_server::http_server(const int port)
                 that->test_cb(req, arg);
             },
             this);
+#endif
 
+    std::string ctrl_addr = get_control_address();
 
-    // evhttp_set_cb(httpd_.get(), "/", full_status_cb, NULL);
-
-    if (int ret = evhttp_bind_socket(httpd_.get(), "127.0.0.1", port_) != 0) {
+    if (int ret = evhttp_bind_socket(httpd_.get(), ctrl_addr.c_str(), port_) != 0) {
         std::cout << "Failed to bind to socket. Return code: " << ret
                   << std::endl;
         return;
     }
 
     running_ = true;
-    // don't run on another thread - run from wherever constructed this
-    // event_thread_ = std::thread(&http_server::loop_dispatch, this);
 
     std::cout << "Listening on port " << port_ << std::endl;
 }
@@ -232,8 +214,6 @@ http_server::~http_server() {
     std::cout << "Shutting down" << std::endl;
 
     running_ = false;
-    // event_thread_.join();
-
     std::cout << "Stopped" << std::endl;
 }
 
@@ -248,36 +228,5 @@ void http_server::loop_dispatch() {
         event_base_dispatch(base_.get());
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////
-/// get_status
-/// Get the top-level status of the router as a JSON file.
-////////////////////////////////////////////////////////////////////////////////
-// std::string http_server::get_status() {
-//     std::string status_json = "{\n";
-
-//     status_json += "\t\"serial_number\" : \"" +
-//                    get_file_contents(FILE_SERIAL_NUMBER) + "\",\n";
-//     status_json += "\t\"firmware_version\" : \"" +
-//                    get_file_contents(FILE_FIRMWARE_VERSION) + "\",\n";
-//     status_json += "\t\"mac_address\" : \"" +
-//                    get_file_contents(FILE_WIFI_MAC_ADDRESS) + "\",\n";
-//     status_json += "\t\"control_address\" : \"" +
-//                    get_file_contents(FILE_ENF_CONTROL_ADDRESS) + "\",\n";
-
-//     status_json += "\t\"data_address\" : \"" +
-//                    get_file_contents(FILE_ENF_DATA_ADDRESS) + "\",\n";
-
-//     status_json +=
-//             "\t\"mode\" : \"" + get_file_contents(FILE_ROUTER_MODE) + "\"\n";
-
-//     status_json += "}\n";
-
-//     return status_json;
-// }
-
-
-
-
 
 }    // namespace captiverc

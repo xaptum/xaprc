@@ -49,7 +49,7 @@ class http_server {
     static void full_status_cb(struct evhttp_request* req, void* arg);
     static void dispatch_stop_cb(evutil_socket_t fd, short what, void* arg);
     static void not_found_cb (struct evhttp_request *req, void *arg);
-
+    std::string get_control_address ();
 
     void gen_request_cb(struct evhttp_request* req);
 
@@ -64,7 +64,6 @@ class http_server {
     std::unique_ptr<event_base, decltype(&event_base_free)> base_;
     std::unique_ptr<evhttp, decltype(&evhttp_free)> httpd_;
     std::atomic<bool> running_;
-    // std::thread event_thread_;
 };
 
 inline void 
@@ -83,4 +82,5 @@ http_server::respond_bad_request (struct evhttp_request *req, std::string err)
 
 
 }    // namespace captiverc
+
 #endif    // CAPTIVERC_HTTP_SERVER_HPP
