@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
-
 project(captived
   VERSION "0.0.2"
   )
+
+include(GNUInstallDirs)
 
 option(BUILD_SHARED_LIBS "Build with shared libraries" ON)
 
@@ -44,6 +45,6 @@ set_target_properties(captived PROPERTIES
     )
 
 install(
-	FILES ${CMAKE_CURRENT_BINARY_DIR}/captived
-	DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+    TARGETS captived
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
