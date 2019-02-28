@@ -62,8 +62,12 @@ rest_resource_replace_file::callback(struct evhttp_request *req, void *arg){
         int result = replace_file(payload);
     }
 
-    json_t* json_resp = json_pack("s", get_all_file_contents().c_str());
-    char* text_resp = json_dumps(json_resp, JSON_ENCODE_ANY | JSON_INDENT(2));
+    json_t* json_resp = json_object();
+
+    json_object_set_new(json_resp,
+                        "contents",
+                        json_string(get_all_file_contents().c_str()));
+    char* text_resp = json_dumps(json_resp, JSON_INDENT(2));
     serverp_->send_json_response(req, text_resp);
 
     free(text_resp);
@@ -72,10 +76,9 @@ rest_resource_replace_file::callback(struct evhttp_request *req, void *arg){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// set_file_contents
+/// replace_file
 /// Read the first line of the specified file and return it as a string.
 ////////////////////////////////////////////////////////////////////////////////
-// TODO - Using only a single string value right now.... need an object.
 int
 rest_resource_replace_file::replace_file(std::string payload) {
     //parse the json
@@ -92,14 +95,20 @@ rest_resource_replace_file::replace_file(std::string payload) {
         return -1;
     }
 
-    // we should only be gettin a JSON string
-    if (!json_is_string(root)){
-        std::cerr << "Error: JSON should contain only a string." << std::endl;
+    // we should only be getting a JSON object
+    if (!json_is_object(root)){
+        std::cerr << "Error: JSON should contain only an object." << std::endl;
         json_decref(root);
         return -1;
     }
     
-    std::string newval = json_string_value(root);
+    json_t* contents = json_object_get(root, "contents");
+    if (!json_is_string(contents)){
+        std::cerr << "Error: 'conents' element must be a string." << std::endl;
+        json_decref(root);
+        return -1;
+    }
+    std::string newval = json_string_value(contents);
 
     std::ofstream outfile(filename_, std::ofstream::out | std::ofstream::trunc);
     if (!outfile) {

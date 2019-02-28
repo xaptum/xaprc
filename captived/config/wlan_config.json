@@ -1,0 +1,4 @@
+{
+    "contents" : "ctrl_interface=/var/run/wpa_supplicant\nap_scan=1\n\nnetwork={\n        ssid=\"xaprc_default\"\n        psk=\"password123!\"\n}\n",
+    "sha256" : "Invalid SHA256 value"
+}
