@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
+include(GNUInstallDirs)
+
 project(captived
   VERSION "0.0.2"
   )
 
-include(GNUInstallDirs)
 
 option(BUILD_SHARED_LIBS "Build with shared libraries" ON)
+option(BUILD_SYSTEMD "Build with systemd support" ON)
 
 find_package(libevent REQUIRED QUIET)
 find_package(jansson REQUIRED QUIET)
@@ -48,3 +50,7 @@ install(
     TARGETS captived
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
+
+if (BUILD_SYSTEMD)
+	add_subdirectory(systemd)
+endif()

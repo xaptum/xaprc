@@ -1,0 +1,15 @@
+[Unit]
+Description=Xaptum captived server daemon
+Documentation=https://github.com/xaptum/xaprc
+After=enftun@enf1
+StartLimitIntervalSec=0
+
+[Service]
+Type=forking
+ExecStartPre=/bin/sleep 15
+ExecStart=captived
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
