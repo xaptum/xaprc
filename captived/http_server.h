@@ -28,7 +28,7 @@ class http_server {
     void respond_not_allowed (struct evhttp_request *req, std::string err);
     void respond_bad_request (struct evhttp_request *req, std::string err);
     std::string get_payload(struct evhttp_request *req);
-    void send_json_response (struct evhttp_request *req, char* response);
+    void send_json_response (struct evhttp_request *req, const char* response);
     int register_callback (std::string uri,
                            void (*cb)(struct evhttp_request *, void *), 
                            void* arg);

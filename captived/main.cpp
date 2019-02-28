@@ -5,6 +5,8 @@
 #include "defines.h"
 #include "http_server.h"
 #include "rest_resource_to_file.h"
+#include "rest_resource_replace_file.h"
+#include "rest_resource_root.h"
 #include "rest_resource_router_mode.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,17 @@ int main(int argc, char *argv[]) {
                             FILE_ROUTER_MODE
                             );
 
+
+    rest_resource_root root_resource = rest_resource_root(
+                            "/",
+                            &embed_server
+                            );
+
+    rest_resource_replace_file wifi_config_resource = rest_resource_replace_file (
+                            URI_WIFI_CONFIG,
+                            &embed_server,
+                            FILE_WIFI_CONFIG
+                            );
 
 
     embed_server.loop_dispatch();
