@@ -22,7 +22,9 @@ set(SERVER_SRCS
     http_server.cpp
     rest_resource_generic.cpp
     rest_resource_to_file.cpp
+    rest_resource_root.cpp
     rest_resource_router_mode.cpp
+    rest_resource_replace_file.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})

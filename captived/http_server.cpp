@@ -106,7 +106,7 @@ std::string http_server::get_payload(struct evhttp_request *req){
         char cbuf[128];
         int n = evbuffer_remove(buf, cbuf, sizeof(cbuf));
         if (n > 0) {
-            payload += cbuf;
+            payload.append(cbuf,n);
         }
     }
 
@@ -118,7 +118,7 @@ std::string http_server::get_payload(struct evhttp_request *req){
 /// Send a json response
 ////////////////////////////////////////////////////////////////////////////////
 void
-http_server::send_json_response (struct evhttp_request *req, char* response) {
+http_server::send_json_response (struct evhttp_request *req, const char* response) {
     // buffer for the response
     struct evbuffer *evb = evbuffer_new();
 
