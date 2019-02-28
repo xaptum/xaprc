@@ -20,7 +20,7 @@ const std::string FILE_ENF_CONTROL_ADDRESS = "/data/enftun/enf1/address";
 const std::string FILE_ENF_DATA_ADDRESS = "/data/enftun/enf0/address";
 const std::string FILE_FIRMWARE_VERSION = "/etc/mender/artifact_info"; 
 const std::string FILE_ROUTER_MODE = "/data/default_target";
-const std::string FILE_WIFI_CONFIG = "`/data/wpa_supplicant/wpa_supplicant-nl80211-wlan0.conf`";
+const std::string FILE_WIFI_CONFIG = "/data/wpa_supplicant/wpa_supplicant-nl80211-wlan0.conf";
 #endif
 
 const std::string URI_SERIAL_NUMBER = "/serial_number";
