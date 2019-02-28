@@ -5,7 +5,7 @@ After=enftun@enf1
 StartLimitIntervalSec=0
 
 [Service]
-Type=forking
+Type=simple
 ExecStartPre=/bin/sleep 15
 ExecStart=captived
 Restart=always
