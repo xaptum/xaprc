@@ -13,6 +13,6 @@
 # mac=de:ad:ca:fe:00:01
 # cpuid=1112233
 
-ipv6_address=`cat address`
+ipv6_address=`cat /data/enftun/enf1/address`
 [ ! -z "$ipv6_address" ] || exit 1
 echo "address=${ipv6_address}"
