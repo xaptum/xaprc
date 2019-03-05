@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-# import socket
-# import struct
-# import time
-# import disutils.dir_util as dir_util
 import json
 import os
 import requests
@@ -79,13 +75,6 @@ class rest_mode_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), 'secure_host')
         
-
-    # Compare a string with the value of the first line of a file
-    # filename is relative path
-    def compare_with_file(self, filename, val):
-        with open(self.config_path + filename) as f:
-            read_data = f.readline().strip('\n')
-            self.assertEqual(val, read_data)
 
 def copy_recursive_destructive(src_path, dest_path):
     if (os.path.isdir(dest_path)):

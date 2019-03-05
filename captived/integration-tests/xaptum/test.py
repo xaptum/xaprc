@@ -1,3 +1,4 @@
+import json
 import re
 import unittest
 
@@ -55,6 +56,22 @@ class EnrichedTestCase(unittest.TestCase):
                 else:
                     raise AssertionError("Value %s does not match %s at position %s"%(a, e, i))
 
+    def assertMatchesFileContents(self, expected_filename, val):
+        """Fail if the first line of the file does not match the passed-in value.
+        Only the first line of 'filename' is checked.
+        """
+        with open(expected_filename) as f:
+            read_data = f.readline().strip('\n')
+            self.assertEqual(val, read_data)
+
+    def assertJsonFileEquals(self, expected_filename, actual):
+        """Fail if the provided JSON object does not match that in the expected file.
+        """
+        with open(expected_filename) as f:
+            filedata = f.read()
+            jdata = json.loads(filedata)
+            self.assertDictEquals(jdata, actual)
+
 import sys
 if int(sys.version[0]) == 2:
     EnrichedTestCase.assertRaisesRegex = EnrichedTestCase.assertRaisesRegexp
@@ -83,7 +100,3 @@ class SharedServer(object):
         cls._server.kill()
 
         super(SharedServer, cls).tearDownClass()
-
-    @classmethod
-    def getTUN(cls):
-        return cls._tun

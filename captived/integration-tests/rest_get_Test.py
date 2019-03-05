@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-# import socket
-# import struct
-# import time
-# import disutils.dir_util as dir_util
 import json
 import os
 import requests
@@ -35,7 +31,7 @@ class rest_get_Test(test.SharedServer, test.IntegrationTestCase):
         self.config_path = os.path.join(CWD, 'config')
         copy_recursive_destructive(src_path, self.config_path)
 
-        # Wait for the client connection to be processed by the XMB
+        # Wait for the server to start up
         time.sleep(2.1)
 
     def tearDown(self):
@@ -54,12 +50,12 @@ class rest_get_Test(test.SharedServer, test.IntegrationTestCase):
                         ('/router_mode', 'mode')
                       ]
         for pair in check_these:
-            self.compare_with_file(pair[0], jresp[pair[1]])
+            self.assertMatchesFileContents(self.config_path + pair[0], jresp[pair[1]])
 
     def test_get_mode(self):
         temp_url = URL + '/mode'
         resp = requests.get(temp_url)
-        self.compare_with_file('/router_mode', resp.json())
+        self.assertMatchesFileContents(self.config_path + '/router_mode', resp.json())
 
     def test_get_wifi_config(self):
         temp_url = URL + '/wifi/config'
@@ -84,13 +80,6 @@ class rest_get_Test(test.SharedServer, test.IntegrationTestCase):
             read_data = f.read()
             self.assertEqual(read_data, resp.json()['contents'])
         
-
-    # Compare a string with the value of the first line of a file
-    # filename is relative path
-    def compare_with_file(self, filename, val):
-        with open(self.config_path + filename) as f:
-            read_data = f.readline().strip('\n')
-            self.assertEqual(val, read_data)
 
 def copy_recursive_destructive(src_path, dest_path):
     if (os.path.isdir(dest_path)):
