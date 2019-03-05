@@ -1,5 +1,7 @@
 import json
+import os
 import re
+import shutil
 import unittest
 
 from xaptum import embedded_server
@@ -56,12 +58,20 @@ class EnrichedTestCase(unittest.TestCase):
                 else:
                     raise AssertionError("Value %s does not match %s at position %s"%(a, e, i))
 
-    def assertMatchesFileContents(self, expected_filename, val):
+    def assertMatchesFirstLineOfFile(self, expected_filename, val):
         """Fail if the first line of the file does not match the passed-in value.
         Only the first line of 'filename' is checked.
         """
         with open(expected_filename) as f:
             read_data = f.readline().strip('\n')
+            self.assertEqual(val, read_data)
+
+    def assertMatchesFileContents(self, expected_filename, val):
+        """Fail if the content of the file does not match the passed-in value.
+        The entire contents of the file is checked
+        """
+        with open(expected_filename) as f:
+            read_data = f.read()
             self.assertEqual(val, read_data)
 
     def assertJsonFileEquals(self, expected_filename, actual):
@@ -71,6 +81,13 @@ class EnrichedTestCase(unittest.TestCase):
             filedata = f.read()
             jdata = json.loads(filedata)
             self.assertDictEquals(jdata, actual)
+
+    def copyConfigDirDestructive(self, src_path, dest_path):
+        if (os.path.isdir(dest_path)):
+            shutil.rmtree(dest_path)
+
+        shutil.copytree(src_path, dest_path)
+
 
 import sys
 if int(sys.version[0]) == 2:
