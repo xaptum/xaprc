@@ -12,6 +12,8 @@ project(captived
 option(BUILD_SHARED_LIBS "Build with shared libraries" ON)
 option(BUILD_SYSTEMD "Build with systemd support" ON)
 
+enable_testing()
+
 find_package(libevent REQUIRED QUIET)
 find_package(jansson REQUIRED QUIET)
 
@@ -56,3 +58,5 @@ install(
 if (BUILD_SYSTEMD)
 	add_subdirectory(systemd)
 endif()
+
+add_subdirectory(integration-tests)
