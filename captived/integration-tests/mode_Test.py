@@ -16,28 +16,28 @@ URL = 'http://[::1]:4000/mode'
 HEADERS = {'Content-Type':'application/json'}
 
 ################################################################################
-### rest_mode_Test
-### Test getting and putting the router card mode.
+### mode_Test
+### Test /mode REST resource
 ################################################################################
-class rest_mode_Test(test.SharedServer, test.IntegrationTestCase):
+class mode_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
-        super(rest_mode_Test, self).setUp()
+        super(mode_Test, self).setUp()
         
         # copy the default config directory 
         # currently, testing will only work with debug build because of config
         # file paths.
         src_path = os.path.join(TESTDIR, 'config', 'default')
         self.config_path = os.path.join(CWD, 'config')
-        copy_recursive_destructive(src_path, self.config_path)
+        self.copyConfigDirDestructive(src_path, self.config_path)
 
-        # Wait for the client connection to be processed by the XMB
+        # Wait for the embedded server to start up.
         time.sleep(2.1)
 
     def tearDown(self):
         # put back to secure_host
         resp = requests.put(URL, headers=HEADERS, json='secure_host')
-        super(rest_mode_Test, self).tearDown()
+        super(mode_Test, self).tearDown()
 
     # This should get back the defult mode - which is secure_host
     def test_01_get_mode(self):
@@ -74,14 +74,11 @@ class rest_mode_Test(test.SharedServer, test.IntegrationTestCase):
         resp = requests.put(URL, headers=HEADERS, json='secure_host')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), 'secure_host')
+
+    def test_get_mode(self):
+        resp = requests.get(URL)
+        self.assertMatchesFirstLineOfFile(self.config_path + '/router_mode', resp.json())
         
-
-def copy_recursive_destructive(src_path, dest_path):
-    if (os.path.isdir(dest_path)):
-        shutil.rmtree(dest_path)
-
-    shutil.copytree(src_path, dest_path)
-
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

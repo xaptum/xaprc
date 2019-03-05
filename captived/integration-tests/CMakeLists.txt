@@ -6,9 +6,11 @@ set(CURRENT_TEST_BINARY_DIR ${CMAKE_BINARY_DIR}/testBin/integration-tests)
 find_package(PythonInterp 3 REQUIRED)
 
 set(TEST_FILES
-  rest_get_Test.py
-  rest_mode_Test.py
-
+  mode_Test.py
+  root_level_status_Test.py
+  wifi_Test.py
+  wifi_config_Test.py
+  wifi_status_Test.py
   )
 
 add_custom_target(integration-tests ALL)

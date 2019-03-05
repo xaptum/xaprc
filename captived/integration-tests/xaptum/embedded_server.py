@@ -10,7 +10,7 @@ atexit.register(lambda: DEVNULL.close())
 
 class Embedded_Server(object):
 
-    def __init__(self, cwd=CWD, bin=BIN, args=None, quiet=True):
+    def __init__(self, cwd=CWD, bin=BIN, args=None, quiet=False):
         self.cwd = cwd
         self.bin  = bin
         self.args = args if args else []
