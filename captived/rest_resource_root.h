@@ -5,17 +5,15 @@
 #include <event2/buffer.h>
 #include <event2/http.h>
 
-#include "http_server.h"
-#include "rest_resource_generic.h"
+#include "resource.h"
 
 namespace captiverc {
 
-class rest_resource_root : public rest_resource_generic {
+class rest_resource_root : public resource {
   public:
-    rest_resource_root(std::string uri, 
-                          http_server* server);
+    rest_resource_root();
 
-    virtual void callback(struct evhttp_request *req, void *arg);
+    resource::resp_type get(resource::req_type body) override;
 
   private:
     std::string get_file_contents(std::string filename);

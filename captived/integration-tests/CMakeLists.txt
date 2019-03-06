@@ -11,6 +11,7 @@ set(TEST_FILES
   wifi_Test.py
   wifi_config_Test.py
   wifi_status_Test.py
+  simple_get_Test.py
   )
 
 add_custom_target(integration-tests ALL)

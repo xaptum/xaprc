@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace captiverc {
+
 const unsigned short s_http_port = 4000;
 
 #ifdef DEBUG
@@ -40,6 +42,8 @@ const std::string MODE_PASSTHROUGH = "passthrough";
 const std::string MODE_SECURE_HOST = "secure_host";
 const std::string MODE_SECURE_LAN = "secure_lan";
 
+extern const char* CONTENT_TYPE_JSON;
 
 
+}  // namespace captiverc
 #endif
