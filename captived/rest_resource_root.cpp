@@ -1,12 +1,12 @@
 #include <iostream>
 #include <fstream>
-
+#include <tuple>
 #include <event2/http.h>
 
 #include "defines.h"
 #include "http_server.h"
 #include "jansson.h"
-#include "rest_resource_generic.h"
+#include "resource.h"
 #include "rest_resource_root.h"
 
 namespace captiverc {
@@ -14,54 +14,18 @@ namespace captiverc {
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_resource_root::rest_resource_root (std::string uri,
-                                        http_server* server):
-            rest_resource_generic(uri, server){
-    serverp_->register_callback(
-            uri_,
-            [](struct evhttp_request *req, void* arg) {
-                rest_resource_root* that = 
-                        static_cast<rest_resource_root*>(arg);
-                that->callback(req, arg);
-            },
-            this);
+rest_resource_root::rest_resource_root ():
+            resource("/")
+        {}
 
-}
 
 ////////////////////////////////////////////////////////////////////////////////
-/// callback
-/// Implement the pure virtual callback function
-/// This will be called from the lambda expression, so it will have an object
-/// reference
-/// Callback used to send all available status information.
-////////////////////////////////////////////////////////////////////////////////
-// TODO - do we need the *arg here?
-void
-rest_resource_root::callback(struct evhttp_request *req, void *arg){
-    const char *cmdtype;
-    struct evkeyvalq *headers;
-    struct evkeyval *header;
-
-    // we only handle GET  -- return an error otherwise.
-    if (!serverp_->is_get_request(req)) {
-            respond_op_not_allowed(req);
-            return;
-    }
-
-    // buffer for the response
-    struct evbuffer *evb = evbuffer_new();
-
-    std::string json = get_status();
-
-    serverp_->send_json_response(req, json.c_str());
- 
-}
-
-////////////////////////////////////////////////////////////////////////////////
-/// get_status
+/// get
+/// Implement the root 'get' functionality
 /// Get the top-level status of the router as a JSON file.
 ////////////////////////////////////////////////////////////////////////////////
-std::string rest_resource_root::get_status() {
+resource::resp_type
+rest_resource_root::get(resource::req_type body) {
 
     json_t* root = json_object();
 
@@ -90,7 +54,7 @@ std::string rest_resource_root::get_status() {
     free (zsjson);
     json_decref(root);
     
-    return status_json;
+    return std::make_tuple(HTTP_OK, status_json);
 }
 
 

@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(GNUInstallDirs)
 
 project(captived
-  VERSION "0.0.2"
+  VERSION "0.1.0"
   )
 
 
@@ -24,11 +24,16 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(SERVER_SRCS
     main.cpp
     http_server.cpp
-    rest_resource_generic.cpp
-    rest_resource_to_file.cpp
+    resource.cpp
+    rest_get_file.cpp
+    rest_put_file.cpp
+    rest_mode_get_put.cpp
     rest_resource_root.cpp
-    rest_resource_router_mode.cpp
-    rest_resource_replace_file.cpp
+    rest_wifi_config.cpp
+    # rest_resource_generic.cpp
+    # rest_resource_to_file.cpp
+    # rest_resource_router_mode.cpp
+    # rest_resource_replace_file.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})

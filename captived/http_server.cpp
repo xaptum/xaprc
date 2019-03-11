@@ -1,89 +1,12 @@
 #include <algorithm>
 #include <event2/buffer.h>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <jansson.h>
-#include <locale>
-#include <sstream>
-#include <unistd.h>
 
 #include "defines.h"
 #include "http_server.h"
 
 namespace captiverc {
 
-#ifdef DEBUG
-////////////////////////////////////////////////////////////////////////////////
-//  test_cb
-//  Callback used to handle sending the control address response.
-////////////////////////////////////////////////////////////////////////////////
-void http_server::test_cb(struct evhttp_request *req, void *arg) {
-    const char *cmdtype;
-    struct evkeyvalq *headers;
-    struct evkeyval *header;
-    struct evbuffer *buf;
 
-    switch (evhttp_request_get_command(req)) {
-        case EVHTTP_REQ_GET:
-            cmdtype = "GET";
-            break;
-        case EVHTTP_REQ_POST:
-            cmdtype = "POST";
-            break;
-        case EVHTTP_REQ_HEAD:
-            cmdtype = "HEAD";
-            break;
-        case EVHTTP_REQ_PUT:
-            cmdtype = "PUT";
-            break;
-        case EVHTTP_REQ_DELETE:
-            cmdtype = "DELETE";
-            break;
-        case EVHTTP_REQ_OPTIONS:
-            cmdtype = "OPTIONS";
-            break;
-        case EVHTTP_REQ_TRACE:
-            cmdtype = "TRACE";
-            break;
-        case EVHTTP_REQ_CONNECT:
-            cmdtype = "CONNECT";
-            break;
-        case EVHTTP_REQ_PATCH:
-            cmdtype = "PATCH";
-            break;
-        default:
-            cmdtype = "unknown";
-            break;
-    }
-
-    std::cout << "Received a " << cmdtype << " request for "
-              << evhttp_request_get_uri(req) << std::endl;
-
-    // this is debugging info that was in the original code.
-    buf = evhttp_request_get_input_buffer(req);
-    std::cout << "Input data: <<<";
-    while (evbuffer_get_length(buf)) {
-        int n;
-        char cbuf[128];
-        n = evbuffer_remove(buf, cbuf, sizeof(cbuf));
-        if (n > 0) std::cout.write(cbuf, n);
-        //(void) fwrite(cbuf, 1, n, stdout);
-    }
-    std::cout << ">>>" << std::endl;
-
-    // buffer for the response
-    struct evbuffer *evb = evbuffer_new();
-
-    evbuffer_add_printf(evb, "\"Test-Response as JSON string.\"");
-
-    evhttp_add_header(evhttp_request_get_output_headers(req),
-                      "Content-Type",
-                      "application/json");
-
-    evhttp_send_reply(req, 200, "OK", evb);
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //  not_found_cb
@@ -118,29 +41,23 @@ std::string http_server::get_payload(struct evhttp_request *req){
 /// Send a json response
 ////////////////////////////////////////////////////////////////////////////////
 void
-http_server::send_json_response (struct evhttp_request *req, const char* response) {
+http_server::send_json_response (struct evhttp_request *req, 
+                                 resource::resp_type response) {
+    int resp_code = std::get<0>(response);
+    std::string resp_text = std::get<1>(response);
+
     // buffer for the response
     struct evbuffer *evb = evbuffer_new();
 
-    evbuffer_add_printf(evb, "%s", response);
+    evbuffer_add_printf(evb, "%s", resp_text.c_str());
 
     evhttp_add_header(evhttp_request_get_output_headers(req),
                       "Content-Type",
                       "application/json");
 
-    evhttp_send_reply(req, 200, "OK", evb);
-}
+    evhttp_send_reply(req, resp_code, "OK", evb);
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-// register_callback
-////////////////////////////////////////////////////////////////////////////////
-int
-http_server::register_callback (std::string uri,
-                                void (*cb)(struct evhttp_request *, void *), 
-                                void* arg) {
-    return evhttp_set_cb(httpd_.get(), uri.c_str(), cb, arg);
+    evbuffer_free(evb);
 }
 
 
@@ -181,25 +98,24 @@ http_server::http_server(const int port)
 
     evhttp_set_gencb(httpd_.get(), &not_found_cb, this);
 
-#ifdef DEBUG
-    // test using arg for the instance variable
-    evhttp_set_cb(
-            httpd_.get(),
-            "/test",
-            [](struct evhttp_request *req, void *arg) {
-                http_server* that = static_cast<http_server*>(arg);
-                that->test_cb(req, arg);
-            },
-            this);
-#endif
+    bool bound_to_socket = false;
 
-    std::string ctrl_addr = get_control_address();
+    // keep looping until a connection is established
+    do {
+        std::string ctrl_addr = get_control_address();
 
-    if (int ret = evhttp_bind_socket(httpd_.get(), ctrl_addr.c_str(), port_) != 0) {
-        std::cout << "Failed to bind to socket. Return code: " << ret
-                  << std::endl;
-        return;
-    }
+        if (int ret = evhttp_bind_socket(
+                              httpd_.get(), ctrl_addr.c_str(), port_) != 0) {
+            std::cout << "Failed to bind to socket. Return code: " << ret
+                      << std::endl;
+            bound_to_socket = false;
+            usleep (1000000);   // sleep for 1 sec
+
+        } else {
+            bound_to_socket = true;
+        }
+
+    } while (false == bound_to_socket);
 
     running_ = true;
 
@@ -228,5 +144,7 @@ void http_server::loop_dispatch() {
         event_base_dispatch(base_.get());
     }
 }
+
+
 
 }    // namespace captiverc
