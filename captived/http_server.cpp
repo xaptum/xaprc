@@ -69,15 +69,18 @@ http_server::send_json_response (struct evhttp_request *req,
 std::string
 http_server::get_control_address(){
     std::string return_value;
+    std::string fq_filename = root_path_ +FILE_ENF_CONTROL_ADDRESS;
 
     while (true) {
-        std::ifstream infile(FILE_ENF_CONTROL_ADDRESS);
+        std::ifstream infile(fq_filename);
         if (infile.is_open()){
             std::getline(infile, return_value);
             infile.close();
             return return_value;
         }
         usleep (1000000);   // sleep for 1 sec
+        std::cerr << "Failed to get server address from: " 
+                  << fq_filename << std::endl;
     }
 
     return "::1";       // dead code - return loopback
@@ -89,8 +92,9 @@ http_server::get_control_address(){
 //  Constructor
 //
 ////////////////////////////////////////////////////////////////////////////////
-http_server::http_server(const int port)
+http_server::http_server(const int port, const std::string root_path)
     : port_(port),
+      root_path_(root_path),
       base_(event_base_new(), &event_base_free),
       httpd_(evhttp_new(base_.get()), &evhttp_free),
       running_(false) {

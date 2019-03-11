@@ -23,51 +23,63 @@ int main(int argc, char *argv[]) {
     std::cout << "About to run the web server." << std::endl;
 
     using namespace captiverc;
-    http_server embed_server(4000);
+    std::string root_path;      // start with a blank root path
+
+    for (int i = 1; i < argc; i++){
+        if (strncmp(argv[i], "-p", 2) == 0) {
+            root_path = argv[i+1];
+            std::cout << "\nSetting path to:" << root_path << std::endl;
+        }
+    }
+
+    http_server embed_server(4000, root_path);
+
+
+
 
     rest_get_file ser_num_res = rest_get_file (
                             URI_SERIAL_NUMBER, 
-                            FILE_SERIAL_NUMBER
+                            root_path + FILE_SERIAL_NUMBER
                             );
     embed_server.register_resource(ser_num_res);
 
     rest_get_file mac_addr_res = rest_get_file (
                             URI_WIFI_MAC_ADDRESS,
-                            FILE_WIFI_MAC_ADDRESS
+                            root_path + FILE_WIFI_MAC_ADDRESS
                             );
     embed_server.register_resource(mac_addr_res);
 
     rest_get_file control_addr_resource = rest_get_file (
                             URI_ENF_CONTROL_ADDRESS,
-                            FILE_ENF_CONTROL_ADDRESS
+                            root_path + FILE_ENF_CONTROL_ADDRESS
                             );
     embed_server.register_resource(control_addr_resource);
 
     rest_get_file data_addr_resource = rest_get_file (
                             URI_ENF_DATA_ADDRESS,
-                            FILE_ENF_DATA_ADDRESS
+                            root_path + FILE_ENF_DATA_ADDRESS
                             );
     embed_server.register_resource(data_addr_resource);
 
     rest_get_file firmware_ver_resource = rest_get_file (
                             URI_FIRMWARE_VERSION,
-                            FILE_FIRMWARE_VERSION
+                            root_path + FILE_FIRMWARE_VERSION
                             );
     embed_server.register_resource(firmware_ver_resource);
 
     rest_mode_get_put router_mode_resource = rest_mode_get_put (
                             URI_ROUTER_MODE,
-                            FILE_ROUTER_MODE
+                            root_path + FILE_ROUTER_MODE
                             );
     embed_server.register_resource(router_mode_resource);
 
 
-    rest_resource_root root_resource = rest_resource_root();
+    rest_resource_root root_resource = rest_resource_root(root_path);
     embed_server.register_resource(root_resource);
 
     rest_wifi_config wifi_config_resource = rest_wifi_config (
                             URI_WIFI_CONFIG,
-                            FILE_WIFI_CONFIG
+                            root_path + FILE_WIFI_CONFIG
                             );
     embed_server.register_resource(wifi_config_resource);
 

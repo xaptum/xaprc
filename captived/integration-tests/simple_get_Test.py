@@ -9,18 +9,21 @@ import unittest
 import xaptum.embedded_server as eserver
 import xaptum.test as test
 
+TESTDIR = os.getcwd()
 CWD = os.path.abspath(os.path.join(os.pardir, os.pardir))
-TESTDIR = os.path.join(CWD, 'testBin', 'integration-tests')
 URL = 'http://[::1]:4000'
+# use this directory as the root path for this test
+DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
+
 HEADERS = {'Content-Type':'application/json'}
 
 # This is the list of resources to test
 # tuples are (file_path, REST_path)
-check_these = [ ('/serial_number', '/serial_number'),
-                ('/mac_address', '/mac_address'),
-                ('/enf1/address', '/control_address'),
-                ('/enf0/address', '/data_address'),
-                ('/mender/artifact_info', '/firmware_version')
+check_these = [ ('/rom/serial', '/serial_number'),
+                ('/rom/mac_address/1', '/mac_address'),
+                ('/data/enftun/enf1/address', '/control_address'),
+                ('/data/enftun/enf0/address', '/data_address'),
+                ('/etc/mender/artifact_info', '/firmware_version')
               ]
 
 
@@ -31,18 +34,14 @@ check_these = [ ('/serial_number', '/serial_number'),
 ################################################################################
 class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
 
+    @classmethod
+    def setUpClass(cls, args=None):
+        super(simple_get_Test, cls).setUpClass(['-p', DATA_PATH])
+
     def setUp(self):
         super(simple_get_Test, self).setUp()
-        
-        # copy the default config directory 
-        # currently, testing will only work with debug build because of config
-        # file paths.
-        src_path = os.path.join(TESTDIR, 'config', 'default')
-        self.config_path = os.path.join(CWD, 'config')
-        self.copyConfigDirDestructive(src_path, self.config_path)
-
         # Wait for the embedded server to start up.
-        time.sleep(2.1)
+        time.sleep(1.1)
 
     def tearDown(self):
         # put back to secure_host
@@ -52,7 +51,7 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
     def test_simple_resources_get(self):
         for pair in check_these:
             resp = requests.get(URL + pair[1])
-            self.assertMatchesFirstLineOfFile(self.config_path + pair[0], resp.json())
+            self.assertMatchesFirstLineOfFile(DATA_PATH + pair[0], resp.json())
 
     # PUT is not legal in any of the listed resources
     def test_simple_resources_put(self):

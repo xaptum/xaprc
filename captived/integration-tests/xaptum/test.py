@@ -82,12 +82,6 @@ class EnrichedTestCase(unittest.TestCase):
             jdata = json.loads(filedata)
             self.assertDictEquals(jdata, actual)
 
-    def copyConfigDirDestructive(self, src_path, dest_path):
-        if (os.path.isdir(dest_path)):
-            shutil.rmtree(dest_path)
-
-        shutil.copytree(src_path, dest_path)
-
 
 import sys
 if int(sys.version[0]) == 2:
