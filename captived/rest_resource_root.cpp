@@ -14,8 +14,9 @@ namespace captiverc {
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_resource_root::rest_resource_root ():
-            resource("/")
+rest_resource_root::rest_resource_root (std::string root_path):
+            resource("/"),
+            root_path_(root_path)
         {}
 
 
@@ -31,22 +32,22 @@ rest_resource_root::get(resource::req_type body) {
 
     json_object_set_new(root, 
                         "serial_number", 
-                        json_string(get_file_contents(FILE_SERIAL_NUMBER).c_str()));
+                        json_string(get_file_contents(root_path_ + FILE_SERIAL_NUMBER).c_str()));
     json_object_set_new(root, 
                         "firmware_version", 
-                        json_string(get_file_contents(FILE_FIRMWARE_VERSION).c_str()));
+                        json_string(get_file_contents(root_path_ + FILE_FIRMWARE_VERSION).c_str()));
     json_object_set_new(root, 
                         "mac_address", 
-                        json_string(get_file_contents(FILE_WIFI_MAC_ADDRESS).c_str()));
+                        json_string(get_file_contents(root_path_ + FILE_WIFI_MAC_ADDRESS).c_str()));
     json_object_set_new(root, 
                         "control_address", 
-                        json_string(get_file_contents(FILE_ENF_CONTROL_ADDRESS).c_str()));
+                        json_string(get_file_contents(root_path_ + FILE_ENF_CONTROL_ADDRESS).c_str()));
     json_object_set_new(root, 
                         "data_address", 
-                        json_string(get_file_contents(FILE_ENF_DATA_ADDRESS).c_str()));
+                        json_string(get_file_contents(root_path_ + FILE_ENF_DATA_ADDRESS).c_str()));
     json_object_set_new(root, 
                         "mode", 
-                        json_string(get_file_contents(FILE_ROUTER_MODE).c_str()));
+                        json_string(get_file_contents(root_path_ + FILE_ROUTER_MODE).c_str()));
 
     char* zsjson = json_dumps(root, JSON_INDENT(2));
     std::string status_json{zsjson};

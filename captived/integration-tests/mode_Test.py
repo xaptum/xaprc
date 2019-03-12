@@ -3,17 +3,18 @@
 import json
 import os
 import requests
-import shutil
 import time
 import unittest
 
 import xaptum.embedded_server as eserver
 import xaptum.test as test
 
+TESTDIR = os.getcwd()
 CWD = os.path.abspath(os.path.join(os.pardir, os.pardir))
-TESTDIR = os.path.join(CWD, 'testBin', 'integration-tests')
 URL = 'http://[::1]:4000/mode'
 HEADERS = {'Content-Type':'application/json'}
+# use this directory as the root path for this test
+DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
 
 ################################################################################
 ### mode_Test
@@ -21,18 +22,15 @@ HEADERS = {'Content-Type':'application/json'}
 ################################################################################
 class mode_Test(test.SharedServer, test.IntegrationTestCase):
 
+    @classmethod
+    def setUpClass(cls, args=None):
+        super(mode_Test, cls).setUpClass(['-p', DATA_PATH])
+
+
     def setUp(self):
         super(mode_Test, self).setUp()
-        
-        # copy the default config directory 
-        # currently, testing will only work with debug build because of config
-        # file paths.
-        src_path = os.path.join(TESTDIR, 'config', 'default')
-        self.config_path = os.path.join(CWD, 'config')
-        self.copyConfigDirDestructive(src_path, self.config_path)
-
         # Wait for the embedded server to start up.
-        time.sleep(2.1)
+        time.sleep(1.1)
 
     def tearDown(self):
         # put back to secure_host
@@ -76,8 +74,9 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertEqual(resp.json(), 'secure_host')
 
     def test_get_mode(self):
+        router_mode = os.path.join(DATA_PATH, 'data', 'default_target')
         resp = requests.get(URL)
-        self.assertMatchesFirstLineOfFile(self.config_path + '/router_mode', resp.json())
+        self.assertMatchesFirstLineOfFile(router_mode, resp.json())
         
 
 if __name__ == '__main__':

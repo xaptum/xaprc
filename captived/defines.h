@@ -7,15 +7,6 @@ namespace captiverc {
 
 const unsigned short s_http_port = 4000;
 
-#ifdef DEBUG
-const std::string FILE_SERIAL_NUMBER = "config/serial_number";
-const std::string FILE_WIFI_MAC_ADDRESS = "config/mac_address";
-const std::string FILE_ENF_CONTROL_ADDRESS = "config/enf1/address";
-const std::string FILE_ENF_DATA_ADDRESS = "config/enf0/address";
-const std::string FILE_FIRMWARE_VERSION = "config/mender/artifact_info";
-const std::string FILE_ROUTER_MODE = "config/router_mode";
-const std::string FILE_WIFI_CONFIG = "config/wpa_supplicant-nl80211-wlan0.conf";
-#else
 const std::string FILE_SERIAL_NUMBER = "/rom/serial";
 const std::string FILE_WIFI_MAC_ADDRESS = "/rom/mac_address/1";
 const std::string FILE_ENF_CONTROL_ADDRESS = "/data/enftun/enf1/address";
@@ -23,7 +14,6 @@ const std::string FILE_ENF_DATA_ADDRESS = "/data/enftun/enf0/address";
 const std::string FILE_FIRMWARE_VERSION = "/etc/mender/artifact_info"; 
 const std::string FILE_ROUTER_MODE = "/data/default_target";
 const std::string FILE_WIFI_CONFIG = "/data/wpa_supplicant/wpa_supplicant-nl80211-wlan0.conf";
-#endif
 
 const std::string URI_SERIAL_NUMBER = "/serial_number";
 const std::string URI_WIFI_MAC_ADDRESS = "/mac_address";

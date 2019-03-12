@@ -10,9 +10,12 @@ import unittest
 import xaptum.embedded_server as eserver
 import xaptum.test as test
 
+TESTDIR = os.getcwd()
 CWD = os.path.abspath(os.path.join(os.pardir, os.pardir))
-TESTDIR = os.path.join(CWD, 'testBin', 'integration-tests')
 URL = 'http://[::1]:4000/wifi'
+# use this directory as the root path for this test
+DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
+
 
 
 ################################################################################
@@ -21,18 +24,14 @@ URL = 'http://[::1]:4000/wifi'
 ################################################################################
 class wifi_Test(test.SharedServer, test.IntegrationTestCase):
 
+    @classmethod
+    def setUpClass(cls, args=None):
+        super(wifi_Test, cls).setUpClass(['-p', DATA_PATH])
+
     def setUp(self):
         super(wifi_Test, self).setUp()
-        
-        # copy the default config directory 
-        # currently, testing will only work with debug build because of config
-        # file paths.
-        src_path = os.path.join(TESTDIR, 'config', 'default')
-        self.config_path = os.path.join(CWD, 'config')
-        self.copyConfigDirDestructive(src_path, self.config_path)
-
         # Wait for the server to start up
-        time.sleep(2.1)
+        time.sleep(1.1)
 
     def tearDown(self):
         super(wifi_Test, self).tearDown()
@@ -41,7 +40,7 @@ class wifi_Test(test.SharedServer, test.IntegrationTestCase):
     @unittest.skip("Not implemented yet & test needs updating")
     def test_get_wifi(self):
         resp = requests.get(URL)
-        with open(self.config_path + '/something') as f:
+        with open(DATA_PATH + '/something') as f:
             read_data = f.read()
             self.assertEqual(read_data, resp.json()['contents'])
         

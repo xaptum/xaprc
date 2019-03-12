@@ -11,7 +11,7 @@ namespace captiverc {
 
 class rest_resource_root : public resource {
   public:
-    rest_resource_root();
+    rest_resource_root(std::string root_path);
 
     resource::resp_type get(resource::req_type body) override;
 
@@ -19,6 +19,8 @@ class rest_resource_root : public resource {
     std::string get_file_contents(std::string filename);
     std::string get_status();
 
+  private:
+    std::string root_path_;
 
 };
 

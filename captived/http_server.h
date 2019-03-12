@@ -16,7 +16,7 @@ namespace captiverc {
 class http_server {
    public:
 
-    http_server(const int port);
+    http_server(const int port, const std::string root_path);
     virtual ~http_server();
     void loop_dispatch();
 
@@ -43,6 +43,7 @@ class http_server {
 
    private:
     const int port_;
+    const std::string root_path_;
     std::unique_ptr<event_base, decltype(&event_base_free)> base_;
     std::unique_ptr<evhttp, decltype(&evhttp_free)> httpd_;
     std::atomic<bool> running_;

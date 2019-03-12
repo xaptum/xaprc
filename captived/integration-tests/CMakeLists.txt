@@ -42,7 +42,7 @@ foreach(test_file ${TEST_FILES})
     )
 
   # register each test executable with CTest
-  add_test(NAME xmb_integration_tests_${test_file}
+  add_test(NAME captived_integration_tests_${test_file}
     COMMAND ${CURRENT_TEST_BINARY_DIR}/bin/python ${CURRENT_TEST_BINARY_DIR}/${test_file}
     WORKING_DIRECTORY ${CURRENT_TEST_BINARY_DIR}
     )
