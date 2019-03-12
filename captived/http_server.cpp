@@ -69,7 +69,7 @@ http_server::send_json_response (struct evhttp_request *req,
 std::string
 http_server::get_control_address(){
     std::string return_value;
-    std::string fq_filename = root_path_ +FILE_ENF_CONTROL_ADDRESS;
+    std::string fq_filename = root_path_ + FILE_ENF_CONTROL_ADDRESS;
 
     while (true) {
         std::ifstream infile(fq_filename);
