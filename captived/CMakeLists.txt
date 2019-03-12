@@ -30,10 +30,7 @@ set(SERVER_SRCS
     rest_mode_get_put.cpp
     rest_resource_root.cpp
     rest_wifi_config.cpp
-    # rest_resource_generic.cpp
-    # rest_resource_to_file.cpp
-    # rest_resource_router_mode.cpp
-    # rest_resource_replace_file.cpp
+    rest_reboot.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})
