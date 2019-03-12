@@ -1,0 +1,4 @@
+[service_wifi_xaptumrc_default_managed_psk]
+Type = wifi
+Name = @XAPRC_SSID@
+Passphrase = @XAPRC_PASS@
