@@ -3,6 +3,7 @@
 
 #include "defines.h"
 #include "http_server.h"
+#include "json.h"
 
 namespace captiverc {
 
@@ -41,15 +42,17 @@ std::string http_server::get_payload(struct evhttp_request *req){
 /// Send a json response
 ////////////////////////////////////////////////////////////////////////////////
 void
-http_server::send_json_response (struct evhttp_request *req, 
+http_server::send_json_response (struct evhttp_request *req,
                                  resource::resp_type response) {
-    int resp_code = std::get<0>(response);
-    std::string resp_text = std::get<1>(response);
+    auto resp_code = std::get<0>(response);
+    auto body = std::get<1>(response);
+
+    auto encoded = json::dumps(body);
 
     // buffer for the response
     struct evbuffer *evb = evbuffer_new();
 
-    evbuffer_add_printf(evb, "%s", resp_text.c_str());
+    evbuffer_add_printf(evb, "%s", encoded.c_str());
 
     evhttp_add_header(evhttp_request_get_output_headers(req),
                       "Content-Type",
