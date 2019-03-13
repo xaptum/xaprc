@@ -24,7 +24,7 @@ class resource{
 
     std::string get_path() {return path_;}
 
-    // default GET / PUT handler will return an error - each subclass 
+    // default handler will return an error - each subclass 
     // must replace this if the operation is valid.
     virtual resp_type get(req_type body) {
         return std::make_tuple(HTTP_BADMETHOD, 
@@ -32,6 +32,10 @@ class resource{
     virtual resp_type put(req_type body){
         return std::make_tuple(HTTP_BADMETHOD, 
                                 "PUT operation not allowed for " + path_);}
+
+    virtual resp_type post(req_type body){
+        return std::make_tuple(HTTP_BADMETHOD, 
+                                "POST operation not allowed for " + path_);}
 
   private:
     std::string path_;      // URI path of resource

@@ -46,6 +46,16 @@ http_server::register_resource(Resource& rest_resource)
                   return;
                 }
                 resp = resourcep->put(body);
+              } else if (action == EVHTTP_REQ_POST) {
+                const char* content = evhttp_find_header(headers, "Content-Type");
+                if (content 
+                    && (strncmp(content, CONTENT_TYPE_JSON, strlen(CONTENT_TYPE_JSON)) != 0 )
+                   ){
+                  http_server::respond_bad_request(req, 
+                                        "Error - content type must be JSON.");
+                  return;
+                }
+                resp = resourcep->post(body);
               } else {
                 //   server_inst->respond_not_allowed(req, 
                   http_server::respond_not_allowed(req, 

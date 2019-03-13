@@ -6,6 +6,7 @@
 #include "http_server.h"
 #include "rest_get_file.h"
 #include "rest_put_file.h"
+#include "rest_reboot.h"
 #include "rest_resource_root.h"
 #include "rest_mode_get_put.h"
 #include "rest_wifi_config.h"
@@ -83,6 +84,11 @@ int main(int argc, char *argv[]) {
                             );
     embed_server.register_resource(wifi_config_resource);
 
+    rest_reboot reboot_res = rest_reboot (
+                            URI_REBOOT, 
+                            root_path + FILE_REBOOT_EXE
+                            );
+    embed_server.register_resource(reboot_res);
 
     embed_server.loop_dispatch();
 
