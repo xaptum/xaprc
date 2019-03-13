@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstring>
 #include <event2/buffer.h>
 #include <fstream>
 #include <iostream>
@@ -39,7 +40,7 @@ http_server::register_resource(Resource& rest_resource)
               } else if (action == EVHTTP_REQ_PUT) {
                 const char* content = evhttp_find_header(headers, "Content-Type");
                 if (content 
-                    && (strncmp(content, CONTENT_TYPE_JSON, strlen(CONTENT_TYPE_JSON)) != 0 )
+                    && (std::strncmp(content, CONTENT_TYPE_JSON, std::strlen(CONTENT_TYPE_JSON)) != 0 )
                    ){
                   http_server::respond_bad_request(req, 
                                         "Error - content type must be JSON.");
