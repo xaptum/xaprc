@@ -1,0 +1,55 @@
+version: 2.1
+
+jobs:
+  captived-build:
+    machine:
+      image: circleci/classic:latest
+      docker_layer_caching: true
+    steps:
+      - run:
+         name: "Enable IPv6 for Docker"
+         command: |
+           cat \<<EOF | sudo tee /etc/docker/daemon.json
+           {
+             "ipv6": true,
+             "fixed-cidr-v6": "2001:db8:1::/64"
+           }
+           EOF
+           sudo service docker restart
+      - checkout
+      - run:
+          name: "Build Docker build image"
+          command: |
+            docker build --rm --force-rm -t xaptum/captived/build:latest \
+                   - < captived/.docker/Dockerfile
+      - run:
+          name: Build
+          command: |
+            docker run                                                        \
+              --mount type=bind,source="$(pwd)",target=/project               \
+              xaptum/captived/build:latest                                    \
+              /bin/bash -c "
+                set -eo pipefail
+                mkdir -p /project/captived/build
+                cd /project/captived/build
+                cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+                cmake --build . -- -j $(nproc)
+              "
+      - run:
+          name: Test
+          command: |
+            docker run                                                        \
+              --mount type=bind,source="$(pwd)",target=/project               \
+              xaptum/captived/build:latest                                    \
+              /bin/bash -c "
+                set -eo pipefail
+                mkdir -p /project/captived/build
+                cd /project/captived/build
+                ctest -V
+              "
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - captived-build
