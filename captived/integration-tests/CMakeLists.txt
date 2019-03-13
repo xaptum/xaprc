@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 set(CURRENT_TEST_BINARY_DIR ${CMAKE_BINARY_DIR}/testBin/integration-tests)
 
