@@ -13,7 +13,7 @@ class rest_reboot : public resource {
     rest_reboot(std::string path,
                 std::string reboot_exe);
 
-    resource::resp_type put(resource::req_type body) override;
+    resource::resp_type post(resource::req_type body) override;
 
   protected:
     std::string reboot_exe_;

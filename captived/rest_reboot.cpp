@@ -20,30 +20,22 @@ rest_reboot::rest_reboot (std::string path, std::string reboot_exe):
     {}
 
 ////////////////////////////////////////////////////////////////////////////////
-/// put
-/// Implement the 'put' functionality
-/// Changes the file and then returns its conents as a JSON value.
+/// post
+/// Implement the 'post' functionality
+/// Schedules a reboot and then sends a response.
+/// The system should have enough time for to respond before the reboot
+/// acctually occurs.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_reboot::put(resource::req_type body){
-    //parse the json
-    json_t* root;
-    json_error_t error;
-
-    std::cout << "The JSON payload is: " << body << std::endl;
-    root = json_loads(body.c_str(), JSON_DECODE_ANY, &error);
-
-    pid_t PID = fork();
-    if (PID < 0){
-        std::cerr << "Unable to fork process for rebooting." << std::endl;
-        return std::make_tuple(HTTP_INTERNAL, "\"ERROR - Unable to reboot\"");
-    } else if (PID == 0) {
-        std::cout << "-------- Rebooting in 5 seconds ----------" << std::endl;
-        usleep (5000000);   // sleep for 5 sec
-        system(reboot_exe_.c_str());
-        exit(0);
-    } else {
+rest_reboot::post(resource::req_type body){
+    int result = system(reboot_exe_.c_str());
+    if (0 == result){
         return std::make_tuple(HTTP_OK, "\"Reboot Scheduled\"");
+    } else {
+        std::stringstream ss;
+        ss << "\"Received unexpected result code:" << result
+           << " from Reboot request.\"";
+        return std::make_tuple(HTTP_INTERNAL, ss.str());
     }
 
     return std::make_tuple(HTTP_INTERNAL, "\"Internal error - reached dead code.\"");

@@ -46,14 +46,14 @@ class reboot_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertEqual(resp.status_code, 405)
         self.assertFalse(os.path.isfile(self.last_reboot_file))
 
-    def test_put_reboot(self):
-        resp = requests.put(URL, headers=HEADERS, json="doesn't matter")
+    def test_post_reboot(self):
+        resp = requests.post(URL, headers=HEADERS, json="doesn't matter")
         self.assertEqual(resp.json(), 'Reboot Scheduled')
         time.sleep(5.5)
         self.assertTrue(os.path.isfile(self.last_reboot_file))
 
     def test_reboot_no_json(self):
-        resp = requests.put(URL)
+        resp = requests.post(URL)
         self.assertEqual(resp.json(), 'Reboot Scheduled')
         time.sleep(5.5)
         self.assertTrue(os.path.isfile(self.last_reboot_file))
