@@ -1,11 +1,10 @@
-#ifndef REST_PUT_FILE_H
-#define REST_PUT_FILE_H
+#ifndef PUT_FILE_H
+#define PUT_FILE_H
 
 #include <string>
 
-#include "http_server.h"
-#include "resource.h"
-#include "rest_get_file.h"
+#include "rest/resource.h"
+#include "rest/get_file.h"
 
 namespace captiverc {
 

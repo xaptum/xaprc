@@ -2,7 +2,7 @@
 #include <event2/buffer.h>
 
 #include "defines.h"
-#include "http_server.h"
+#include "http/http_server.h"
 #include "json.h"
 
 namespace captiverc {

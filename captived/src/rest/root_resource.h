@@ -1,11 +1,11 @@
-#ifndef REST_RESOURCE_ROOT_H
-#define REST_RESOURCE_ROOT_H
+#ifndef ROOT_RESOURCE_H
+#define ROOT_RESOURCE_H
 
 #include <string>
 #include <event2/buffer.h>
 #include <event2/http.h>
 
-#include "resource.h"
+#include "rest/resource.h"
 
 namespace captiverc {
 

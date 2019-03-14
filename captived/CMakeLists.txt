@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(GNUInstallDirs)
 
 project(captived
-  VERSION "0.1.0"
+  VERSION "0.1.1"
   )
 
 
@@ -22,21 +22,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 set(SERVER_SRCS
-    main.cpp
-    http_server.cpp
-    resource.cpp
-    rest_get_file.cpp
-    rest_put_file.cpp
-    rest_mode_get_put.cpp
-    rest_resource_root.cpp
-    rest_wifi_config.cpp
-    rest_reboot.cpp
+    src/main.cpp
+    src/http/http_server.cpp
+    src/rest/wifi_config.cpp
+    src/rest/get_file.cpp
+    src/rest/put_file.cpp
+    src/rest/reboot.cpp
+    src/rest/mode_get_put.cpp
+    src/rest/root_resource.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})
 
 target_include_directories(captived
-    PUBLIC include
+    PUBLIC src
     PUBLIC ${libevent_INCLUDE_DIRS}
     PUBLIC ${JANSSON_INCLUDE_DIRS}
     )

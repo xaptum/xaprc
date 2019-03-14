@@ -3,13 +3,13 @@
 #include <iostream>
 #include <string>
 #include "defines.h"
-#include "http_server.h"
-#include "rest_get_file.h"
-#include "rest_put_file.h"
-#include "rest_reboot.h"
-#include "rest_resource_root.h"
-#include "rest_mode_get_put.h"
-#include "rest_wifi_config.h"
+#include "http/http_server.h"
+#include "rest/get_file.h"
+#include "rest/put_file.h"
+#include "rest/reboot.h"
+#include "rest/root_resource.h"
+#include "rest/mode_get_put.h"
+#include "rest/wifi_config.h"
 
 namespace captiverc{
 const char* CONTENT_TYPE_JSON = "application/json";

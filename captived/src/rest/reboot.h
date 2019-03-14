@@ -1,10 +1,9 @@
-#ifndef REST_REBOOT_H
-#define REST_REBOOT_H
+#ifndef REBOOT_H
+#define REBOOT_H
 
 #include <string>
 
-#include "http_server.h"
-#include "resource.h"
+#include "rest/resource.h"
 
 namespace captiverc {
 
