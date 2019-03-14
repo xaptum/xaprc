@@ -1,15 +1,15 @@
-#include "main.h"
+#include "main.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "defines.h"
-#include "http/http_server.h"
-#include "rest/get_file.h"
-#include "rest/put_file.h"
-#include "rest/reboot.h"
-#include "rest/root_resource.h"
-#include "rest/mode_get_put.h"
-#include "rest/wifi_config.h"
+#include "defines.hpp"
+#include "http/http_server.hpp"
+#include "rest/get_file.hpp"
+#include "rest/put_file.hpp"
+#include "rest/reboot.hpp"
+#include "rest/root_resource.hpp"
+#include "rest/mode_get_put.hpp"
+#include "rest/wifi_config.hpp"
 
 namespace captiverc{
 const char* CONTENT_TYPE_JSON = "application/json";

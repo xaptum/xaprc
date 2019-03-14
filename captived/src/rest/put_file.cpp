@@ -2,9 +2,9 @@
 #include <fstream>
 #include <sstream>
 
-#include "rest/resource.h"
-#include "rest/get_file.h"
-#include "rest/put_file.h"
+#include "rest/resource.hpp"
+#include "rest/get_file.hpp"
+#include "rest/put_file.hpp"
 
 namespace captiverc {
 

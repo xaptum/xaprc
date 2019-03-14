@@ -9,7 +9,7 @@
 #include <event2/event.h>
 #include <event2/http.h>
 
-#include "rest/resource.h"
+#include "rest/resource.hpp"
 
 namespace captiverc {
 

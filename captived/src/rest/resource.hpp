@@ -6,8 +6,8 @@
 
 #include <event2/http.h>        // using only for HTTP return codes
 
-#include "defines.h"
-#include "json.h"
+#include "defines.hpp"
+#include "json.hpp"
 
 namespace captiverc {
 

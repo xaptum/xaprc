@@ -3,9 +3,9 @@
 #include <tuple>
 #include <event2/http.h>
 
-#include "defines.h"
-#include "rest/resource.h"
-#include "rest/root_resource.h"
+#include "defines.hpp"
+#include "rest/resource.hpp"
+#include "rest/root_resource.hpp"
 
 namespace captiverc {
 
