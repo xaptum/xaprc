@@ -6,8 +6,8 @@
 #include "http_server.h"
 #include "jansson.h"
 #include "resource.h"
-#include "rest_get_file.h"
-#include "rest_reboot.h"
+#include "get_file.h"
+#include "reboot.h"
 
 namespace captiverc {
 

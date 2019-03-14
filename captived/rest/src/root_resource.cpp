@@ -7,7 +7,7 @@
 #include "http_server.h"
 #include "jansson.h"
 #include "resource.h"
-#include "rest_resource_root.h"
+#include "root_resource.h"
 
 namespace captiverc {
 

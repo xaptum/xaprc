@@ -1,5 +1,5 @@
-#ifndef REST_GET_FILE_H
-#define REST_GET_FILE_H
+#ifndef GET_FILE_H
+#define GET_FILE_H
 
 #include <string>
 

@@ -1,5 +1,5 @@
-#ifndef REST_RESOURCE_ROOT_H
-#define REST_RESOURCE_ROOT_H
+#ifndef ROOT_RESOURCE_H
+#define ROOT_RESOURCE_H
 
 #include <string>
 #include <event2/buffer.h>

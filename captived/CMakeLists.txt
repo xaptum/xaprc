@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(GNUInstallDirs)
 
 project(captived
-  VERSION "0.1.0"
+  VERSION "0.1.1"
   )
 
 
@@ -14,34 +14,38 @@ option(BUILD_SYSTEMD "Build with systemd support" ON)
 
 enable_testing()
 
+set(captived_INCLUDE_DIRS
+    "${CMAKE_CURRENT_LIST_DIR}/include"
+    "${CMAKE_CURRENT_LIST_DIR}/json/include"
+    "${CMAKE_CURRENT_LIST_DIR}/http_server/include"
+    "${CMAKE_CURRENT_LIST_DIR}/rest/include"
+    )
+
 find_package(libevent REQUIRED QUIET)
 find_package(jansson REQUIRED QUIET)
+
+add_subdirectory(http_server)
+add_subdirectory(rest)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 set(SERVER_SRCS
-    main.cpp
-    http_server.cpp
-    resource.cpp
-    rest_get_file.cpp
-    rest_put_file.cpp
-    rest_mode_get_put.cpp
-    rest_resource_root.cpp
-    rest_wifi_config.cpp
-    rest_reboot.cpp
+    src/main.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})
 
 target_include_directories(captived
-    PUBLIC include
+    PUBLIC ${captived_INCLUDE_DIRS}
     PUBLIC ${libevent_INCLUDE_DIRS}
     PUBLIC ${JANSSON_INCLUDE_DIRS}
     )
 
 target_link_libraries(captived
+    PRIVATE http_server
+    PRIVATE rest
     PUBLIC ${libevent_LIBRARIES}
     PUBLIC ${JANSSON_LIBRARIES}
     )

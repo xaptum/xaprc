@@ -1,5 +1,5 @@
-#ifndef REST_REBOOT_H
-#define REST_REBOOT_H
+#ifndef REBOOT_H
+#define REBOOT_H
 
 #include <string>
 

@@ -6,7 +6,7 @@
 #include "http_server.h"
 #include "jansson.h"
 #include "resource.h"
-#include "rest_wifi_config.h"
+#include "wifi_config.h"
 
 namespace captiverc {
 

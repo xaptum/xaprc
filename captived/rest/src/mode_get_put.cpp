@@ -5,15 +5,15 @@
 #include "http_server.h"
 #include "jansson.h"
 #include "resource.h"
-#include "rest_get_file.h"
-#include "rest_put_file.h"
+#include "get_file.h"
+#include "mode_get_put.h"
 
 namespace captiverc {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_put_file::rest_put_file (std::string path,
+rest_mode_get_put::rest_mode_get_put (std::string path,
                               std::string filename):
             rest_get_file(path, filename)
     {}
@@ -21,10 +21,12 @@ rest_put_file::rest_put_file (std::string path,
 ////////////////////////////////////////////////////////////////////////////////
 /// put
 /// Implement the 'put' functionality
-/// Changes the file and then returns its conents as a JSON value.
+/// Validates the mode data, changest the file, and then returns its conents 
+/// as a JSON value.
+/// 
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_put_file::put(resource::req_type body){
+rest_mode_get_put::put(resource::req_type body){
     json_t* root = body.get();
 
     // we should only be gettin a JSON string
@@ -34,6 +36,13 @@ rest_put_file::put(resource::req_type body){
     }
 
     std::string newval = json_string_value(root);
+
+    // validate values
+    if ((newval != MODE_PASSTHROUGH) && (newval != MODE_SECURE_HOST)
+            && (newval != MODE_SECURE_LAN)){
+        auto msg = "Error - invalid value for router mode.";
+        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
+    }
 
     std::ofstream outfile(filename_, std::ofstream::out | std::ofstream::trunc);
     if (!outfile) {

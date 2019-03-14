@@ -1,11 +1,11 @@
-#ifndef rest_mode_get_put_H
-#define rest_mode_get_put_H
+#ifndef MODE_GET_PUT_H
+#define MODE_GET_PUT_H
 
 #include <string>
 
 #include "http_server.h"
 #include "resource.h"
-#include "rest_get_file.h"
+#include "get_file.h"
 
 namespace captiverc {
 
