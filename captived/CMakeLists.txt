@@ -15,17 +15,13 @@ option(BUILD_SYSTEMD "Build with systemd support" ON)
 enable_testing()
 
 set(captived_INCLUDE_DIRS
-    "${CMAKE_CURRENT_LIST_DIR}/include"
-    "${CMAKE_CURRENT_LIST_DIR}/json/include"
-    "${CMAKE_CURRENT_LIST_DIR}/http_server/include"
-    "${CMAKE_CURRENT_LIST_DIR}/rest/include"
+    "${CMAKE_CURRENT_LIST_DIR}/src"
+    "${CMAKE_CURRENT_LIST_DIR}/src/http"
+    "${CMAKE_CURRENT_LIST_DIR}/src/rest"
     )
 
 find_package(libevent REQUIRED QUIET)
 find_package(jansson REQUIRED QUIET)
-
-add_subdirectory(http_server)
-add_subdirectory(rest)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -33,6 +29,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 set(SERVER_SRCS
     src/main.cpp
+    src/http/http_server.cpp
+    src/rest/wifi_config.cpp
+    src/rest/get_file.cpp
+    src/rest/put_file.cpp
+    src/rest/reboot.cpp
+    src/rest/mode_get_put.cpp
+    src/rest/root_resource.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})
@@ -44,8 +47,6 @@ target_include_directories(captived
     )
 
 target_link_libraries(captived
-    PRIVATE http_server
-    PRIVATE rest
     PUBLIC ${libevent_LIBRARIES}
     PUBLIC ${JANSSON_LIBRARIES}
     )
