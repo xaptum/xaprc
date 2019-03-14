@@ -25,15 +25,8 @@ rest_get_file::rest_get_file (std::string path,
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
 rest_get_file::get(resource::req_type body){
-    json_t* json_resp = json_pack("s", get_file_contents().c_str());
-    char* text_resp = json_dumps(json_resp, JSON_ENCODE_ANY | JSON_INDENT(2));
-
-    std::string json_string = text_resp;
-
-    free(text_resp);
-    json_decref(json_resp);
- 
-    return std::make_tuple(HTTP_OK, json_string);
+    auto contents = get_file_contents();
+    return std::make_tuple(HTTP_OK, json::string(contents));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

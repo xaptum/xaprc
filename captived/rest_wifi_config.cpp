@@ -25,19 +25,10 @@ rest_wifi_config::rest_wifi_config (std::string path,
 /// Return the conents of the file as a member of a JSON object.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_wifi_config::get(resource::req_type body){
-    json_t* json_resp = json_object();
-
-    json_object_set_new(json_resp,
-                        "contents",
-                        json_string(get_entire_file().c_str()));
-    char* text_resp = json_dumps(json_resp, JSON_INDENT(2));
-    std::string json_string = text_resp;
-    
-    free(text_resp);
-    json_decref(json_resp);
-
-    return std::make_tuple(HTTP_OK, json_string);
+rest_wifi_config::get(resource::req_type body) {
+    auto root = json::object();
+    json::object_set(root, "contents", json::string(get_entire_file()));
+    return std::make_tuple(HTTP_OK, root);
 }
 
 
@@ -48,32 +39,18 @@ rest_wifi_config::get(resource::req_type body){
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
 rest_wifi_config::put(resource::req_type body){
-    //parse the json
-    json_t* root;
-    json_error_t error;
-
-    std::cout << "Wifi-config JSON payload is: <<<" << body << ">>>" <<std::endl;
-    root = json_loads(body.c_str(), 0, &error);
-    if (!root){
-        std::stringstream temp_ss;
-        temp_ss << "\"JSON parsing error on line"<< error.line << ": " 
-                << error.text << "\"" << std::endl;
-        json_decref(root);
-        return std::make_tuple(HTTP_BADREQUEST, temp_ss.str());
-    }
+    json_t* root = body.get();
 
     // we should only be gettin a JSON object
     if (!json_is_object(root)){
-        json_decref(root);
-        return std::make_tuple(HTTP_BADREQUEST, 
-                            "\"Error: JSON must contain only an object.\"");
+        auto msg = "Error: JSON must contain only an object.";
+        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
     }
-    
+
     json_t* contents = json_object_get(root, "contents");
     if (!json_is_string(contents)){
-        json_decref(root);
-        return std::make_tuple(HTTP_BADREQUEST, 
-                            "\"Error: 'conents' element must be a string.\"");
+        auto msg = "Error: 'conents' element must be a string.";
+        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
     }
 
     std::string newval = json_string_value(contents);
@@ -81,17 +58,15 @@ rest_wifi_config::put(resource::req_type body){
     std::ofstream outfile(filename_, std::ofstream::out | std::ofstream::trunc);
     if (!outfile) {
         std::stringstream temp_ss;
-        temp_ss << "\"Error: unable to open: " << filename_ 
-                  << " for writing new value.\"" << std::endl;
-        json_decref(root);
-        return std::make_tuple(HTTP_INTERNAL, temp_ss.str());
+        temp_ss << "Error: unable to open: " << filename_
+                << " for writing new value." << std::endl;
+        return std::make_tuple(HTTP_INTERNAL, json::string(temp_ss));
     }
 
     outfile << newval << std::endl;
 
     outfile.close();
 
-    json_decref(root);
     return get(body);
 }
 

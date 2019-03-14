@@ -29,16 +29,16 @@ rest_reboot::rest_reboot (std::string path, std::string reboot_exe):
 resource::resp_type
 rest_reboot::post(resource::req_type body){
     int result = system(reboot_exe_.c_str());
+
     if (0 == result){
-        return std::make_tuple(HTTP_OK, "\"Reboot Scheduled\"");
+        auto msg = "Reboot Scheduled";
+        return std::make_tuple(HTTP_OK, json::string(msg));
     } else {
         std::stringstream ss;
         ss << "\"Received unexpected result code:" << result
            << " from Reboot request.\"";
-        return std::make_tuple(HTTP_INTERNAL, ss.str());
+        return std::make_tuple(HTTP_INTERNAL, json::string(ss));
     }
-
-    return std::make_tuple(HTTP_INTERNAL, "\"Internal error - reached dead code.\"");
 }
 
 }   // namespace captiverc

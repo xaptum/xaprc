@@ -27,35 +27,28 @@ rest_resource_root::rest_resource_root (std::string root_path):
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
 rest_resource_root::get(resource::req_type body) {
+    auto root = json::object();
 
-    json_t* root = json_object();
+    json::object_set(root,
+                     "serial_number",
+                     json::string(get_file_contents(root_path_ + FILE_SERIAL_NUMBER)));
+    json::object_set(root,
+                     "firmware_version",
+                     json::string(get_file_contents(root_path_ + FILE_FIRMWARE_VERSION)));
+    json::object_set(root,
+                     "mac_address",
+                     json::string(get_file_contents(root_path_ + FILE_WIFI_MAC_ADDRESS)));
+    json::object_set(root,
+                     "control_address",
+                     json::string(get_file_contents(root_path_ + FILE_ENF_CONTROL_ADDRESS)));
+    json::object_set(root,
+                     "data_address",
+                     json::string(get_file_contents(root_path_ + FILE_ENF_DATA_ADDRESS)));
+    json::object_set(root,
+                     "mode",
+                     json::string(get_file_contents(root_path_ + FILE_ROUTER_MODE)));
 
-    json_object_set_new(root, 
-                        "serial_number", 
-                        json_string(get_file_contents(root_path_ + FILE_SERIAL_NUMBER).c_str()));
-    json_object_set_new(root, 
-                        "firmware_version", 
-                        json_string(get_file_contents(root_path_ + FILE_FIRMWARE_VERSION).c_str()));
-    json_object_set_new(root, 
-                        "mac_address", 
-                        json_string(get_file_contents(root_path_ + FILE_WIFI_MAC_ADDRESS).c_str()));
-    json_object_set_new(root, 
-                        "control_address", 
-                        json_string(get_file_contents(root_path_ + FILE_ENF_CONTROL_ADDRESS).c_str()));
-    json_object_set_new(root, 
-                        "data_address", 
-                        json_string(get_file_contents(root_path_ + FILE_ENF_DATA_ADDRESS).c_str()));
-    json_object_set_new(root, 
-                        "mode", 
-                        json_string(get_file_contents(root_path_ + FILE_ROUTER_MODE).c_str()));
-
-    char* zsjson = json_dumps(root, JSON_INDENT(2));
-    std::string status_json{zsjson};
-
-    free (zsjson);
-    json_decref(root);
-    
-    return std::make_tuple(HTTP_OK, status_json);
+    return std::make_tuple(HTTP_OK, root);
 }
 
 

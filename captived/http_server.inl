@@ -6,11 +6,9 @@
 #include <unistd.h>
 
 #include "defines.h"
+#include "json.h"
 
 namespace captiverc {
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /// register_resource
@@ -29,7 +27,16 @@ http_server::register_resource(Resource& rest_resource)
 
               Resource* resourcep = static_cast<Resource*>(arg);
 
-              std::string body = http_server::get_payload(req);
+              // Parse the body
+              json::error_type error;
+              auto body = json::loads(http_server::get_payload(req), &error);
+              if (!body) {
+                std::stringstream msg;
+                msg << "JSON parsing error on line " << error.line << ": "
+                    << error.text << std::endl;
+                http_server::respond_bad_request(req, msg.str());
+                return;
+              }
 
               typename Resource::resp_type resp;
               // create get/put in the parent class - return an error
@@ -39,11 +46,11 @@ http_server::register_resource(Resource& rest_resource)
                 resp = resourcep->get(body);
               } else if (action == EVHTTP_REQ_PUT) {
                 const char* content = evhttp_find_header(headers, "Content-Type");
-                if (content 
+                if (content
                     && (std::strncmp(content, CONTENT_TYPE_JSON, std::strlen(CONTENT_TYPE_JSON)) != 0 )
                    ){
-                  http_server::respond_bad_request(req, 
-                                        "Error - content type must be JSON.");
+                  http_server::respond_bad_request(req,
+                                                   "Error - content type must be JSON.");
                   return;
                 }
                 resp = resourcep->put(body);
@@ -58,9 +65,8 @@ http_server::register_resource(Resource& rest_resource)
                 }
                 resp = resourcep->post(body);
               } else {
-                //   server_inst->respond_not_allowed(req, 
-                  http_server::respond_not_allowed(req, 
-                                        "Error - Request type not allowed.");
+                http_server::respond_not_allowed(req,
+                                                 "Error - Request type not allowed.");
                   return;
               }
 

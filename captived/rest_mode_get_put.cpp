@@ -27,50 +27,35 @@ rest_mode_get_put::rest_mode_get_put (std::string path,
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
 rest_mode_get_put::put(resource::req_type body){
-    //parse the json
-    json_t* root;
-    json_error_t error;
-
-    std::cout << "The JSON payload is: " << body << std::endl;
-    root = json_loads(body.c_str(), JSON_DECODE_ANY, &error);
-    if (!root){
-        std::stringstream temp_ss;
-        temp_ss << "\"JSON parsing error on line"<< error.line << ": " 
-                << error.text << "\"" << std::endl;
-        json_decref(root);
-        return std::make_tuple(HTTP_BADREQUEST, temp_ss.str());
-    }
+    json_t* root = body.get();
 
     // we should only be gettin a JSON string
-    if (!json_is_string(root)){
-        json_decref(root);
-        return std::make_tuple(HTTP_BADREQUEST, 
-                               "\"Error: JSON should contain only a string.\"");
+    if (!json_is_string(root)) {
+        auto msg = "Error: JSON should contain only a string.";
+        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
     }
-    
+
     std::string newval = json_string_value(root);
 
     // validate values
     if ((newval != MODE_PASSTHROUGH) && (newval != MODE_SECURE_HOST)
             && (newval != MODE_SECURE_LAN)){
-        return std::make_tuple(HTTP_BADREQUEST, 
-                               "Error - invalid value for router mode.");
-    } 
+        auto msg = "Error - invalid value for router mode.";
+        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
+    }
 
     std::ofstream outfile(filename_, std::ofstream::out | std::ofstream::trunc);
     if (!outfile) {
         std::stringstream temp_ss;
-        temp_ss << "\"Error: unable to open: " << filename_ 
-                  << " for writing new value.\"" << std::endl;
-        json_decref(root);
-        return std::make_tuple(HTTP_INTERNAL, temp_ss.str());
+        temp_ss << "Error: unable to open: " << filename_
+                  << " for writing new value." << std::endl;
+        return std::make_tuple(HTTP_INTERNAL, json::string(temp_ss));
     }
 
     outfile << newval << std::endl;
 
     outfile.close();
 
-    json_decref(root);
     return get(body);
 }
 
