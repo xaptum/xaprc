@@ -3,9 +3,9 @@
 #include <sstream>
 #include <thread>
 
-#include "rest/resource.h"
-#include "rest/get_file.h"
-#include "rest/reboot.h"
+#include "rest/resource.hpp"
+#include "rest/get_file.hpp"
+#include "rest/reboot.hpp"
 
 namespace captiverc {
 

@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <event2/buffer.h>
 
-#include "defines.h"
-#include "http/http_server.h"
-#include "json.h"
+#include "defines.hpp"
+#include "http/http_server.hpp"
+#include "json.hpp"
 
 namespace captiverc {
 

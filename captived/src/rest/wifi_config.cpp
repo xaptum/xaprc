@@ -3,8 +3,8 @@
 #include <sstream>
 #include <string>
 
-#include "rest/resource.h"
-#include "rest/wifi_config.h"
+#include "rest/resource.hpp"
+#include "rest/wifi_config.hpp"
 
 namespace captiverc {
 

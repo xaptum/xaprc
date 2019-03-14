@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "rest/resource.h"
-#include "rest/get_file.h"
+#include "rest/resource.hpp"
+#include "rest/get_file.hpp"
 
 namespace captiverc {
 

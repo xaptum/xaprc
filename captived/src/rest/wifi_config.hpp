@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "rest/resource.h"
+#include "rest/resource.hpp"
 
 namespace captiverc {
 
