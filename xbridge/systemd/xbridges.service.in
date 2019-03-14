@@ -1,7 +1,5 @@
 [Unit]
 Description=xbridge service (secure mode)
-BindsTo=xbridges-setup.service
-After=xbridges-setup.service
 BindsTo=enftun@enf0.service
 After=enftun@enf0.service
 
