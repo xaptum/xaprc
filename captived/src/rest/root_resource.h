@@ -5,7 +5,7 @@
 #include <event2/buffer.h>
 #include <event2/http.h>
 
-#include "resource.h"
+#include "rest/resource.h"
 
 namespace captiverc {
 

@@ -2,11 +2,9 @@
 #include <fstream>
 #include <sstream>
 
-#include "http_server.h"
-#include "jansson.h"
-#include "resource.h"
-#include "get_file.h"
-#include "put_file.h"
+#include "rest/resource.h"
+#include "rest/get_file.h"
+#include "rest/put_file.h"
 
 namespace captiverc {
 

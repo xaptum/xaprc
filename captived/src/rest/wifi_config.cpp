@@ -3,10 +3,8 @@
 #include <sstream>
 #include <string>
 
-#include "http_server.h"
-#include "jansson.h"
-#include "resource.h"
-#include "wifi_config.h"
+#include "rest/resource.h"
+#include "rest/wifi_config.h"
 
 namespace captiverc {
 

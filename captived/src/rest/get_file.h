@@ -3,8 +3,7 @@
 
 #include <string>
 
-#include "http_server.h"
-#include "resource.h"
+#include "rest/resource.h"
 
 namespace captiverc {
 

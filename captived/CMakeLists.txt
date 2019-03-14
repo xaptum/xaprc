@@ -14,12 +14,6 @@ option(BUILD_SYSTEMD "Build with systemd support" ON)
 
 enable_testing()
 
-set(captived_INCLUDE_DIRS
-    "${CMAKE_CURRENT_LIST_DIR}/src"
-    "${CMAKE_CURRENT_LIST_DIR}/src/http"
-    "${CMAKE_CURRENT_LIST_DIR}/src/rest"
-    )
-
 find_package(libevent REQUIRED QUIET)
 find_package(jansson REQUIRED QUIET)
 
@@ -41,7 +35,7 @@ set(SERVER_SRCS
 add_executable(captived ${SERVER_SRCS})
 
 target_include_directories(captived
-    PUBLIC ${captived_INCLUDE_DIRS}
+    PUBLIC src
     PUBLIC ${libevent_INCLUDE_DIRS}
     PUBLIC ${JANSSON_INCLUDE_DIRS}
     )

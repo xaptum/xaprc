@@ -4,10 +4,8 @@
 #include <event2/http.h>
 
 #include "defines.h"
-#include "http_server.h"
-#include "jansson.h"
-#include "resource.h"
-#include "root_resource.h"
+#include "rest/resource.h"
+#include "rest/root_resource.h"
 
 namespace captiverc {
 
