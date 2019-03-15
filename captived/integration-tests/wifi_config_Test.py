@@ -19,7 +19,7 @@ DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
 
 HEADERS = {'Content-Type':'application/json'}
 FILE_WIFI_CONFIG_PASSTHROUGH = '/data/connman/passthrough/wifi.config'
-FILE_WIFI_CONFIG_SECURE_HOST = '/data/connman/secure_host/wifi.config'
+FILE_WIFI_CONFIG_SECURE_HOST = '/data/connman/secure-host/wifi.config'
 
 new_config = 'ctrl_interface=/var/run/wpa_supplicant\nap_scan=1\n\nnetwork={\nssid="customer_private"\npsk="none"\n}'
 
