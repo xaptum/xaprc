@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 
 import json
 import os
@@ -29,8 +29,7 @@ class reboot_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super().setUp()
-        # Wait for the embedded server to start up.
-        time.sleep(1.1)
+
         self.last_reboot_file = os.path.join(DATA_PATH, 'sbin', 'last_reboot.txt')
         if os.path.isfile(self.last_reboot_file):
             os.remove(self.last_reboot_file)

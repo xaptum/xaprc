@@ -40,8 +40,6 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(simple_get_Test, self).setUp()
-        # Wait for the embedded server to start up.
-        time.sleep(1.1)
 
     def tearDown(self):
         # put back to secure_host

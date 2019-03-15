@@ -35,8 +35,6 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(wifi_config_Test, self).setUp()
-        # Wait for the embedded server to start up.
-        time.sleep(1.1)
 
     def tearDown(self):
         super(wifi_config_Test, self).tearDown()
