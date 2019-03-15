@@ -78,14 +78,20 @@ int main(int argc, char *argv[]) {
     rest_resource_root root_resource = rest_resource_root(root_path);
     embed_server.register_resource(root_resource);
 
-    rest_wifi_config wifi_config_resource = rest_wifi_config (
-                            URI_WIFI_CONFIG,
-                            root_path + FILE_WIFI_CONFIG
+    rest_wifi_config wifi_config_passthrough_resource = rest_wifi_config (
+                            URI_WIFI_CONFIG_PASSTHROUGH,
+                            root_path + FILE_WIFI_CONFIG_PASSTHROUGH
                             );
-    embed_server.register_resource(wifi_config_resource);
+    embed_server.register_resource(wifi_config_passthrough_resource);
+
+    rest_wifi_config wifi_config_secure_host_resource = rest_wifi_config (
+                            URI_WIFI_CONFIG_SECURE_HOST,
+                            root_path + FILE_WIFI_CONFIG_SECURE_HOST
+                            );
+    embed_server.register_resource(wifi_config_secure_host_resource);
 
     rest_reboot reboot_res = rest_reboot (
-                            URI_REBOOT, 
+                            URI_REBOOT,
                             root_path + FILE_REBOOT_EXE
                             );
     embed_server.register_resource(reboot_res);
