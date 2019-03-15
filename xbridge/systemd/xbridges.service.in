@@ -1,7 +1,7 @@
 [Unit]
 Description=xbridge service (secure mode)
 BindsTo=enftun@enf0.service
-After=enftun@enf0.service
+After=enftun@enf0.service xap-usb-gadget.service
 
 [Service]
 Type=simple
