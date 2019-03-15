@@ -1,5 +1,6 @@
 [Unit]
 Description=xbridge service (pass-through mode)
+After=xap-usb-gadget.service
 
 [Service]
 Type=simple
