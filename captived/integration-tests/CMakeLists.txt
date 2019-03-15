@@ -7,6 +7,7 @@ find_package(PythonInterp 3 REQUIRED)
 
 set(TEST_FILES
   mode_Test.py
+  mode_Test_passthrough.py
   root_level_status_Test.py
   wifi_Test.py
   wifi_config_Test.py

@@ -74,7 +74,7 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertEqual(resp.json(), 'secure_host')
 
     def test_get_mode(self):
-        router_mode = os.path.join(DATA_PATH, 'data', 'default_target')
+        router_mode = os.path.join(DATA_PATH, 'data', 'systemd', 'xbridgex.target.active', 'id')
         resp = requests.get(URL)
         self.assertMatchesFirstLineOfFile(router_mode, resp.json())
         
