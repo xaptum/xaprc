@@ -2,7 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
 #include "defines.hpp"
+#include "system.hpp"
+
 #include "http/server.hpp"
 #include "rest/get_file.hpp"
 #include "rest/put_file.hpp"
@@ -32,6 +35,8 @@ int main(int argc, char *argv[]) {
             std::cout << "\nSetting path to:" << root_path << std::endl;
         }
     }
+
+    captiverc::system sys(root_path);
 
     http::server embed_server(4000, root_path);
 
@@ -78,19 +83,22 @@ int main(int argc, char *argv[]) {
 
     rest::wifi_config wifi_config_passthrough_resource = rest::wifi_config (
                             URI_WIFI_CONFIG_PASSTHROUGH,
-                            root_path + FILE_WIFI_CONFIG_PASSTHROUGH
+                            sys,
+                            FILE_WIFI_CONFIG_PASSTHROUGH
                             );
     embed_server.register_resource(wifi_config_passthrough_resource);
 
     rest::wifi_config wifi_config_secure_host_resource = rest::wifi_config (
                             URI_WIFI_CONFIG_SECURE_HOST,
-                            root_path + FILE_WIFI_CONFIG_SECURE_HOST
+                            sys,
+                            FILE_WIFI_CONFIG_SECURE_HOST
                             );
     embed_server.register_resource(wifi_config_secure_host_resource);
 
     rest::reboot reboot_res = rest::reboot (
                             URI_REBOOT,
-                            root_path + FILE_REBOOT_EXE
+                            sys,
+                            FILE_REBOOT_EXE
                             );
     embed_server.register_resource(reboot_res);
 

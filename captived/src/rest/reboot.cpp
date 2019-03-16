@@ -1,23 +1,18 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <thread>
-
 #include "rest/resource.hpp"
-#include "rest/get_file.hpp"
 #include "rest/reboot.hpp"
 
 namespace captiverc {
 namespace rest {
 
-reboot::reboot(std::string path, std::string reboot_exe) :
+reboot::reboot(std::string path, system system, std::string reboot_exe) :
     resource(path),
+    system_(system),
     reboot_exe_(reboot_exe)
 {}
 
 int
 reboot::execute() {
-    return system(reboot_exe_.c_str());
+    return system_.execute(reboot_exe_);
 }
 
 reboot::resp_type

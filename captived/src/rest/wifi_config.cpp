@@ -1,8 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
 #include "picosha2.hpp"
+
 #include "rest/resource.hpp"
 #include "rest/wifi_config.hpp"
 
@@ -17,34 +14,21 @@ namespace {
 namespace captiverc {
 namespace rest {
 
-wifi_config::wifi_config (std::string path, std::string config_file) :
+wifi_config::wifi_config(std::string path, system system,
+                         std::string config_file):
     resource(path),
-    config_file_(config_file)
+    config_file_(config_file),
+    system_(system)
 {}
 
 std::experimental::optional<std::string>
 wifi_config::contents() {
-    std::ifstream in(config_file_);
-    std::stringstream buf;
-
-    buf << in.rdbuf();
-    if (buf.fail())
-        return {};
-
-    return {buf.str()};
+    return system_.read(config_file_);
 }
 
-std::experimental::optional<std::string>
+bool
 wifi_config::contents(std::string new_contents) {
-    std::ofstream out(config_file_, std::ofstream::out | std::ofstream::trunc);
-
-    out << new_contents;
-    out.close();
-
-    if (out.fail())
-        return {};
-
-    return contents();
+    return system_.write(config_file_, new_contents);
 }
 
 std::experimental::optional<std::string>
@@ -92,10 +76,10 @@ wifi_config::put(resource::req_type body){
         return bad_request(json::string(msg));
     }
 
-    auto contents_str = std::string(json_string_value(contents_json));
+    std::string newval = json_string_value(contents_json);
 
     // Update the config
-    if (!contents(contents_str)) {
+    if (!contents(newval)) {
         auto msg = "Error: failed to update config";
         return internal_server_error(json::string(msg));
     }
