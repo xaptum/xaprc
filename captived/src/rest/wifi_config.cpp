@@ -7,12 +7,13 @@
 #include "rest/wifi_config.hpp"
 
 namespace captiverc {
+namespace rest {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_wifi_config::rest_wifi_config (std::string path,
-                              std::string filename):
+wifi_config::wifi_config (std::string path,
+                          std::string filename):
             resource(path),
             filename_(filename)
     {}
@@ -23,7 +24,7 @@ rest_wifi_config::rest_wifi_config (std::string path,
 /// Return the conents of the file as a member of a JSON object.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_wifi_config::get(resource::req_type body) {
+wifi_config::get(resource::req_type body) {
     auto root = json::object();
     json::object_set(root, "contents", json::string(get_entire_file()));
     return std::make_tuple(HTTP_OK, root);
@@ -36,7 +37,7 @@ rest_wifi_config::get(resource::req_type body) {
 /// Changest the file and then returns its conents as a JSON value.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_wifi_config::put(resource::req_type body){
+wifi_config::put(resource::req_type body){
     json_t* root = body.get();
 
     // we should only be gettin a JSON object
@@ -73,7 +74,7 @@ rest_wifi_config::put(resource::req_type body){
 /// Read the entire file specified in the member variable and 
 // return it as a string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string rest_wifi_config::get_entire_file() {
+std::string wifi_config::get_entire_file() {
     std::ifstream infile(filename_);
     std::stringstream buffer;
     if (infile.is_open()) {
@@ -86,4 +87,5 @@ std::string rest_wifi_config::get_entire_file() {
     return buffer.str();
 }
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc

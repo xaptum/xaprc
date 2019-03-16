@@ -7,13 +7,14 @@
 #include "rest/mode_get_put.hpp"
 
 namespace captiverc {
+namespace rest {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_mode_get_put::rest_mode_get_put (std::string path,
-                              std::string filename):
-            rest_get_file(path, filename)
+mode_get_put::mode_get_put (std::string path,
+                            std::string filename):
+            get_file(path, filename)
     {}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,7 @@ rest_mode_get_put::rest_mode_get_put (std::string path,
 /// 
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_mode_get_put::put(resource::req_type body){
+mode_get_put::put(resource::req_type body){
     json_t* root = body.get();
 
     // we should only be gettin a JSON string
@@ -57,4 +58,5 @@ rest_mode_get_put::put(resource::req_type body){
     return get(body);
 }
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc

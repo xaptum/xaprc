@@ -10,7 +10,7 @@
 #include "json.hpp"
 
 namespace captiverc {
-
+namespace rest {
 
 class resource{
   public:
@@ -48,6 +48,7 @@ class resource{
 
 };
 
-}   //namespace captiverc
+} // namespace rest
+} // namespace captiverc
 
 #endif

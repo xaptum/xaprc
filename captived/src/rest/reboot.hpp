@@ -6,11 +6,12 @@
 #include "rest/resource.hpp"
 
 namespace captiverc {
+namespace rest {
 
-class rest_reboot : public resource {
+class reboot : public resource {
   public:
-    rest_reboot(std::string path,
-                std::string reboot_exe);
+    reboot(std::string path,
+           std::string reboot_exe);
 
     resource::resp_type post(resource::req_type body) override;
 
@@ -18,7 +19,8 @@ class rest_reboot : public resource {
     std::string reboot_exe_;
 };
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc
 
 
 #endif

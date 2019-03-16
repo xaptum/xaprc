@@ -43,7 +43,7 @@ std::string http_server::get_payload(struct evhttp_request *req){
 ////////////////////////////////////////////////////////////////////////////////
 void
 http_server::send_json_response (struct evhttp_request *req,
-                                 resource::resp_type response) {
+                                 rest::resource::resp_type response) {
     auto resp_code = std::get<0>(response);
     auto body = std::get<1>(response);
 

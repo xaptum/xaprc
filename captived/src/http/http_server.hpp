@@ -36,7 +36,7 @@ class http_server {
 
    private:
     static std::string get_payload(struct evhttp_request *req);
-    static void send_json_response (struct evhttp_request *req, resource::resp_type response);
+    static void send_json_response (struct evhttp_request *req, rest::resource::resp_type response);
 
     static void not_found_cb (struct evhttp_request *req, void *arg);
     std::string get_control_address ();

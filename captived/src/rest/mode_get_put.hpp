@@ -7,23 +7,25 @@
 #include "rest/get_file.hpp"
 
 namespace captiverc {
+namespace rest {
 
 ////////////////////////////////////////////////////////////////////////////////
-/// rest_mode_get_put
-/// This inherits from rest_get_file.
-/// It is almost identical to the rest_put_file, except that it validates the 
+/// mode_get_put
+/// This inherits from get_file.
+/// It is almost identical to the put_file, except that it validates the 
 /// mode values being passed in.
 ////////////////////////////////////////////////////////////////////////////////
-class rest_mode_get_put : public rest_get_file {
+class mode_get_put : public get_file {
   public:
-    rest_mode_get_put(std::string path, 
-                  std::string filename);
+    mode_get_put(std::string path, 
+                 std::string filename);
 
     resource::resp_type put(resource::req_type body) override;
 
 };
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc
 
 
 #endif

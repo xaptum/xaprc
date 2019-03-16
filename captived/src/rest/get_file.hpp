@@ -6,13 +6,14 @@
 #include "rest/resource.hpp"
 
 namespace captiverc {
+namespace rest {
 
-class rest_get_file : public resource {
+class get_file : public resource {
   public:
-    rest_get_file(std::string path, 
-                  std::string filename);
+    get_file(std::string path, 
+             std::string filename);
 
-    ~rest_get_file() override = default;
+    ~get_file() override = default;
     
     resource::resp_type get(resource::req_type body) override;
 
@@ -26,7 +27,8 @@ class rest_get_file : public resource {
 
 };
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc
 
 
 #endif

@@ -8,11 +8,12 @@
 #include "rest/reboot.hpp"
 
 namespace captiverc {
+namespace rest {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_reboot::rest_reboot (std::string path, std::string reboot_exe):
+reboot::reboot (std::string path, std::string reboot_exe):
             resource(path),
             reboot_exe_(reboot_exe)
     {}
@@ -25,7 +26,7 @@ rest_reboot::rest_reboot (std::string path, std::string reboot_exe):
 /// acctually occurs.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_reboot::post(resource::req_type body){
+reboot::post(resource::req_type body){
     int result = system(reboot_exe_.c_str());
 
     if (0 == result){
@@ -39,4 +40,5 @@ rest_reboot::post(resource::req_type body){
     }
 }
 
-}   // namespace captiverc
+} // namespace restn
+} // namespace captiverc

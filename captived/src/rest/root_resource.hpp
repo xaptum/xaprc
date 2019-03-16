@@ -8,10 +8,11 @@
 #include "rest/resource.hpp"
 
 namespace captiverc {
+namespace rest {
 
-class rest_resource_root : public resource {
+class resource_root : public resource {
   public:
-    rest_resource_root(std::string root_path);
+    resource_root(std::string root_path);
 
     resource::resp_type get(resource::req_type body) override;
 
@@ -24,7 +25,8 @@ class rest_resource_root : public resource {
 
 };
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc
 
 
 #endif

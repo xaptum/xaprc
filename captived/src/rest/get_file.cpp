@@ -6,12 +6,13 @@
 #include "rest/get_file.hpp"
 
 namespace captiverc {
+namespace rest {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_get_file::rest_get_file (std::string path,
-                              std::string filename):
+get_file::get_file (std::string path,
+                    std::string filename):
             resource(path),
             filename_(filename)
     {}
@@ -22,7 +23,7 @@ rest_get_file::rest_get_file (std::string path,
 /// Return the conents of the file as a JSON value.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_get_file::get(resource::req_type body){
+get_file::get(resource::req_type body){
     auto contents = get_file_contents();
     return std::make_tuple(HTTP_OK, json::string(contents));
 }
@@ -32,7 +33,7 @@ rest_get_file::get(resource::req_type body){
 /// Read the first line of the file specified in the member variable and 
 // return it as a string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string rest_get_file::get_file_contents() {
+std::string get_file::get_file_contents() {
     std::string return_value;
 
     std::ifstream infile(filename_);
@@ -46,7 +47,5 @@ std::string rest_get_file::get_file_contents() {
     return return_value;
 }
 
-
-
-
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc

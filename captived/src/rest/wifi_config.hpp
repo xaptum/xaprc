@@ -6,13 +6,14 @@
 #include "rest/resource.hpp"
 
 namespace captiverc {
+namespace rest {
 
-class rest_wifi_config : public resource {
+class wifi_config : public resource {
   public:
-    rest_wifi_config(std::string path, 
-                  std::string filename);
+    wifi_config(std::string path, 
+                std::string filename);
 
-    ~rest_wifi_config() override = default;
+    ~wifi_config() override = default;
 
     resource::resp_type get(resource::req_type body) override;
     resource::resp_type put(resource::req_type body) override;
@@ -25,7 +26,8 @@ class rest_wifi_config : public resource {
 
 };
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc
 
 
 #endif

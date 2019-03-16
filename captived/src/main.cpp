@@ -38,59 +38,59 @@ int main(int argc, char *argv[]) {
 
 
 
-    rest_get_file ser_num_res = rest_get_file (
+    rest::get_file ser_num_res = rest::get_file (
                             URI_SERIAL_NUMBER, 
                             root_path + FILE_SERIAL_NUMBER
                             );
     embed_server.register_resource(ser_num_res);
 
-    rest_get_file mac_addr_res = rest_get_file (
+    rest::get_file mac_addr_res = rest::get_file (
                             URI_WIFI_MAC_ADDRESS,
                             root_path + FILE_WIFI_MAC_ADDRESS
                             );
     embed_server.register_resource(mac_addr_res);
 
-    rest_get_file control_addr_resource = rest_get_file (
+    rest::get_file control_addr_resource = rest::get_file (
                             URI_ENF_CONTROL_ADDRESS,
                             root_path + FILE_ENF_CONTROL_ADDRESS
                             );
     embed_server.register_resource(control_addr_resource);
 
-    rest_get_file data_addr_resource = rest_get_file (
+    rest::get_file data_addr_resource = rest::get_file (
                             URI_ENF_DATA_ADDRESS,
                             root_path + FILE_ENF_DATA_ADDRESS
                             );
     embed_server.register_resource(data_addr_resource);
 
-    rest_get_file firmware_ver_resource = rest_get_file (
+    rest::get_file firmware_ver_resource = rest::get_file (
                             URI_FIRMWARE_VERSION,
                             root_path + FILE_FIRMWARE_VERSION
                             );
     embed_server.register_resource(firmware_ver_resource);
 
-    rest_mode_get_put router_mode_resource = rest_mode_get_put (
+    rest::mode_get_put router_mode_resource = rest::mode_get_put (
                             URI_ROUTER_MODE,
                             root_path + FILE_ROUTER_MODE
                             );
     embed_server.register_resource(router_mode_resource);
 
 
-    rest_resource_root root_resource = rest_resource_root(root_path);
+    rest::resource_root root_resource = rest::resource_root(root_path);
     embed_server.register_resource(root_resource);
 
-    rest_wifi_config wifi_config_passthrough_resource = rest_wifi_config (
+    rest::wifi_config wifi_config_passthrough_resource = rest::wifi_config (
                             URI_WIFI_CONFIG_PASSTHROUGH,
                             root_path + FILE_WIFI_CONFIG_PASSTHROUGH
                             );
     embed_server.register_resource(wifi_config_passthrough_resource);
 
-    rest_wifi_config wifi_config_secure_host_resource = rest_wifi_config (
+    rest::wifi_config wifi_config_secure_host_resource = rest::wifi_config (
                             URI_WIFI_CONFIG_SECURE_HOST,
                             root_path + FILE_WIFI_CONFIG_SECURE_HOST
                             );
     embed_server.register_resource(wifi_config_secure_host_resource);
 
-    rest_reboot reboot_res = rest_reboot (
+    rest::reboot reboot_res = rest::reboot (
                             URI_REBOOT,
                             root_path + FILE_REBOOT_EXE
                             );

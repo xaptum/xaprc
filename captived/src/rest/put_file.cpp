@@ -7,13 +7,14 @@
 #include "rest/put_file.hpp"
 
 namespace captiverc {
+namespace rest {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-rest_put_file::rest_put_file (std::string path,
-                              std::string filename):
-            rest_get_file(path, filename)
+put_file::put_file (std::string path,
+                    std::string filename):
+            get_file(path, filename)
     {}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +23,7 @@ rest_put_file::rest_put_file (std::string path,
 /// Changes the file and then returns its conents as a JSON value.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_put_file::put(resource::req_type body){
+put_file::put(resource::req_type body){
     json_t* root = body.get();
 
     // we should only be gettin a JSON string
@@ -48,4 +49,5 @@ rest_put_file::put(resource::req_type body){
     return get(body);
 }
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captiverc
