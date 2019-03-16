@@ -29,7 +29,7 @@ set(SERVER_SRCS
     src/rest/get_file.cpp
     src/rest/put_file.cpp
     src/rest/reboot.cpp
-    src/rest/mode_get_put.cpp
+    src/rest/mode.cpp
     src/rest/root.cpp
     )
 
