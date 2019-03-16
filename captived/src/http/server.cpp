@@ -2,18 +2,17 @@
 #include <event2/buffer.h>
 
 #include "defines.hpp"
-#include "http/http_server.hpp"
+#include "http/server.hpp"
 #include "json.hpp"
 
 namespace captiverc {
-
-
+namespace http {
 
 ////////////////////////////////////////////////////////////////////////////////
 //  not_found_cb
 //  Return 'Not Found' for default handling
 ////////////////////////////////////////////////////////////////////////////////
-void http_server::not_found_cb (struct evhttp_request *req, void *arg){
+void server::not_found_cb (struct evhttp_request *req, void *arg){
     evhttp_send_error(req, HTTP_NOTFOUND, "Not Found");
 }
 
@@ -21,7 +20,7 @@ void http_server::not_found_cb (struct evhttp_request *req, void *arg){
 /// get_payload
 /// Parse the request's data into a string and return it.
 ////////////////////////////////////////////////////////////////////////////////
-std::string http_server::get_payload(struct evhttp_request *req){
+std::string server::get_payload(struct evhttp_request *req){
     struct evbuffer *buf;
     std::string payload;
 
@@ -42,8 +41,8 @@ std::string http_server::get_payload(struct evhttp_request *req){
 /// Send a json response
 ////////////////////////////////////////////////////////////////////////////////
 void
-http_server::send_json_response (struct evhttp_request *req,
-                                 rest::resource::resp_type response) {
+server::send_json_response (struct evhttp_request *req,
+                            rest::resource::resp_type response) {
     auto resp_code = std::get<0>(response);
     auto body = std::get<1>(response);
 
@@ -70,7 +69,7 @@ http_server::send_json_response (struct evhttp_request *req,
 // If the address is not found, issue an error and loop.
 ////////////////////////////////////////////////////////////////////////////////
 std::string
-http_server::get_control_address(){
+server::get_control_address(){
     std::string return_value;
     std::string fq_filename = root_path_ + FILE_ENF_CONTROL_ADDRESS;
 
@@ -95,7 +94,7 @@ http_server::get_control_address(){
 //  Constructor
 //
 ////////////////////////////////////////////////////////////////////////////////
-http_server::http_server(const int port, const std::string root_path)
+server::server(const int port, const std::string root_path)
     : port_(port),
       root_path_(root_path),
       base_(event_base_new(), &event_base_free),
@@ -133,7 +132,7 @@ http_server::http_server(const int port, const std::string root_path)
 //  Destructor
 //
 ////////////////////////////////////////////////////////////////////////////////
-http_server::~http_server() {
+server::~server() {
     std::cout << "Shutting down" << std::endl;
 
     running_ = false;
@@ -144,7 +143,7 @@ http_server::~http_server() {
 //  loop_dispatch
 //
 ////////////////////////////////////////////////////////////////////////////////
-void http_server::loop_dispatch() {
+void server::loop_dispatch() {
     const struct timeval one_sec = {1, 0};
     while (running_) {
         event_base_loopexit(base_.get(), &one_sec);
@@ -152,6 +151,5 @@ void http_server::loop_dispatch() {
     }
 }
 
-
-
-}    // namespace captiverc
+} // namespace http
+} // namespace captiverc

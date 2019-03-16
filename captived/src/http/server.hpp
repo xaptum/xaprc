@@ -12,12 +12,13 @@
 #include "rest/resource.hpp"
 
 namespace captiverc {
+namespace http {
 
-class http_server {
+class server {
    public:
 
-    http_server(const int port, const std::string root_path);
-    virtual ~http_server();
+    server(const int port, const std::string root_path);
+    virtual ~server();
     void loop_dispatch();
 
     static void respond_not_allowed (struct evhttp_request *req, std::string err);
@@ -50,7 +51,7 @@ class http_server {
 };
 
 inline void 
-http_server::respond_not_allowed (struct evhttp_request *req, std::string err)
+server::respond_not_allowed (struct evhttp_request *req, std::string err)
 {
     evhttp_send_error(req, HTTP_BADMETHOD, err.c_str());
 }
@@ -58,14 +59,15 @@ http_server::respond_not_allowed (struct evhttp_request *req, std::string err)
 
 
 inline void 
-http_server::respond_bad_request (struct evhttp_request *req, std::string err)
+server::respond_bad_request (struct evhttp_request *req, std::string err)
 {
     evhttp_send_error(req, HTTP_BADREQUEST, err.c_str());
 }
 
 
-}    // namespace captiverc
+} // namespace http
+} // namespace captiverc
 
-#include "http_server.inl"
+#include "server.inl"
 
 #endif    // CAPTIVERC_HTTP_SERVER_HPP

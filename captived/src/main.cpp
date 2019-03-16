@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include "defines.hpp"
-#include "http/http_server.hpp"
+#include "http/server.hpp"
 #include "rest/get_file.hpp"
 #include "rest/put_file.hpp"
 #include "rest/reboot.hpp"
@@ -33,9 +33,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    http_server embed_server(4000, root_path);
-
-
+    http::server embed_server(4000, root_path);
 
 
     rest::get_file ser_num_res = rest::get_file (

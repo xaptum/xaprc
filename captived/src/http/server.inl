@@ -9,6 +9,7 @@
 #include "json.hpp"
 
 namespace captiverc {
+namespace http {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// register_resource
@@ -17,7 +18,7 @@ namespace captiverc {
 ////////////////////////////////////////////////////////////////////////////////
 template<typename Resource>
 int
-http_server::register_resource(Resource& rest_resource)
+server::register_resource(Resource& rest_resource)
 {
   auto path = rest_resource.get_path();
 
@@ -29,12 +30,12 @@ http_server::register_resource(Resource& rest_resource)
 
               // Parse the body
               json::error_type error;
-              auto body = json::loads(http_server::get_payload(req), &error);
+              auto body = json::loads(server::get_payload(req), &error);
               if (!body) {
                 std::stringstream msg;
                 msg << "JSON parsing error on line " << error.line << ": "
                     << error.text << std::endl;
-                http_server::respond_bad_request(req, msg.str());
+                server::respond_bad_request(req, msg.str());
                 return;
               }
 
@@ -49,7 +50,7 @@ http_server::register_resource(Resource& rest_resource)
                 if (content
                     && (std::strncmp(content, CONTENT_TYPE_JSON, std::strlen(CONTENT_TYPE_JSON)) != 0 )
                    ){
-                  http_server::respond_bad_request(req,
+                  server::respond_bad_request(req,
                                                    "Error - content type must be JSON.");
                   return;
                 }
@@ -59,18 +60,18 @@ http_server::register_resource(Resource& rest_resource)
                 if (content 
                     && (strncmp(content, CONTENT_TYPE_JSON, strlen(CONTENT_TYPE_JSON)) != 0 )
                    ){
-                  http_server::respond_bad_request(req, 
+                  server::respond_bad_request(req, 
                                         "Error - content type must be JSON.");
                   return;
                 }
                 resp = resourcep->post(body);
               } else {
-                http_server::respond_not_allowed(req,
+                server::respond_not_allowed(req,
                                                  "Error - Request type not allowed.");
                   return;
               }
 
-              http_server::send_json_response(req, resp);
+              server::send_json_response(req, resp);
   };
 
   evhttp_set_cb(httpd_.get(), path.c_str(), op, &rest_resource);
