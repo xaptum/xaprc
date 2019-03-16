@@ -31,7 +31,7 @@ mode_get_put::put(resource::req_type body){
     // we should only be gettin a JSON string
     if (!json_is_string(root)) {
         auto msg = "Error: JSON should contain only a string.";
-        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
+        return std::make_tuple(http::status::bad_request, json::string(msg));
     }
 
     std::string newval = json_string_value(root);
@@ -40,7 +40,7 @@ mode_get_put::put(resource::req_type body){
     if ((newval != MODE_PASSTHROUGH) && (newval != MODE_SECURE_HOST)
             && (newval != MODE_SECURE_LAN)){
         auto msg = "Error - invalid value for router mode.";
-        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
+        return std::make_tuple(http::status::bad_request, json::string(msg));
     }
 
     std::ofstream outfile(filename_, std::ofstream::out | std::ofstream::trunc);
@@ -48,7 +48,7 @@ mode_get_put::put(resource::req_type body){
         std::stringstream temp_ss;
         temp_ss << "Error: unable to open: " << filename_
                   << " for writing new value." << std::endl;
-        return std::make_tuple(HTTP_INTERNAL, json::string(temp_ss));
+        return std::make_tuple(http::status::internal_server_error, json::string(temp_ss));
     }
 
     outfile << newval << std::endl;

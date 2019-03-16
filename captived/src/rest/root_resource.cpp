@@ -47,7 +47,7 @@ resource_root::get(resource::req_type body) {
                      "mode",
                      json::string(get_file_contents(root_path_ + FILE_ROUTER_MODE)));
 
-    return std::make_tuple(HTTP_OK, root);
+    return std::make_tuple(http::status::ok, root);
 }
 
 

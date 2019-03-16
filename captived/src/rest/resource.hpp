@@ -4,17 +4,16 @@
 #include <string>
 #include <tuple>
 
-#include <event2/http.h>        // using only for HTTP return codes
-
 #include "defines.hpp"
 #include "json.hpp"
+#include "http/status.hpp"
 
 namespace captiverc {
 namespace rest {
 
 class resource{
   public:
-    using resp_type = std::tuple<int, json::json_type>;
+    using resp_type = std::tuple<http::status, json::json_type>;
     using req_type = json::json_type;
 
   public:
@@ -26,21 +25,23 @@ class resource{
 
     std::string get_path() {return path_;}
 
-    // default handler will return an error - each subclass
-    // must replace this if the operation is valid.
     virtual resp_type get(req_type body) {
-        auto msg = "GET operation not allowed for " + path_;
-        return std::make_tuple(HTTP_BADMETHOD, json::string(msg));
+        return not_allowed("GET");
     }
 
     virtual resp_type put(req_type body) {
-        auto msg = "PUT operation not allowed for " + path_;
-        return std::make_tuple(HTTP_BADMETHOD, json::string(msg));
+        return not_allowed("PUT");
     }
 
     virtual resp_type post(req_type body) {
-        auto msg = "POST operation not allowed for " + path_;
-        return std::make_tuple(HTTP_BADMETHOD, json::string(msg));
+        return not_allowed("POST");
+    }
+
+  private:
+    resp_type not_allowed(std::string method) {
+        auto msg = method + " method not allowed for " + path_;
+        return std::make_tuple(http::status::method_not_allowed,
+                               json::string(msg));
     }
 
   private:

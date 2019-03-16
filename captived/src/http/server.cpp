@@ -57,7 +57,7 @@ server::send_json_response (struct evhttp_request *req,
                       "Content-Type",
                       "application/json");
 
-    evhttp_send_reply(req, resp_code, "OK", evb);
+    evhttp_send_reply(req, static_cast<unsigned>(resp_code), "OK", evb);
 
     evbuffer_free(evb);
 }
