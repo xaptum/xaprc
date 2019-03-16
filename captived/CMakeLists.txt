@@ -24,6 +24,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(SERVER_SRCS
     src/main.cpp
     src/http/server.cpp
+    src/rest/line_resource.cpp
     src/rest/wifi_config.cpp
     src/rest/get_file.cpp
     src/rest/put_file.cpp
