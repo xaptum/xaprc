@@ -31,12 +31,12 @@ reboot::post(resource::req_type body){
 
     if (0 == result){
         auto msg = "Reboot Scheduled";
-        return std::make_tuple(http::status::ok, json::string(msg));
+        return ok(json::string(msg));
     } else {
         std::stringstream ss;
         ss << "\"Received unexpected result code:" << result
            << " from Reboot request.\"";
-        return std::make_tuple(http::status::internal_server_error, json::string(ss));
+        return internal_server_error(json::string(ss));
     }
 }
 

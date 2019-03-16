@@ -25,7 +25,7 @@ get_file::get_file (std::string path,
 resource::resp_type
 get_file::get(resource::req_type body){
     auto contents = get_file_contents();
-    return std::make_tuple(http::status::ok, json::string(contents));
+    return ok(json::string(contents));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

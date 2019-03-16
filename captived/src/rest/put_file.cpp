@@ -29,7 +29,7 @@ put_file::put(resource::req_type body){
     // we should only be gettin a JSON string
     if (!json_is_string(root)) {
         auto msg = "Error: JSON should contain only a string.";
-        return std::make_tuple(http::status::bad_request, json::string(msg));
+        return bad_request(json::string(msg));
     }
 
     std::string newval = json_string_value(root);
@@ -39,7 +39,7 @@ put_file::put(resource::req_type body){
         std::stringstream temp_ss;
         temp_ss << "Error: unable to open: " << filename_
                   << " for writing new value." << std::endl;
-        return std::make_tuple(http::status::internal_server_error, json::string(temp_ss));
+        return internal_server_error(json::string(temp_ss));
     }
 
     outfile << newval << std::endl;

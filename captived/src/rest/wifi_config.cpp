@@ -27,7 +27,7 @@ resource::resp_type
 wifi_config::get(resource::req_type body) {
     auto root = json::object();
     json::object_set(root, "contents", json::string(get_entire_file()));
-    return std::make_tuple(http::status::ok, root);
+    return ok(root);
 }
 
 
@@ -43,13 +43,13 @@ wifi_config::put(resource::req_type body){
     // we should only be gettin a JSON object
     if (!json_is_object(root)){
         auto msg = "Error: JSON must contain only an object.";
-        return std::make_tuple(http::status::bad_request, json::string(msg));
+        return bad_request(json::string(msg));
     }
 
     json_t* contents = json_object_get(root, "contents");
     if (!json_is_string(contents)){
         auto msg = "Error: 'conents' element must be a string.";
-        return std::make_tuple(http::status::bad_request, json::string(msg));
+        return bad_request(json::string(msg));
     }
 
     std::string newval = json_string_value(contents);
@@ -59,7 +59,7 @@ wifi_config::put(resource::req_type body){
         std::stringstream temp_ss;
         temp_ss << "Error: unable to open: " << filename_
                 << " for writing new value." << std::endl;
-        return std::make_tuple(http::status::internal_server_error, json::string(temp_ss));
+        return internal_server_error(json::string(temp_ss));
     }
 
     outfile << newval << std::endl;
