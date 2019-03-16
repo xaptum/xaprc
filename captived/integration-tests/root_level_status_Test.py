@@ -28,8 +28,6 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(root_level_status_Test, self).setUp()
-        # Wait for the server to start up
-        time.sleep(1.1)
 
     def tearDown(self):
         super(root_level_status_Test, self).tearDown()

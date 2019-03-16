@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 
 import json
 import os
@@ -29,8 +29,7 @@ class reboot_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super().setUp()
-        # Wait for the embedded server to start up.
-        time.sleep(1.1)
+
         self.last_reboot_file = os.path.join(DATA_PATH, 'sbin', 'last_reboot.txt')
         if os.path.isfile(self.last_reboot_file):
             os.remove(self.last_reboot_file)
@@ -49,15 +48,12 @@ class reboot_Test(test.SharedServer, test.IntegrationTestCase):
     def test_post_reboot(self):
         resp = requests.post(URL, headers=HEADERS, json="doesn't matter")
         self.assertEqual(resp.json(), 'Reboot Scheduled')
-        time.sleep(5.5)
         self.assertTrue(os.path.isfile(self.last_reboot_file))
 
     def test_reboot_no_json(self):
         resp = requests.post(URL)
         self.assertEqual(resp.json(), 'Reboot Scheduled')
-        time.sleep(5.5)
         self.assertTrue(os.path.isfile(self.last_reboot_file))
-        
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
