@@ -79,4 +79,5 @@ server::register_resource(Resource& rest_resource)
   return 0;
 }
 
-}    // namespace captiverc
+} // namespace http
+} // namespace captiverc
