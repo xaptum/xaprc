@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import re
@@ -73,6 +74,14 @@ class EnrichedTestCase(unittest.TestCase):
         with open(expected_filename) as f:
             read_data = f.read()
             self.assertEqual(val, read_data)
+
+    def assertMatchesFileSHA256(self, expected_filename, val):
+        """Fail if the sha256 hash of the file contents does not match the passed-in value.
+        """
+        with open(expected_filename) as f:
+            read_data = f.read().encode()
+            hash = hashlib.sha256(read_data).hexdigest()
+            self.assertEqual(val, hash)
 
     def assertJsonFileEquals(self, expected_filename, actual):
         """Fail if the provided JSON object does not match that in the expected file.

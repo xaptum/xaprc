@@ -2,8 +2,17 @@
 #include <fstream>
 #include <sstream>
 
+#include "picosha2.hpp"
 #include "rest/resource.hpp"
 #include "rest/wifi_config.hpp"
+
+namespace {
+    std::string sha256_hex(std::string str) {
+        std::string hash;
+        picosha2::hash256_hex_string(str, hash);
+        return hash;
+    }
+}
 
 namespace captiverc {
 namespace rest {
@@ -38,6 +47,15 @@ wifi_config::contents(std::string new_contents) {
     return contents();
 }
 
+std::experimental::optional<std::string>
+wifi_config::sha256() {
+    auto contents_str = contents();
+    if (!contents_str)
+        return {};
+
+    return {sha256_hex(*contents_str)};
+}
+
 wifi_config::resp_type
 wifi_config::get(req_type) {
     auto contents_str = contents();
@@ -48,6 +66,7 @@ wifi_config::get(req_type) {
 
     auto root = json::object();
     json::object_set(root, "contents", json::string(*contents_str));
+    json::object_set(root, "sha256", json::string(sha256_hex(*contents_str)));
     return ok(root);
 }
 

@@ -33,6 +33,14 @@ namespace rest {
     std::experimental::optional<std::string>
     contents(std::string new_contents);
 
+    /**
+     * Fetch the SHA256 hash of the configuration contents.
+     *
+     * @returns The hash of the configuration contents or None on an error.
+     */
+    std::experimental::optional<std::string>
+    sha256();
+
   protected:
     std::string config_file_;
 
