@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string>
 
 #include "rest/resource.hpp"
 #include "rest/wifi_config.hpp"
@@ -9,82 +8,80 @@
 namespace captiverc {
 namespace rest {
 
-////////////////////////////////////////////////////////////////////////////////
-/// constructor
-////////////////////////////////////////////////////////////////////////////////
-wifi_config::wifi_config (std::string path,
-                          std::string filename):
-            resource(path),
-            filename_(filename)
-    {}
+wifi_config::wifi_config (std::string path, std::string config_file) :
+    resource(path),
+    config_file_(config_file)
+{}
 
-////////////////////////////////////////////////////////////////////////////////
-/// get
-/// Implement the 'get' functionality
-/// Return the conents of the file as a member of a JSON object.
-////////////////////////////////////////////////////////////////////////////////
-resource::resp_type
-wifi_config::get(resource::req_type body) {
+std::experimental::optional<std::string>
+wifi_config::contents() {
+    std::ifstream in(config_file_);
+    std::stringstream buf;
+
+    buf << in.rdbuf();
+    if (buf.fail())
+        return {};
+
+    return {buf.str()};
+}
+
+std::experimental::optional<std::string>
+wifi_config::contents(std::string new_contents) {
+    std::ofstream out(config_file_, std::ofstream::out | std::ofstream::trunc);
+
+    out << new_contents;
+    out.close();
+
+    if (out.fail())
+        return {};
+
+    return contents();
+}
+
+wifi_config::resp_type
+wifi_config::get(req_type) {
+    auto contents_str = contents();
+    if (!contents_str) {
+        auto msg = "Error: failed to read config";
+        return internal_server_error(json::string(msg));
+    }
+
     auto root = json::object();
-    json::object_set(root, "contents", json::string(get_entire_file()));
+    json::object_set(root, "contents", json::string(*contents_str));
     return ok(root);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-/// put
-/// Implement the 'put' functionality
-/// Changest the file and then returns its conents as a JSON value.
-////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
 wifi_config::put(resource::req_type body){
+    // Parse and validate the request body
     json_t* root = body.get();
 
-    // we should only be gettin a JSON object
     if (!json_is_object(root)){
-        auto msg = "Error: JSON must contain only an object.";
+        auto msg = "Error: request body is not a JSON object.";
         return bad_request(json::string(msg));
     }
 
-    json_t* contents = json_object_get(root, "contents");
-    if (!json_is_string(contents)){
-        auto msg = "Error: 'conents' element must be a string.";
+    auto contents_json = json_object_get(root, "contents");
+    if (NULL == contents_json) {
+        auto msg = "Error:  'contents' element is missing.";
         return bad_request(json::string(msg));
     }
 
-    std::string newval = json_string_value(contents);
-
-    std::ofstream outfile(filename_, std::ofstream::out | std::ofstream::trunc);
-    if (!outfile) {
-        std::stringstream temp_ss;
-        temp_ss << "Error: unable to open: " << filename_
-                << " for writing new value." << std::endl;
-        return internal_server_error(json::string(temp_ss));
+    if (!json_is_string(contents_json)) {
+        auto msg = "Error: 'contents' value is not a string.";
+        return bad_request(json::string(msg));
     }
 
-    outfile << newval << std::endl;
+    auto contents_str = std::string(json_string_value(contents_json));
 
-    outfile.close();
-
-    return get(body);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-/// get_entire_file
-/// Read the entire file specified in the member variable and 
-// return it as a string.
-////////////////////////////////////////////////////////////////////////////////
-std::string wifi_config::get_entire_file() {
-    std::ifstream infile(filename_);
-    std::stringstream buffer;
-    if (infile.is_open()) {
-        buffer << infile.rdbuf();
-        infile.close();
-    } else {
-        buffer << "NOT FOUND";
+    // Update the config
+    if (!contents(contents_str)) {
+        auto msg = "Error: failed to update config";
+        return internal_server_error(json::string(msg));
     }
 
-    return buffer.str();
+    return get(json::null());
 }
 
 } // namespace rest
