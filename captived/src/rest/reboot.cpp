@@ -10,35 +10,29 @@
 namespace captiverc {
 namespace rest {
 
-////////////////////////////////////////////////////////////////////////////////
-/// constructor
-////////////////////////////////////////////////////////////////////////////////
-reboot::reboot (std::string path, std::string reboot_exe):
-            resource(path),
-            reboot_exe_(reboot_exe)
-    {}
+reboot::reboot(std::string path, std::string reboot_exe) :
+    resource(path),
+    reboot_exe_(reboot_exe)
+{}
 
-////////////////////////////////////////////////////////////////////////////////
-/// post
-/// Implement the 'post' functionality
-/// Schedules a reboot and then sends a response.
-/// The system should have enough time for to respond before the reboot
-/// acctually occurs.
-////////////////////////////////////////////////////////////////////////////////
-resource::resp_type
-reboot::post(resource::req_type body){
-    int result = system(reboot_exe_.c_str());
+int
+reboot::execute() {
+    return system(reboot_exe_.c_str());
+}
 
-    if (0 == result){
+reboot::resp_type
+reboot::post(req_type body) {
+    int result = execute();
+
+    if (0 == result) {
         auto msg = "Reboot Scheduled";
         return ok(json::string(msg));
     } else {
         std::stringstream ss;
-        ss << "\"Received unexpected result code:" << result
-           << " from Reboot request.\"";
+        ss << "Failed to reboot with error code " << result;
         return internal_server_error(json::string(ss));
     }
 }
 
-} // namespace restn
+} // namespace rest
 } // namespace captiverc
