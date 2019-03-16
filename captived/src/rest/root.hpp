@@ -10,9 +10,9 @@
 namespace captiverc {
 namespace rest {
 
-class resource_root : public resource {
+class root : public resource {
   public:
-    resource_root(std::string root_path);
+    root(std::string root_path);
 
     resource::resp_type get(resource::req_type body) override;
 

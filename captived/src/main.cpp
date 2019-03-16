@@ -7,7 +7,7 @@
 #include "rest/get_file.hpp"
 #include "rest/put_file.hpp"
 #include "rest/reboot.hpp"
-#include "rest/root_resource.hpp"
+#include "rest/root.hpp"
 #include "rest/mode_get_put.hpp"
 #include "rest/wifi_config.hpp"
 
@@ -73,8 +73,8 @@ int main(int argc, char *argv[]) {
     embed_server.register_resource(router_mode_resource);
 
 
-    rest::resource_root root_resource = rest::resource_root(root_path);
-    embed_server.register_resource(root_resource);
+    rest::root root = rest::root(root_path);
+    embed_server.register_resource(root);
 
     rest::wifi_config wifi_config_passthrough_resource = rest::wifi_config (
                             URI_WIFI_CONFIG_PASSTHROUGH,

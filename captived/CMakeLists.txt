@@ -29,7 +29,7 @@ set(SERVER_SRCS
     src/rest/put_file.cpp
     src/rest/reboot.cpp
     src/rest/mode_get_put.cpp
-    src/rest/root_resource.cpp
+    src/rest/root.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})

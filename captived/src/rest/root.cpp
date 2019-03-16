@@ -5,7 +5,7 @@
 
 #include "defines.hpp"
 #include "rest/resource.hpp"
-#include "rest/root_resource.hpp"
+#include "rest/root.hpp"
 
 namespace captiverc {
 namespace rest {
@@ -13,7 +13,7 @@ namespace rest {
 ////////////////////////////////////////////////////////////////////////////////
 /// constructor
 ////////////////////////////////////////////////////////////////////////////////
-resource_root::resource_root (std::string root_path):
+root::root (std::string root_path):
             resource("/"),
             root_path_(root_path)
         {}
@@ -25,7 +25,7 @@ resource_root::resource_root (std::string root_path):
 /// Get the top-level status of the router as a JSON file.
 ////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-resource_root::get(resource::req_type body) {
+root::get(resource::req_type body) {
     auto root = json::object();
 
     json::object_set(root,
@@ -56,7 +56,7 @@ resource_root::get(resource::req_type body) {
 /// Read the first line of the file specified in the member variable and 
 // return it as a string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string resource_root::get_file_contents(std::string filename) {
+std::string root::get_file_contents(std::string filename) {
     std::string return_value;
 
     std::ifstream infile(filename);
