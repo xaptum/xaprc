@@ -8,9 +8,6 @@
 
 #include "http/server.hpp"
 #include "rest/line_resource.hpp"
-
-#include "rest/get_file.hpp"
-#include "rest/put_file.hpp"
 #include "rest/reboot.hpp"
 #include "rest/root.hpp"
 #include "rest/mode.hpp"
