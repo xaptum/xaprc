@@ -12,8 +12,10 @@ const std::string FILE_ENF_CONTROL_ADDRESS = "/data/enftun/enf1/address";
 const std::string FILE_ENF_DATA_ADDRESS = "/data/enftun/enf0/address";
 const std::string FILE_FIRMWARE_VERSION = "/etc/mender/artifact_info";
 const std::string FILE_ROUTER_MODE = "/data/default_target";
-const std::string FILE_WIFI_CONFIG_PASSTHROUGH = "/data/connman/passthrough/wifi.config";
-const std::string FILE_WIFI_CONFIG_SECURE_HOST = "/data/connman/secure-host/wifi.config";
+const std::string FILE_WIFI_CONFIG_PASSTHROUGH =
+    "/data/connman/passthrough/wifi.config";
+const std::string FILE_WIFI_CONFIG_SECURE_HOST =
+    "/data/connman/secure-host/wifi.config";
 const std::string FILE_REBOOT_EXE = "/sbin/reboot";
 
 const std::string URI_SERIAL_NUMBER = "/serial_number";
@@ -38,5 +40,4 @@ const std::string MODE_SECURE_LAN = "secure_lan";
 
 extern const char* CONTENT_TYPE_JSON;
 
-
-}  // namespace captived
+} // namespace captived

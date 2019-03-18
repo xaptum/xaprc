@@ -1,6 +1,20 @@
 version: 2.1
 
 jobs:
+  captived-format:
+    docker:
+      - image: teeks99/clang-ubuntu:8
+    steps:
+      - checkout
+      - run:
+          name: Add symlink for clang-format
+          command: |
+            ln -s /usr/bin/clang-format-8 /usr/bin/clang-format
+      - run:
+          name: Check source formatting
+          command: |
+            cd captived
+            ./format.sh check
   captived-build:
     machine:
       image: circleci/classic:latest
@@ -50,6 +64,7 @@ jobs:
 
 workflows:
   version: 2
-  build:
+  captived:
     jobs:
+      - captived-format
       - captived-build
