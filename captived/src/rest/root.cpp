@@ -1,73 +1,58 @@
-#include <iostream>
-#include <fstream>
-#include <tuple>
-#include <event2/http.h>
-
-#include "defines.hpp"
-#include "rest/resource.hpp"
+#include "json.hpp"
 #include "rest/root.hpp"
 
 namespace captived {
 namespace rest {
 
-////////////////////////////////////////////////////////////////////////////////
-/// constructor
-////////////////////////////////////////////////////////////////////////////////
-root::root (std::string root_path):
-            resource("/"),
-            root_path_(root_path)
-        {}
+namespace {
 
+  /**
+   * Adds the given resource as child element of the provided JSON
+   * object under the specified key.
+   */
+  void add_resource(json::json_type& obj, std::string key, resource& res) {
+    resource::resp_type resp;
+    json::json_type val;
 
-////////////////////////////////////////////////////////////////////////////////
-/// get
-/// Implement the root 'get' functionality
-/// Get the top-level status of the router as a JSON file.
-////////////////////////////////////////////////////////////////////////////////
-resource::resp_type
-root::get(resource::req_type body) {
-    auto root = json::object();
+    resp = res.get(json::null());
+    if (std::get<0>(resp) == http::status::ok)
+      val = std::get<1>(resp);
+    else
+      val = json::null();
 
-    json::object_set(root,
-                     "serial_number",
-                     json::string(get_file_contents(root_path_ + FILE_SERIAL_NUMBER)));
-    json::object_set(root,
-                     "firmware_version",
-                     json::string(get_file_contents(root_path_ + FILE_FIRMWARE_VERSION)));
-    json::object_set(root,
-                     "mac_address",
-                     json::string(get_file_contents(root_path_ + FILE_WIFI_MAC_ADDRESS)));
-    json::object_set(root,
-                     "control_address",
-                     json::string(get_file_contents(root_path_ + FILE_ENF_CONTROL_ADDRESS)));
-    json::object_set(root,
-                     "data_address",
-                     json::string(get_file_contents(root_path_ + FILE_ENF_DATA_ADDRESS)));
-    json::object_set(root,
-                     "mode",
-                     json::string(get_file_contents(root_path_ + FILE_ROUTER_MODE)));
+    json::object_set(obj, key, val);
+  }
 
-    return ok(root);
 }
 
+  root::root(std::string path,
+             line_resource& serial_number,
+             line_resource& firmware_version,
+             line_resource& mac_addr,
+             line_resource& control_addr,
+             line_resource& data_addr,
+             mode& mode) :
+    resource(path),
+    serial_number_(serial_number),
+    firmware_version_(firmware_version),
+    mac_addr_(mac_addr),
+    control_addr_(control_addr),
+    data_addr_(data_addr),
+    mode_(mode)
+  {}
 
-////////////////////////////////////////////////////////////////////////////////
-/// get_file_contents
-/// Read the first line of the file specified in the member variable and 
-// return it as a string.
-////////////////////////////////////////////////////////////////////////////////
-std::string root::get_file_contents(std::string filename) {
-    std::string return_value;
+  root::resp_type
+  root::get(req_type) {
+    auto root = json::object();
 
-    std::ifstream infile(filename);
-    if (infile.is_open()) {
-        std::getline(infile, return_value);
-        infile.close();
-    } else {
-        return_value = "NOT FOUND";
-    }
+    add_resource(root, "serial_number", serial_number_);
+    add_resource(root, "firmware_version", firmware_version_);
+    add_resource(root, "mac_address", mac_addr_);
+    add_resource(root, "control_address", control_addr_);
+    add_resource(root, "data_address", data_addr_);
+    add_resource(root, "mode", mode_);
 
-    return return_value;
+    return ok(root);
 }
 
 } // namespace rest

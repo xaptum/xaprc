@@ -1,26 +1,33 @@
 #pragma once
 
 #include <string>
-#include <event2/buffer.h>
-#include <event2/http.h>
 
 #include "rest/resource.hpp"
+#include "rest/line_resource.hpp"
+#include "rest/mode.hpp"
 
 namespace captived {
 namespace rest {
 
 class root : public resource {
   public:
-    root(std::string root_path);
+  root(std::string path,
+       line_resource& serial_number,
+       line_resource& firmware_version,
+       line_resource& mac_addr,
+       line_resource& control_addr,
+       line_resource& data_addr,
+       mode& mode);
 
-    resource::resp_type get(resource::req_type body) override;
+  resp_type get(req_type) override;
 
   private:
-    std::string get_file_contents(std::string filename);
-    std::string get_status();
-
-  private:
-    std::string root_path_;
+  line_resource& serial_number_;
+  line_resource& firmware_version_;
+  line_resource& mac_addr_;
+  line_resource& control_addr_;
+  line_resource& data_addr_;
+  mode& mode_;
 
 };
 

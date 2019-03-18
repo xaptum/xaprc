@@ -60,7 +60,13 @@ int main(int argc, char *argv[]) {
 
     rest::reboot reboot(URI_REBOOT, sys, FILE_REBOOT_EXE);
 
-    rest::root root(root_path);
+    rest::root root("/",
+                    serial_number,
+                    firmware_version,
+                    mac_addr,
+                    control_addr,
+                    data_addr,
+                    router_mode);
 
     http::server embed_server(4000, root_path);
 
