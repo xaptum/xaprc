@@ -75,7 +75,8 @@ int main(int argc, char *argv[]) {
                     mac_addr,
                     control_addr,
                     data_addr,
-                    router_mode);
+                    router_mode,
+                    wifi);
 
     http::server embed_server(4000, root_path);
 

@@ -31,14 +31,16 @@ namespace {
              line_resource& mac_addr,
              line_resource& control_addr,
              line_resource& data_addr,
-             mode& mode) :
+             mode& mode,
+             wifi& wifi) :
     resource(path),
     serial_number_(serial_number),
     firmware_version_(firmware_version),
     mac_addr_(mac_addr),
     control_addr_(control_addr),
     data_addr_(data_addr),
-    mode_(mode)
+    mode_(mode),
+    wifi_(wifi)
   {}
 
   root::resp_type
@@ -51,6 +53,7 @@ namespace {
     add_resource(root, "control_address", control_addr_);
     add_resource(root, "data_address", data_addr_);
     add_resource(root, "mode", mode_);
+    add_resource(root, "wifi", wifi_);
 
     return ok(root);
 }
