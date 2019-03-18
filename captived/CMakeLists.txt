@@ -27,6 +27,7 @@ set(SERVER_SRCS
     src/rest/line_resource.cpp
     src/rest/wifi_config.cpp
     src/rest/wifi_configs.cpp
+    src/rest/wifi.cpp
     src/rest/reboot.cpp
     src/rest/mode.cpp
     src/rest/root.cpp
