@@ -14,7 +14,7 @@ std::string sha256_hex(std::string str) {
 namespace captived {
 namespace rest {
 
-wifi_config::wifi_config(std::string path, system system,
+wifi_config::wifi_config(std::string path, system& system,
                          std::string config_file)
     : resource(path), config_file_(config_file), system_(system) {}
 

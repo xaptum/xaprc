@@ -10,7 +10,7 @@ namespace rest {
 
 class line_resource : public resource {
 public:
-  line_resource(std::string path, system system, std::string filename,
+  line_resource(std::string path, system& system, std::string filename,
                 bool writable);
   ~line_resource() override = default;
 
@@ -32,7 +32,7 @@ public:
   virtual bool line(std::string new_line);
 
 protected:
-  system system_;
+  system& system_;
   std::string filename_;
   bool writable_;
 };

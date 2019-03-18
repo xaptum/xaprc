@@ -4,7 +4,7 @@
 namespace captived {
 namespace rest {
 
-line_resource::line_resource(std::string path, system system,
+line_resource::line_resource(std::string path, system& system,
                              std::string filename, bool writable)
     : resource(path), system_(system), filename_(filename),
       writable_(writable) {}

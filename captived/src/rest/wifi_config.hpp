@@ -11,7 +11,7 @@ namespace rest {
 
 class wifi_config : public resource {
 public:
-  wifi_config(std::string path, system system, std::string config_file);
+  wifi_config(std::string path, system& system, std::string config_file);
   ~wifi_config() override = default;
 
   resp_type get(req_type) override;
@@ -39,7 +39,7 @@ public:
   std::experimental::optional<std::string> sha256();
 
 protected:
-  system system_;
+  system& system_;
   std::string config_file_;
 };
 
