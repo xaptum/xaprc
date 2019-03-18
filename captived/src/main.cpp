@@ -9,7 +9,6 @@
 #include "rest/aggregate_resource.hpp"
 #include "rest/line_resource.hpp"
 #include "rest/reboot.hpp"
-#include "rest/root.hpp"
 #include "rest/mode.hpp"
 #include "rest/wifi_config.hpp"
 
