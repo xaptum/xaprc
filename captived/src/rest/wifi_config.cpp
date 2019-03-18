@@ -1,89 +1,91 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
+#include "picosha2.hpp"
 
 #include "rest/resource.hpp"
 #include "rest/wifi_config.hpp"
 
-namespace captiverc {
+namespace {
+    std::string sha256_hex(std::string str) {
+        std::string hash;
+        picosha2::hash256_hex_string(str, hash);
+        return hash;
+    }
+}
 
-////////////////////////////////////////////////////////////////////////////////
-/// constructor
-////////////////////////////////////////////////////////////////////////////////
-rest_wifi_config::rest_wifi_config (std::string path,
-                              std::string filename):
-            resource(path),
-            filename_(filename)
-    {}
+namespace captived {
+namespace rest {
 
-////////////////////////////////////////////////////////////////////////////////
-/// get
-/// Implement the 'get' functionality
-/// Return the conents of the file as a member of a JSON object.
-////////////////////////////////////////////////////////////////////////////////
-resource::resp_type
-rest_wifi_config::get(resource::req_type body) {
+wifi_config::wifi_config(std::string path, system system,
+                         std::string config_file):
+    resource(path),
+    config_file_(config_file),
+    system_(system)
+{}
+
+std::experimental::optional<std::string>
+wifi_config::contents() {
+    return system_.read(config_file_);
+}
+
+bool
+wifi_config::contents(std::string new_contents) {
+    return system_.write(config_file_, new_contents);
+}
+
+std::experimental::optional<std::string>
+wifi_config::sha256() {
+    auto contents_str = contents();
+    if (!contents_str)
+        return {};
+
+    return {sha256_hex(*contents_str)};
+}
+
+wifi_config::resp_type
+wifi_config::get(req_type) {
+    auto contents_str = contents();
+    if (!contents_str) {
+        auto msg = "Error: failed to read config";
+        return internal_server_error(json::string(msg));
+    }
+
     auto root = json::object();
-    json::object_set(root, "contents", json::string(get_entire_file()));
-    return std::make_tuple(HTTP_OK, root);
+    json::object_set(root, "contents", json::string(*contents_str));
+    json::object_set(root, "sha256", json::string(sha256_hex(*contents_str)));
+    return ok(root);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-/// put
-/// Implement the 'put' functionality
-/// Changest the file and then returns its conents as a JSON value.
-////////////////////////////////////////////////////////////////////////////////
 resource::resp_type
-rest_wifi_config::put(resource::req_type body){
+wifi_config::put(resource::req_type body){
+    // Parse and validate the request body
     json_t* root = body.get();
 
-    // we should only be gettin a JSON object
     if (!json_is_object(root)){
-        auto msg = "Error: JSON must contain only an object.";
-        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
+        auto msg = "Error: request body is not a JSON object.";
+        return bad_request(json::string(msg));
     }
 
-    json_t* contents = json_object_get(root, "contents");
-    if (!json_is_string(contents)){
-        auto msg = "Error: 'conents' element must be a string.";
-        return std::make_tuple(HTTP_BADREQUEST, json::string(msg));
+    auto contents_json = json_object_get(root, "contents");
+    if (NULL == contents_json) {
+        auto msg = "Error:  'contents' element is missing.";
+        return bad_request(json::string(msg));
     }
 
-    std::string newval = json_string_value(contents);
-
-    std::ofstream outfile(filename_, std::ofstream::out | std::ofstream::trunc);
-    if (!outfile) {
-        std::stringstream temp_ss;
-        temp_ss << "Error: unable to open: " << filename_
-                << " for writing new value." << std::endl;
-        return std::make_tuple(HTTP_INTERNAL, json::string(temp_ss));
+    if (!json_is_string(contents_json)) {
+        auto msg = "Error: 'contents' value is not a string.";
+        return bad_request(json::string(msg));
     }
 
-    outfile << newval << std::endl;
+    std::string newval = json_string_value(contents_json);
 
-    outfile.close();
+    // Update the config
+    if (!contents(newval)) {
+        auto msg = "Error: failed to update config";
+        return internal_server_error(json::string(msg));
+    }
 
-    return get(body);
+    return get(json::null());
 }
 
-////////////////////////////////////////////////////////////////////////////////
-/// get_entire_file
-/// Read the entire file specified in the member variable and 
-// return it as a string.
-////////////////////////////////////////////////////////////////////////////////
-std::string rest_wifi_config::get_entire_file() {
-    std::ifstream infile(filename_);
-    std::stringstream buffer;
-    if (infile.is_open()) {
-        buffer << infile.rdbuf();
-        infile.close();
-    } else {
-        buffer << "NOT FOUND";
-    }
-
-    return buffer.str();
-}
-
-}   // namespace captiverc
+} // namespace rest
+} // namespace captived

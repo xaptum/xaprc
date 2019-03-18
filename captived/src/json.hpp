@@ -1,5 +1,4 @@
-#ifndef JSON_H
-#define JSON_H
+#pragma once
 
 #include <memory>
 #include <string>
@@ -7,7 +6,7 @@
 
 #include <jansson.h>
 
-namespace captiverc {
+namespace captived {
 namespace json {
 
   using json_type = std::shared_ptr<json_t>;
@@ -96,5 +95,3 @@ namespace json {
 
 }
 }
-
-#endif

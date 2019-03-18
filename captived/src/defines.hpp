@@ -1,9 +1,8 @@
-#ifndef CAPTIVERC_DEFINES_H
-#define CAPTIVERC_DEFINES_H
+#pragma once
 
 #include <string>
 
-namespace captiverc {
+namespace captived {
 
 const unsigned short s_http_port = 4000;
 
@@ -24,6 +23,7 @@ const std::string URI_ENF_DATA_ADDRESS = "/data_address";
 const std::string URI_FIRMWARE_VERSION = "/firmware_version";
 const std::string URI_ROUTER_MODE = "/mode";
 const std::string URI_ROUTER_STATUS = "/";
+const std::string URI_UPTIME = "/uptime";
 const std::string URI_WIFI = "/wifi";
 const std::string URI_WIFI_CONFIG = "/wifi/config";
 const std::string URI_WIFI_CONFIG_PASSTHROUGH = "/wifi/config/passthrough";
@@ -39,5 +39,4 @@ const std::string MODE_SECURE_LAN = "secure_lan";
 extern const char* CONTENT_TYPE_JSON;
 
 
-}  // namespace captiverc
-#endif
+}  // namespace captived

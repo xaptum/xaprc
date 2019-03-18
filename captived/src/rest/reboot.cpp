@@ -1,42 +1,33 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <thread>
-
 #include "rest/resource.hpp"
-#include "rest/get_file.hpp"
 #include "rest/reboot.hpp"
 
-namespace captiverc {
+namespace captived {
+namespace rest {
 
-////////////////////////////////////////////////////////////////////////////////
-/// constructor
-////////////////////////////////////////////////////////////////////////////////
-rest_reboot::rest_reboot (std::string path, std::string reboot_exe):
-            resource(path),
-            reboot_exe_(reboot_exe)
-    {}
+reboot::reboot(std::string path, system system, std::string reboot_exe) :
+    resource(path),
+    system_(system),
+    reboot_exe_(reboot_exe)
+{}
 
-////////////////////////////////////////////////////////////////////////////////
-/// post
-/// Implement the 'post' functionality
-/// Schedules a reboot and then sends a response.
-/// The system should have enough time for to respond before the reboot
-/// acctually occurs.
-////////////////////////////////////////////////////////////////////////////////
-resource::resp_type
-rest_reboot::post(resource::req_type body){
-    int result = system(reboot_exe_.c_str());
+int
+reboot::execute() {
+    return system_.execute(reboot_exe_);
+}
 
-    if (0 == result){
+reboot::resp_type
+reboot::post(req_type body) {
+    int result = execute();
+
+    if (0 == result) {
         auto msg = "Reboot Scheduled";
-        return std::make_tuple(HTTP_OK, json::string(msg));
+        return ok(json::string(msg));
     } else {
         std::stringstream ss;
-        ss << "\"Received unexpected result code:" << result
-           << " from Reboot request.\"";
-        return std::make_tuple(HTTP_INTERNAL, json::string(ss));
+        ss << "Failed to reboot with error code " << result;
+        return internal_server_error(json::string(ss));
     }
 }
 
-}   // namespace captiverc
+} // namespace rest
+} // namespace captived

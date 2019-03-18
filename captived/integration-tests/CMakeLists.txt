@@ -13,6 +13,7 @@ set(TEST_FILES
   wifi_status_Test.py
   simple_get_Test.py
   reboot_Test.py
+  uptime_Test.py
   )
 
 add_custom_target(integration-tests ALL)

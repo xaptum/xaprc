@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import hashlib
 import json
 import os
 import requests
@@ -43,11 +44,15 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
         resp = requests.get(URL_PASSTHROUGH)
         self.assertMatchesFileContents(DATA_PATH + FILE_WIFI_CONFIG_PASSTHROUGH,
                                        resp.json()['contents'])
+        self.assertMatchesFileSHA256(DATA_PATH + FILE_WIFI_CONFIG_PASSTHROUGH,
+                                     resp.json()['sha256'])
 
     def test_get_wifi_config_secure_host(self):
         resp = requests.get(URL_SECURE_HOST)
         self.assertMatchesFileContents(DATA_PATH + FILE_WIFI_CONFIG_SECURE_HOST,
                                        resp.json()['contents'])
+        self.assertMatchesFileSHA256(DATA_PATH + FILE_WIFI_CONFIG_SECURE_HOST,
+                                     resp.json()['sha256'])
 
     def test_put_wifi_config_passthrough(self):
         # get and store value to put back
