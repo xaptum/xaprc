@@ -11,6 +11,7 @@
 #include "rest/root.hpp"
 #include "rest/mode.hpp"
 #include "rest/wifi_config.hpp"
+#include "rest/wifi_configs.hpp"
 
 namespace captived{
 const char* CONTENT_TYPE_JSON = "application/json";
@@ -58,6 +59,10 @@ int main(int argc, char *argv[]) {
     rest::wifi_config wifi_config_secure_host(URI_WIFI_CONFIG_SECURE_HOST, sys,
                                               FILE_WIFI_CONFIG_SECURE_HOST);
 
+    rest::wifi_configs wifi_configs(URI_WIFI_CONFIG,
+                                    wifi_config_passthrough,
+                                    wifi_config_secure_host);
+
     rest::reboot reboot(URI_REBOOT, sys, FILE_REBOOT_EXE);
 
     rest::root root("/",
@@ -78,6 +83,7 @@ int main(int argc, char *argv[]) {
     embed_server.register_resource(router_mode);
     embed_server.register_resource(wifi_config_passthrough);
     embed_server.register_resource(wifi_config_secure_host);
+    embed_server.register_resource(wifi_configs);
     embed_server.register_resource(reboot);
     embed_server.register_resource(root);
 
