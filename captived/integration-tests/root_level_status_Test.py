@@ -41,11 +41,11 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
                         ('/rom/mac_address/1', 'mac_address'),
                         ('/etc/mender/artifact_info', 'firmware_version'),
                         ('/data/enftun/enf1/address', 'control_address'),
-                        ('/data/enftun/enf0/address', 'data_address'),
-                        ('/data/default_target', 'mode')
+                        ('/data/enftun/enf0/address', 'data_address')
                       ]
         for pair in check_these:
             self.assertMatchesFirstLineOfFile(DATA_PATH + pair[0], jresp[pair[1]])
+        self.assertEqual('secure-host', jresp['mode'])
 
         
 

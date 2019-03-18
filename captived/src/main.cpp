@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
   rest::line_resource firmware_version(URI_FIRMWARE_VERSION, sys,
                                        FILE_FIRMWARE_VERSION, false);
 
-  rest::mode router_mode(URI_ROUTER_MODE, sys, FILE_ROUTER_MODE);
+  rest::mode router_mode(URI_ROUTER_MODE, sys, PATH_MODE_TARGET, LINK_MODE);
 
   rest::wifi_config wifi_config_passthrough(URI_WIFI_CONFIG_PASSTHROUGH, sys,
                                             FILE_WIFI_CONFIG_PASSTHROUGH);

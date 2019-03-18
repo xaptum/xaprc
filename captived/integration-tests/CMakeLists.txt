@@ -52,6 +52,7 @@ endforeach()
 
 # Copy the test config directory
 add_custom_command(TARGET integration-tests POST_BUILD
-  COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/config ${CURRENT_TEST_BINARY_DIR}/config
+  # using cp because copy_directory does not preserve symbolic links
+  COMMAND cp -P -R ${CMAKE_CURRENT_SOURCE_DIR}/config ${CURRENT_TEST_BINARY_DIR}/config
   )
 
