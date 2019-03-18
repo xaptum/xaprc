@@ -6,13 +6,12 @@
 #include "system.hpp"
 
 #include "http/server.hpp"
+#include "rest/aggregate_resource.hpp"
 #include "rest/line_resource.hpp"
 #include "rest/reboot.hpp"
 #include "rest/root.hpp"
 #include "rest/mode.hpp"
 #include "rest/wifi_config.hpp"
-#include "rest/wifi_configs.hpp"
-#include "rest/wifi.hpp"
 
 namespace captived{
 const char* CONTENT_TYPE_JSON = "application/json";
@@ -60,23 +59,23 @@ int main(int argc, char *argv[]) {
     rest::wifi_config wifi_config_secure_host(URI_WIFI_CONFIG_SECURE_HOST, sys,
                                               FILE_WIFI_CONFIG_SECURE_HOST);
 
-    rest::wifi_configs wifi_configs(URI_WIFI_CONFIG,
-                                    wifi_config_passthrough,
-                                    wifi_config_secure_host);
+    rest::aggregate_resource wifi_configs(URI_WIFI_CONFIG);
+    wifi_configs.add("passthrough", wifi_config_passthrough);
+    wifi_configs.add("secure-host", wifi_config_secure_host);
 
-    rest::wifi wifi(URI_WIFI,
-                    wifi_configs);
+    rest::aggregate_resource wifi(URI_WIFI);
+    wifi.add("config", wifi_configs);
 
     rest::reboot reboot(URI_REBOOT, sys, FILE_REBOOT_EXE);
 
-    rest::root root("/",
-                    serial_number,
-                    firmware_version,
-                    mac_addr,
-                    control_addr,
-                    data_addr,
-                    router_mode,
-                    wifi);
+    rest::aggregate_resource root("/");
+    root.add("serial_number", serial_number);
+    root.add("firmware_version", firmware_version);
+    root.add("mac_address", mac_addr);
+    root.add("control_address", control_addr);
+    root.add("data_address", data_addr);
+    root.add("mode", router_mode);
+    root.add("wifi", wifi);
 
     http::server embed_server(4000, root_path);
 
