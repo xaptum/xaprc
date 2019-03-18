@@ -4,7 +4,7 @@
 namespace captived {
 namespace rest {
 
-reboot::reboot(std::string path, system system, std::string reboot_exe)
+reboot::reboot(std::string path, system& system, std::string reboot_exe)
     : resource(path), system_(system), reboot_exe_(reboot_exe) {}
 
 int reboot::execute() { return system_.execute(reboot_exe_); }

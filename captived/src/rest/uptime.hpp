@@ -10,7 +10,7 @@ namespace rest {
 
 class uptime : public resource {
 public:
-  uptime(std::string path, system system);
+  uptime(std::string path, system& system);
   ~uptime() override = default;
 
   resp_type get(req_type) override;
@@ -21,7 +21,7 @@ public:
   virtual std::experimental::optional<double> seconds();
 
 protected:
-  system system_;
+  system& system_;
 };
 
 } // namespace rest

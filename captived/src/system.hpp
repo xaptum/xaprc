@@ -25,6 +25,9 @@ public:
    */
   system(std::string chroot) : chroot_(chroot){};
 
+  system(const system&) = delete;
+  system(system&&) = default;
+
   /**
    * Executes the provided command using the "system" call.
    */

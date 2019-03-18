@@ -6,7 +6,7 @@
 namespace captived {
 namespace rest {
 
-uptime::uptime(std::string path, system system)
+uptime::uptime(std::string path, system& system)
     : resource(path), system_(system) {}
 
 std::experimental::optional<double> uptime::seconds() {

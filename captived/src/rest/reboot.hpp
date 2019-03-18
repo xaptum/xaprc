@@ -10,7 +10,7 @@ namespace rest {
 
 class reboot : public resource {
 public:
-  reboot(std::string path, system system, std::string reboot_exe);
+  reboot(std::string path, system& system, std::string reboot_exe);
 
   resp_type post(req_type body) override;
 
@@ -24,7 +24,7 @@ public:
   int execute();
 
 protected:
-  system system_;
+  system& system_;
   std::string reboot_exe_;
 };
 
