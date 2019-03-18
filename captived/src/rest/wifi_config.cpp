@@ -11,7 +11,7 @@ namespace {
     }
 }
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 wifi_config::wifi_config(std::string path, system system,
@@ -88,4 +88,4 @@ wifi_config::put(resource::req_type body){
 }
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

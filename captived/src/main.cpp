@@ -12,14 +12,14 @@
 #include "rest/mode.hpp"
 #include "rest/wifi_config.hpp"
 
-namespace captiverc{
+namespace captived{
 const char* CONTENT_TYPE_JSON = "application/json";
 }
 
 int main(int argc, char *argv[]) {
     std::cout << "About to run the web server." << std::endl;
 
-    using namespace captiverc;
+    using namespace captived;
     std::string root_path;      // start with a blank root path
 
     for (int i = 1; i < argc; i++){
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    captiverc::system sys(root_path);
+    captived::system sys(root_path);
 
     rest::line_resource serial_number(URI_SERIAL_NUMBER, sys,
                                       FILE_SERIAL_NUMBER, false);

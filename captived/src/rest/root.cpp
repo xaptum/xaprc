@@ -7,7 +7,7 @@
 #include "rest/resource.hpp"
 #include "rest/root.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,4 +71,4 @@ std::string root::get_file_contents(std::string filename) {
 }
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

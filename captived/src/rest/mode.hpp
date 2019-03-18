@@ -6,7 +6,7 @@
 #include "rest/resource.hpp"
 #include "rest/line_resource.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 /**
@@ -23,4 +23,4 @@ namespace rest {
 };
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

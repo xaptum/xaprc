@@ -5,7 +5,7 @@
 #include "system.hpp"
 #include "rest/resource.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 class reboot : public resource {
@@ -29,4 +29,4 @@ class reboot : public resource {
 };
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace captiverc {
+namespace captived {
 namespace http {
 
   /**
@@ -19,4 +19,4 @@ namespace http {
   };
 
 } // namespace http
-} // namespace captiverc
+} // namespace captived

@@ -5,7 +5,7 @@
 #include "system.hpp"
 #include "rest/resource.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 class line_resource : public resource {
@@ -42,4 +42,4 @@ protected:
 };
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

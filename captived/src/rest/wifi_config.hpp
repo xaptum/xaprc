@@ -6,7 +6,7 @@
 #include "system.hpp"
 #include "rest/resource.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
   class wifi_config : public resource {
@@ -48,4 +48,4 @@ namespace rest {
 };
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

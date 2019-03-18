@@ -5,7 +5,7 @@
 #include "http/server.hpp"
 #include "json.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace http {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,4 +152,4 @@ void server::loop_dispatch() {
 }
 
 } // namespace http
-} // namespace captiverc
+} // namespace captived

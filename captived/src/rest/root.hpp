@@ -6,7 +6,7 @@
 
 #include "rest/resource.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 class root : public resource {
@@ -25,4 +25,4 @@ class root : public resource {
 };
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

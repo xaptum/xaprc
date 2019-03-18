@@ -2,7 +2,7 @@
 
 #include "defines.hpp"
 
-namespace captiverc {
+namespace captived {
 
 namespace {
     bool is_valid_mode(std::string mode) {
@@ -43,4 +43,4 @@ namespace rest {
     }
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

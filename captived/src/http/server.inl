@@ -8,7 +8,7 @@
 #include "defines.hpp"
 #include "json.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace http {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,4 +80,4 @@ server::register_resource(Resource& rest_resource)
 }
 
 } // namespace http
-} // namespace captiverc
+} // namespace captived

@@ -6,7 +6,7 @@
 
 #include <jansson.h>
 
-namespace captiverc {
+namespace captived {
 namespace json {
 
   using json_type = std::shared_ptr<json_t>;

@@ -10,7 +10,7 @@
 
 #include "rest/resource.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace http {
 
 class server {
@@ -65,6 +65,6 @@ server::respond_bad_request (struct evhttp_request *req, std::string err)
 
 
 } // namespace http
-} // namespace captiverc
+} // namespace captived
 
 #include "server.inl"

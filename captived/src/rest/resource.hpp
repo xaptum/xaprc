@@ -7,7 +7,7 @@
 #include "json.hpp"
 #include "http/status.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 class resource{
@@ -68,4 +68,4 @@ class resource{
 };
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

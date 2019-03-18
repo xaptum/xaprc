@@ -1,7 +1,7 @@
 #include "rest/resource.hpp"
 #include "rest/reboot.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
 reboot::reboot(std::string path, system system, std::string reboot_exe) :
@@ -30,4 +30,4 @@ reboot::post(req_type body) {
 }
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

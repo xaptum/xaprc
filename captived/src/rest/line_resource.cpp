@@ -1,7 +1,7 @@
 #include "json.hpp"
 #include "rest/line_resource.hpp"
 
-namespace captiverc {
+namespace captived {
 namespace rest {
 
     line_resource::line_resource(std::string path, system system,
@@ -61,4 +61,4 @@ namespace rest {
     }
 
 } // namespace rest
-} // namespace captiverc
+} // namespace captived

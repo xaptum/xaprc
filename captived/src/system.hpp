@@ -8,7 +8,7 @@
 
 #include <experimental/optional>
 
-namespace captiverc {
+namespace captived {
 
 /**
  * An abstraction of the system for common operations like accessing
@@ -95,4 +95,4 @@ class system {
     std::string chroot_;
   };
 
-} // namespace captiverc
+} // namespace captived
