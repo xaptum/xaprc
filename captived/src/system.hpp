@@ -1,5 +1,4 @@
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#pragma once
 
 #include <cstdlib>
 #include <fstream>
@@ -97,5 +96,3 @@ class system {
   };
 
 } // namespace captiverc
-
-#endif

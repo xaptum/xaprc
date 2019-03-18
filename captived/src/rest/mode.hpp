@@ -1,5 +1,4 @@
-#ifndef MODE_H
-#define MODE_H
+#pragma once
 
 #include <string>
 
@@ -25,6 +24,3 @@ namespace rest {
 
 } // namespace rest
 } // namespace captiverc
-
-
-#endif

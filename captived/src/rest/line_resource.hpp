@@ -1,5 +1,4 @@
-#ifndef LINE_RESOURCE_H
-#define LINE_RESOURCE_H
+#pragma once
 
 #include <string>
 
@@ -44,6 +43,3 @@ protected:
 
 } // namespace rest
 } // namespace captiverc
-
-
-#endif

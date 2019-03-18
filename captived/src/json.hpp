@@ -1,5 +1,4 @@
-#ifndef JSON_H
-#define JSON_H
+#pragma once
 
 #include <memory>
 #include <string>
@@ -96,5 +95,3 @@ namespace json {
 
 }
 }
-
-#endif

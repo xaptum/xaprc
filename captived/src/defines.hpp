@@ -1,5 +1,4 @@
-#ifndef CAPTIVERC_DEFINES_H
-#define CAPTIVERC_DEFINES_H
+#pragma once
 
 #include <string>
 
@@ -40,4 +39,3 @@ extern const char* CONTENT_TYPE_JSON;
 
 
 }  // namespace captiverc
-#endif

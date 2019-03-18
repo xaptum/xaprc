@@ -1,5 +1,4 @@
-#ifndef REBOOT_H
-#define REBOOT_H
+#pragma once
 
 #include <string>
 
@@ -31,6 +30,3 @@ class reboot : public resource {
 
 } // namespace rest
 } // namespace captiverc
-
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef CAPTIVERC_HTTP_RESPONSE_CODES_HPP
-#define CAPTIVERC_HTTP_RESPONSE_CODES_HPP
+#pragma once
 
 namespace captiverc {
 namespace http {
@@ -21,5 +20,3 @@ namespace http {
 
 } // namespace http
 } // namespace captiverc
-
-#endif

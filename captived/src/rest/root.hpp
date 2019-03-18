@@ -1,5 +1,4 @@
-#ifndef ROOT_RESOURCE_H
-#define ROOT_RESOURCE_H
+#pragma once
 
 #include <string>
 #include <event2/buffer.h>
@@ -27,6 +26,3 @@ class root : public resource {
 
 } // namespace rest
 } // namespace captiverc
-
-
-#endif

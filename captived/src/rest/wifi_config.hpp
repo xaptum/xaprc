@@ -1,5 +1,4 @@
-#ifndef WIFI_CONFIG_H
-#define WIFI_CONFIG_H
+#pragma once
 
 #include <experimental/optional>
 #include <string>
@@ -50,6 +49,3 @@ namespace rest {
 
 } // namespace rest
 } // namespace captiverc
-
-
-#endif

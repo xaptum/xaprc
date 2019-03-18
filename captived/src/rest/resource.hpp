@@ -1,5 +1,4 @@
-#ifndef RESOURCE_H
-#define RESOURCE_H
+#pragma once
 
 #include <string>
 #include <tuple>
@@ -70,5 +69,3 @@ class resource{
 
 } // namespace rest
 } // namespace captiverc
-
-#endif

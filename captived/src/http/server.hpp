@@ -1,5 +1,4 @@
-#ifndef CAPTIVERC_HTTP_SERVER_HPP
-#define CAPTIVERC_HTTP_SERVER_HPP
+#pragma once
 
 #include <atomic>
 #include <memory>
@@ -69,5 +68,3 @@ server::respond_bad_request (struct evhttp_request *req, std::string err)
 } // namespace captiverc
 
 #include "server.inl"
-
-#endif    // CAPTIVERC_HTTP_SERVER_HPP
