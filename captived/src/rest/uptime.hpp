@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "system.hpp"
 #include "rest/resource.hpp"
+#include "system.hpp"
 
 namespace captived {
 namespace rest {
@@ -18,9 +18,7 @@ public:
   /**
    * Returns the system uptime in seconds.
    */
-  virtual
-  std::experimental::optional<double>
-  seconds();
+  virtual std::experimental::optional<double> seconds();
 
 protected:
   system system_;
