@@ -29,6 +29,7 @@ set(SERVER_SRCS
     src/rest/wifi_config.cpp
     src/rest/reboot.cpp
     src/rest/mode.cpp
+    src/rest/uptime.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})
