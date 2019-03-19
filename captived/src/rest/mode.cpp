@@ -18,10 +18,10 @@ mode::mode(std::string path, system& system, std::string target_path,
     : resource(path), system_(system), mode_symlink_(mode_symlink),
       target_path_(target_path) {}
 
-/*******************************************************************************
+/**
  * get
- * Handle the get operation on the /mode REST resource.
- ******************************************************************************/
+ * Handles the get operation on the /mode REST resource.
+ */
 mode::resp_type mode::get(resource::req_type) {
   auto temp_mode = router_mode();
   if (!temp_mode) {
@@ -32,10 +32,10 @@ mode::resp_type mode::get(resource::req_type) {
   return ok(json::string(*temp_mode));
 }
 
-/*******************************************************************************
+/**
  * put
- * Handle the 'put' operation on the /mode REST resource
- ******************************************************************************/
+ * Handles the 'put' operation on the /mode REST resource
+ */
 mode::resp_type mode::put(resource::req_type body) {
   // Parse and validate the request body
   json_t* root = body.get();
@@ -69,12 +69,12 @@ mode::resp_type mode::put(resource::req_type body) {
   return get(json::null());
 }
 
-/*******************************************************************************
+/**
  * Returns the configured mode of the router card.
  * Will be one of "passthrough", "secure-host", or "secure-lan".
  *
  * @returns The router card mode or None on an error.
- ******************************************************************************/
+ */
 std::experimental::optional<std::string> mode::router_mode() {
   auto fq_link = system_.symlink_target(mode_symlink_);
   if (!fq_link) {
@@ -87,15 +87,15 @@ std::experimental::optional<std::string> mode::router_mode() {
   return {mode};
 }
 
-/*******************************************************************************
- * Set the router card's configured mode.
+/**
+ * Sets the router card's configured mode.
  *
  * The change will be stored, but not take effect until a reboot.
  *
  * @param new_mode The mode to set. Valid input modes are: "passthrough",
  *     "secure-host", or "secure-lan".
  * @returns true on success, false otherwise.
- ******************************************************************************/
+ */
 bool mode::router_mode(std::string new_mode) {
   std::string target_name = target_path_ + "/" + new_mode + ".target";
   return system_.symlink_target(target_name, mode_symlink_);
