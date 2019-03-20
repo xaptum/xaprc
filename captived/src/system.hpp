@@ -71,10 +71,11 @@ public:
 
   /**
    * Replaces the contents of the specified file with the specified contents.
-   */
+   * Use a temporary file & rename to create an atomic write.
+   *    */
   bool write(std::string filename, std::string contents) {
-    std::ofstream out(chroot_ + filename,
-                      std::ofstream::out | std::ofstream::trunc);
+    std::string temp_file = chroot_ + filename + "_XXXXXX";
+    std::ofstream out(temp_file, std::ofstream::out | std::ofstream::trunc);
 
     out << contents;
     out.close();
@@ -82,7 +83,10 @@ public:
     if (out.fail())
       return false;
 
-    return true;
+    std::string new_file = chroot_ + filename;
+    int res = rename(temp_file.c_str(), new_file.c_str());
+
+    return (res == 0);
   }
 
   /**
