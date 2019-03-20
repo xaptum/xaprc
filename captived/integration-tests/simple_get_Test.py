@@ -20,7 +20,10 @@ HEADERS = {'Content-Type':'application/json'}
 # This is the list of resources to test
 # tuples are (file_path, REST_path)
 check_these = [ ('/rom/serial', '/serial_number'),
-                ('/rom/mac_address/1', '/mac_address'),
+                ('/rom/mac_address/1', '/mac_address/1'),
+                ('/rom/mac_address/2', '/mac_address/2'),
+                ('/rom/mac_address/3', '/mac_address/3'),
+                ('/rom/mac_address/4', '/mac_address/4'),
                 ('/data/enftun/enf1/address', '/control_address'),
                 ('/data/enftun/enf0/address', '/data_address'),
                 ('/etc/mender/artifact_info', '/firmware_version')
@@ -61,8 +64,6 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
             resp = requests.get(URL + pair[1])
             print ('GET response for: ', pair[1], '\n', resp.text)
             self.assertNotEqual('junk-data', resp.json())
-
-        
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
