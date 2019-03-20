@@ -35,8 +35,23 @@ int main(int argc, char* argv[]) {
   rest::line_resource serial_number(URI_SERIAL_NUMBER, sys, FILE_SERIAL_NUMBER,
                                     false);
 
-  rest::line_resource mac_addr(URI_WIFI_MAC_ADDRESS, sys, FILE_WIFI_MAC_ADDRESS,
-                               false);
+  rest::line_resource mac_addr_1(URI_WIFI_MAC_ADDRESS_1, sys,
+                                 FILE_WIFI_MAC_ADDRESS_1, false);
+
+  rest::line_resource mac_addr_2(URI_WIFI_MAC_ADDRESS_2, sys,
+                                 FILE_WIFI_MAC_ADDRESS_2, false);
+
+  rest::line_resource mac_addr_3(URI_WIFI_MAC_ADDRESS_3, sys,
+                                 FILE_WIFI_MAC_ADDRESS_3, false);
+
+  rest::line_resource mac_addr_4(URI_WIFI_MAC_ADDRESS_4, sys,
+                                 FILE_WIFI_MAC_ADDRESS_4, false);
+
+  rest::aggregate_resource mac_addrs(URI_WIFI_MAC_ADDRESS);
+  mac_addrs.add("1", mac_addr_1);
+  mac_addrs.add("2", mac_addr_2);
+  mac_addrs.add("3", mac_addr_3);
+  mac_addrs.add("4", mac_addr_4);
 
   rest::line_resource control_addr(URI_ENF_CONTROL_ADDRESS, sys,
                                    FILE_ENF_CONTROL_ADDRESS, false);
@@ -69,7 +84,7 @@ int main(int argc, char* argv[]) {
   rest::aggregate_resource root("/");
   root.add("serial_number", serial_number);
   root.add("firmware_version", firmware_version);
-  root.add("mac_address", mac_addr);
+  root.add("mac_address", mac_addrs);
   root.add("control_address", control_addr);
   root.add("data_address", data_addr);
   root.add("mode", router_mode);
@@ -79,7 +94,11 @@ int main(int argc, char* argv[]) {
   http::server embed_server(4000, root_path);
 
   embed_server.register_resource(serial_number);
-  embed_server.register_resource(mac_addr);
+  embed_server.register_resource(mac_addr_1);
+  embed_server.register_resource(mac_addr_2);
+  embed_server.register_resource(mac_addr_3);
+  embed_server.register_resource(mac_addr_4);
+  embed_server.register_resource(mac_addrs);
   embed_server.register_resource(control_addr);
   embed_server.register_resource(data_addr);
   embed_server.register_resource(firmware_version);

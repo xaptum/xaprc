@@ -38,7 +38,6 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
 
         # tuples are (path, json index)
         check_these = [ ('/rom/serial', 'serial_number'),
-                        ('/rom/mac_address/1', 'mac_address'),
                         ('/etc/mender/artifact_info', 'firmware_version'),
                         ('/data/enftun/enf1/address', 'control_address'),
                         ('/data/enftun/enf0/address', 'data_address')
@@ -47,7 +46,10 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
             self.assertMatchesFirstLineOfFile(DATA_PATH + pair[0], jresp[pair[1]])
         self.assertEqual('secure-host', jresp['mode'])
 
-        
+        address_obj = jresp['mac_address']
+        for i in range(1, 5):
+            mac_file = DATA_PATH + '/rom/mac_address/' + str(i)
+            self.assertMatchesFirstLineOfFile(mac_file, address_obj[str(i)])
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
