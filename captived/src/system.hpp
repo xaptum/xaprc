@@ -5,8 +5,10 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unistd.h>
 
 #include <experimental/optional>
+#include <sys/stat.h>
 
 namespace captived {
 
@@ -90,6 +92,52 @@ public:
    */
   bool writeline(std::string filename, std::string line) {
     return write(filename, line + '\n');
+  }
+
+  /**
+   * Return the target of a symbolic link.
+   *
+   * Note: Will only follow a single link and assumes argument IS a link
+   */
+  std::experimental::optional<std::string>
+  symlink_target(std::string link_path) {
+    char buf[ROUTER_CARD_PATH_MAX];
+    std::string full_link_path = chroot_ + link_path;
+
+    ssize_t nbytes =
+        readlink(full_link_path.c_str(), buf, ROUTER_CARD_PATH_MAX);
+    if ((nbytes < 0) || (nbytes >= ROUTER_CARD_PATH_MAX)) { // error case
+      return {};
+    }
+
+    std::string target{buf, static_cast<size_t>(nbytes)};
+    return {target};
+  }
+
+  /**
+   * Add or change the symlink to a target.
+   *
+   * If a file already exists and is a symlink, it is deleted before a
+   * new link is created. If the file is not a link, error out.
+   */
+  bool symlink_target(std::string target, std::string link) {
+    std::string fq_target = chroot_ + target;
+    std::string fq_link = chroot_ + link;
+
+    // check if file exists
+    struct stat buffer;
+    int stat_result = lstat(fq_link.c_str(), &buffer);
+    if (stat_result == 0) {
+      if (S_ISLNK(buffer.st_mode)) { // delete if a link
+        remove(fq_link.c_str());
+      } else { // error if other type of file
+        return false;
+      }
+    }
+
+    // create new symbolic link
+    int result = symlink(fq_target.c_str(), fq_link.c_str());
+    return (result == 0);
   }
 
 private:

@@ -31,14 +31,14 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         super(mode_Test, self).setUp()
 
     def tearDown(self):
-        # put back to secure_host
-        resp = requests.put(URL, headers=HEADERS, json='secure_host')
+        # put back to secure-host
+        resp = requests.put(URL, headers=HEADERS, json='secure-host')
         super(mode_Test, self).tearDown()
 
-    # This should get back the defult mode - which is secure_host
+    # This should get back the defult mode - which is secure-host
     def test_01_get_mode(self):
         resp = requests.get(URL)
-        self.assertEqual(resp.json(), "secure_host")
+        self.assertEqual(resp.json(), "secure-host")
 
     def test_02_put_invalid_mode(self):
         resp = requests.put(URL, headers=HEADERS, json='invalid-mode')
@@ -62,19 +62,22 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertEqual(resp.json(), orig_mode)
         
     def test_05_put_secure_lan(self):
-        resp = requests.put(URL, headers=HEADERS, json='secure_lan')
+        resp = requests.put(URL, headers=HEADERS, json='secure-lan')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json(), 'secure_lan')
+        self.assertEqual(resp.json(), 'secure-lan')
 
     def test_06_put_secure_host(self):
-        resp = requests.put(URL, headers=HEADERS, json='secure_host')
+        resp = requests.put(URL, headers=HEADERS, json='secure-host')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json(), 'secure_host')
+        self.assertEqual(resp.json(), 'secure-host')
 
     def test_get_mode(self):
-        router_mode = os.path.join(DATA_PATH, 'data', 'default_target')
+        link_path = os.path.join(DATA_PATH, 'data', 'systemd', 'system', 'default.target')
+        real_path = os.path.realpath(link_path)
+        filename = os.path.basename(real_path)
+        router_mode = os.path.splitext(filename)[0]
         resp = requests.get(URL)
-        self.assertMatchesFirstLineOfFile(router_mode, resp.json())
+        self.assertEqual(router_mode, resp.json())
         
 
 if __name__ == '__main__':
