@@ -22,6 +22,9 @@ const std::string FILE_REBOOT_EXE = "/sbin/reboot";
 const std::string LINK_MODE = "/data/systemd/system/default.target";
 const std::string PATH_MODE_TARGET = "/lib/systemd/system";
 
+const std::string COMMAND_GET_ACTIVE_TARGETS =
+    "/bin/systemctl list-units --type target";
+
 const std::string URI_SERIAL_NUMBER = "/serial_number";
 const std::string URI_WIFI_MAC_ADDRESS = "/mac_address";
 const std::string URI_WIFI_MAC_ADDRESS_1 = "/mac_address/1";

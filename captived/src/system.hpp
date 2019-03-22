@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -36,6 +37,35 @@ public:
   int execute(std::string command) {
     auto full_command = chroot_ + command;
     return ::system(full_command.c_str());
+  }
+
+  /**
+   * Runs a command and puts the output of that command in result.
+   * result contains only the stdout, not the stderr.
+   *
+   * @returns 0 for success, errno for an error.
+   */
+  int execute(std::string command, std::string& result) {
+    std::string fq_command = chroot_ + command;
+    const int buffer_size = 128;
+    std::array<char, buffer_size> buffer;
+    result.clear();
+
+    FILE* pipe = popen(fq_command.c_str(), "r");
+    if (NULL == pipe) {
+      return errno;
+    }
+
+    while (fgets(buffer.data(), buffer_size, pipe) != nullptr) {
+      result += buffer.data();
+    }
+
+    int returnCode = pclose(pipe);
+    if (-1 == returnCode) {
+      return errno;
+    }
+
+    return returnCode;
   }
 
   /**
