@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eo pipefail
+
+# Load the config file
+. $1
+
+# Configure the MAC address
+/sbin/ip link set dev $MACSET_IFACE address $MACSET_ADDR
+/sbin/ip link set dev $MACSET_IFACE up
