@@ -133,7 +133,6 @@ std::experimental::optional<std::string> mode::router_mode() {
   auto cur_mode = match.str(1);
 
   return {cur_mode};
-
 }
 
 /**
