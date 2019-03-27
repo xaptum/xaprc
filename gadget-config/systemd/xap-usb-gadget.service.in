@@ -1,0 +1,13 @@
+[Unit]
+Description=Set up USB gadget on wlan0
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'export MAC=`/bin/cat /sys/class/net/wlan0/address`; /sbin/modprobe g_ether host_addr=$MAC'
+ExecStart=/sbin/ip link set dev usb0 up
+ExecStop=/sbin/ip link set dev usb0 down
+ExecStop=/sbin/modprobe -r g_ether
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

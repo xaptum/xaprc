@@ -1,0 +1,63 @@
+attrs : {
+  idVendor  = 0x2fe0;
+  idProduct = {{ id_product }};
+
+  bcdUSB    = 0x0200;
+  bcdDevice = {{ bcd_device }};
+
+  bDeviceClass    = 0x00;
+  bDeviceSubClass = 0x00;
+  bDeviceProtocol = 0x00;
+};
+
+strings = (
+  {
+    lang = 0x409;
+    manufacturer = "Xaptum, Inc.";
+    product      = "{{ usb_product }}";
+    serialnumber = "$(cat /rom/serial_number)";
+  }
+);
+
+functions : {
+  ecm_usb0 : {
+    instance = "usb0";
+    type = "ecm";
+
+    attrs = {
+      host_addr = "$(cat /rom/mac_address/2)";
+      dev_addr  = "$(cat /rom/mac_address/3)";
+    };
+  };
+
+  {% if with_serial %}
+  acm_GS0 : {
+    instance = "GS0";
+    type = "acm";
+  };
+  {% endif %}
+};
+
+configs = (
+  {
+    id   = 1;
+    name = "c";
+
+    attrs = {
+      bmAttributes = 0xC0;
+    }
+
+    functions = (
+      {
+        name     = "ecm.usb0";
+        function = "ecm_usb0";
+      },
+      {% if with_serial %}
+      {
+        name     = "acm.GS0";
+        function = "acm_GS0";
+      }
+      {% endif %}
+    );
+  }
+);
