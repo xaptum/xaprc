@@ -29,10 +29,19 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(mode_Test, self).setUp()
+        self.last_reboot_file = os.path.join(DATA_PATH, 'sbin', 'last_reboot.txt')
+        if os.path.isfile(self.last_reboot_file):
+            os.remove(self.last_reboot_file)
+
 
     def tearDown(self):
         # put back to secure-host
         resp = requests.put(URL, headers=HEADERS, json='secure-host')
+
+        # delete the last_reboot file
+        if os.path.isfile(self.last_reboot_file):
+            os.remove(self.last_reboot_file)
+
         super(mode_Test, self).tearDown()
 
     # This should get back the defult mode - which is secure-host
@@ -48,6 +57,7 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         resp = requests.put(URL, headers=HEADERS, json='passthrough')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), 'passthrough')
+        self.assertFalse(os.path.isfile(self.last_reboot_file))
 
     def test_04_put_invalid2(self):
         # get mode before test starts
@@ -65,11 +75,13 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         resp = requests.put(URL, headers=HEADERS, json='secure-lan')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), 'secure-lan')
+        self.assertFalse(os.path.isfile(self.last_reboot_file))
 
     def test_06_put_secure_host(self):
         resp = requests.put(URL, headers=HEADERS, json='secure-host')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), 'secure-host')
+        self.assertFalse(os.path.isfile(self.last_reboot_file))
 
     def test_get_mode(self):
         link_path = os.path.join(DATA_PATH, 'data', 'systemd', 'system', 'default.target')
