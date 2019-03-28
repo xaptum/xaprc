@@ -54,4 +54,4 @@ extern const char* CONTENT_TYPE_JSON;
 // define this so we don't use OS-specific values
 const int ROUTER_CARD_PATH_MAX = 1024;
 
-} // namespace captived
+}    // namespace captived

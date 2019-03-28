@@ -9,20 +9,20 @@ namespace captived {
 namespace rest {
 
 class uptime : public resource {
-public:
-  uptime(std::string path, system& system);
-  ~uptime() override = default;
+  public:
+    uptime(std::string path, system& system);
+    ~uptime() override = default;
 
-  resp_type get(req_type) override;
+    resp_type get(req_type) override;
 
-  /**
-   * Returns the system uptime in seconds.
-   */
-  virtual std::experimental::optional<double> seconds();
+    /**
+     * Returns the system uptime in seconds.
+     */
+    virtual std::experimental::optional<double> seconds();
 
-protected:
-  system& system_;
+  protected:
+    system& system_;
 };
 
-} // namespace rest
-} // namespace captived
+}    // namespace rest
+}    // namespace captived

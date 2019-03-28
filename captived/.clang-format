@@ -2,3 +2,14 @@
 Language: Cpp
 BasedOnStyle: LLVM
 PointerAlignment: Left
+AllowAllParametersOfDeclarationOnNextLine: false
+AlwaysBreakAfterReturnType: TopLevelDefinitions
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+IndentWidth:     4
+KeepEmptyLinesAtTheStartOfBlocks: false
+SpacesBeforeTrailingComments: 4
+TabWidth:        4
