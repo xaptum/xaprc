@@ -3,6 +3,10 @@
 set -eo pipefail
 
 check() {
+    echo "
+-------------------------------
+Checking source code formatting
+-------------------------------"
     local rc=0
     local sources=$(find ./src -name \*.cpp -type f -or -name \*.hpp -type f)
     for file in $sources; do
