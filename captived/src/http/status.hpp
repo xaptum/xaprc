@@ -8,14 +8,14 @@ namespace http {
  * server.
  */
 enum class status : unsigned {
-  ok = 200,
+    ok = 200,
 
-  bad_request = 400,
-  not_found = 404,
-  method_not_allowed = 405,
+    bad_request = 400,
+    not_found = 404,
+    method_not_allowed = 405,
 
-  internal_server_error = 500
+    internal_server_error = 500
 };
 
-} // namespace http
-} // namespace captived
+}    // namespace http
+}    // namespace captived
