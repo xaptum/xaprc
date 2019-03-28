@@ -62,8 +62,6 @@ int main(int argc, char* argv[]) {
   rest::line_resource firmware_version(URI_FIRMWARE_VERSION, sys,
                                        FILE_FIRMWARE_VERSION, false);
 
-  rest::mode router_mode(URI_ROUTER_MODE, sys, PATH_MODE_TARGET, LINK_MODE);
-
   rest::wifi_config wifi_config_passthrough(URI_WIFI_CONFIG_PASSTHROUGH, sys,
                                             FILE_WIFI_CONFIG_PASSTHROUGH);
 
@@ -80,6 +78,9 @@ int main(int argc, char* argv[]) {
   rest::uptime uptime(URI_UPTIME, sys);
 
   rest::reboot reboot(URI_REBOOT, sys, FILE_REBOOT_EXE);
+
+  rest::mode router_mode(URI_ROUTER_MODE, sys, PATH_MODE_TARGET, LINK_MODE,
+                         reboot);
 
   rest::aggregate_resource root("/");
   root.add("serial_number", serial_number);
