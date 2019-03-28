@@ -8,9 +8,9 @@ project(captived
   VERSION "0.1.1"
   )
 
-
 option(BUILD_SHARED_LIBS "Build with shared libraries" ON)
 option(BUILD_SYSTEMD "Build with systemd support" ON)
+option(CHECK_FORMAT "Check source format during build" ON)
 
 enable_testing()
 
@@ -20,6 +20,11 @@ find_package(jansson REQUIRED QUIET)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
+
+add_custom_target(check-format
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/format.sh check || (exit 0)
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
 
 set(SERVER_SRCS
     src/main.cpp
@@ -61,3 +66,7 @@ if (BUILD_SYSTEMD)
 endif()
 
 add_subdirectory(integration-tests)
+
+if (CHECK_FORMAT)
+  add_dependencies(captived check-format)
+endif()

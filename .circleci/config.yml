@@ -46,7 +46,8 @@ jobs:
                 set -eo pipefail
                 mkdir -p /project/captived/build
                 cd /project/captived/build
-                cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+                cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo                     \
+                         -DCHECK_FORMAT=OFF
                 cmake --build . -- -j $(nproc)
               "
       - run:

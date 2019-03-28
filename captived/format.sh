@@ -3,8 +3,8 @@
 set -eo pipefail
 
 check() {
-    echo "
--------------------------------
+    echo \
+"-------------------------------
 Checking source code formatting
 -------------------------------"
     local rc=0
