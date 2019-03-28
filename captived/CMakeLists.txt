@@ -2,17 +2,16 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
-include(GNUInstallDirs)
-
 project(captived
   VERSION "0.1.1"
   )
 
+include(GNUInstallDirs)
+include(CTest)
+
 option(BUILD_SHARED_LIBS "Build with shared libraries" ON)
 option(BUILD_SYSTEMD "Build with systemd support" ON)
 option(CHECK_FORMAT "Check source format during build" ON)
-
-enable_testing()
 
 find_package(libevent REQUIRED QUIET)
 find_package(jansson REQUIRED QUIET)
@@ -62,10 +61,12 @@ install(
     )
 
 if (BUILD_SYSTEMD)
-	add_subdirectory(systemd)
+  add_subdirectory(systemd)
 endif()
 
-add_subdirectory(integration-tests)
+if (BUILD_TESTING)
+  add_subdirectory(integration-tests)
+endif()
 
 if (CHECK_FORMAT)
   add_dependencies(captived check-format)
