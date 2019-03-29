@@ -30,11 +30,12 @@ set(SERVER_SRCS
     src/main.cpp
     src/http/server.cpp
     src/rest/aggregate_resource.cpp
+    src/rest/firmware.cpp
     src/rest/line_resource.cpp
-    src/rest/wifi_config.cpp
-    src/rest/reboot.cpp
     src/rest/mode.cpp
+    src/rest/reboot.cpp
     src/rest/uptime.cpp
+    src/rest/wifi_config.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})

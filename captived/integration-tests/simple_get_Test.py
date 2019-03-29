@@ -25,8 +25,7 @@ check_these = [ ('/rom/serial', '/serial_number'),
                 ('/rom/mac_address/3', '/mac_address/3'),
                 ('/rom/mac_address/4', '/mac_address/4'),
                 ('/data/enftun/enf1/address', '/control_address'),
-                ('/data/enftun/enf0/address', '/data_address'),
-                ('/etc/mender/artifact_info', '/firmware_version')
+                ('/data/enftun/enf0/address', '/data_address')
               ]
 
 
@@ -64,6 +63,23 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
             resp = requests.get(URL + pair[1])
             print ('GET response for: ', pair[1], '\n', resp.text)
             self.assertNotEqual('junk-data', resp.json())
+
+    def test_version_get(self):
+        firmware_url = URL + '/firmware_version'
+        resp = requests.get(firmware_url)
+        with open (DATA_PATH + '/etc/mender/artifact_info') as f:
+            firmware_file = f.readline().strip('\n').split('=')[1]
+            self.assertEqual(firmware_file, resp.json())
+
+    def test_version_put(self):
+        firmware_url = URL + '/firmware_version'
+        resp = requests.put(firmware_url, headers=HEADERS, json='junk-data')
+        print ('PUT response for: ', firmware_url, '\n', resp.text)
+        self.assertEqual(resp.status_code, 405)
+        resp = requests.get(firmware_url)
+        print ('GET response for: ', firmware_url, '\n', resp.text)
+        self.assertNotEqual('junk-data', resp.json())
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

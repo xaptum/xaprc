@@ -38,7 +38,6 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
 
         # tuples are (path, json index)
         check_these = [ ('/rom/serial', 'serial_number'),
-                        ('/etc/mender/artifact_info', 'firmware_version'),
                         ('/data/enftun/enf1/address', 'control_address'),
                         ('/data/enftun/enf0/address', 'data_address')
                       ]
@@ -50,6 +49,12 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
         for i in range(1, 5):
             mac_file = DATA_PATH + '/rom/mac_address/' + str(i)
             self.assertMatchesFirstLineOfFile(mac_file, address_obj[str(i)])
+
+        firmware_resp = jresp['firmware_version']
+        with open(DATA_PATH + '/etc/mender/artifact_info') as f:
+            firmware_file = f.readline().strip('\n')
+            firmware_file = firmware_file.split('=')[1]
+            self.assertEqual(firmware_file, firmware_resp)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
