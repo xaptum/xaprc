@@ -7,6 +7,7 @@
 
 #include "http/server.hpp"
 #include "rest/aggregate_resource.hpp"
+#include "rest/firmware.hpp"
 #include "rest/line_resource.hpp"
 #include "rest/mode.hpp"
 #include "rest/reboot.hpp"
@@ -60,8 +61,8 @@ main(int argc, char* argv[]) {
     rest::line_resource data_addr(
         URI_ENF_DATA_ADDRESS, sys, FILE_ENF_DATA_ADDRESS, false);
 
-    rest::line_resource firmware_version(
-        URI_FIRMWARE_VERSION, sys, FILE_FIRMWARE_VERSION, false);
+    rest::firmware firmware_version(
+        URI_FIRMWARE_VERSION, sys, FILE_FIRMWARE_VERSION);
 
     rest::wifi_config wifi_config_passthrough(
         URI_WIFI_CONFIG_PASSTHROUGH, sys, FILE_WIFI_CONFIG_PASSTHROUGH);
