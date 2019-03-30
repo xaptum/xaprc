@@ -1,1 +1,1 @@
-../../../lib/systemd/system/passthrough.target
+../../../etc/systemd/system/passthrough.target
