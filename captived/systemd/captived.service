@@ -1,12 +1,11 @@
 [Unit]
 Description=Xaptum captived server daemon
 Documentation=https://github.com/xaptum/xaprc
-After=enftun@enf1
+After=enftun@enf1.service
 StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-ExecStartPre=/bin/sleep 15
 ExecStart=captived
 Restart=always
 RestartSec=1
