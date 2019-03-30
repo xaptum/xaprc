@@ -20,7 +20,7 @@ const std::string FILE_WIFI_CONFIG_SECURE_HOST =
     "/data/connman/secure-host/wifi.config";
 const std::string FILE_REBOOT_EXE = "/sbin/reboot";
 const std::string LINK_MODE = "/data/systemd/system/default.target";
-const std::string PATH_MODE_TARGET = "/lib/systemd/system";
+const std::string PATH_MODE_TARGET = "/etc/systemd/system";
 
 const std::string COMMAND_GET_ACTIVE_TARGETS =
     "/bin/systemctl list-units --type target";
