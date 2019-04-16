@@ -4,7 +4,9 @@ After=xap-usb-gadget.service
 
 [Service]
 Type=simple
+ExecStartPre=/sbin/ip link set dev usb0 up
 ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/xbridge
+ExecStopPost=/sbin/ip link set dev usb0 down
 ProtectSystem=true
 ProtectHome=true
 Restart=always

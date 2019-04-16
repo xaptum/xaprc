@@ -5,7 +5,9 @@ After=enftun@enf0.service xap-usb-gadget.service
 
 [Service]
 Type=simple
+ExecStartPre=/sbin/ip link set dev usb0 up
 ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/xbridge -2 -n enf0
+ExecStopPost=/sbin/ip link set dev usb0 down
 ProtectSystem=true
 ProtectHome=true
 Restart=always
