@@ -3,9 +3,9 @@ Description=Set up USB gadget on wlan0
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c 'export MAC=`/bin/cat /sys/class/net/wlan0/address`; /sbin/modprobe g_ether host_addr=$MAC'
+ExecStart=xap-usb-gadget create
 ExecStartPost=/bin/sh -c 'sleep 1'
-ExecStop=/sbin/modprobe -r g_ether
+ExecStop=xap-usb-gadget destroy
 RemainAfterExit=true
 
 [Install]
