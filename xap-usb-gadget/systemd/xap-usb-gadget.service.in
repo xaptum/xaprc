@@ -1,5 +1,7 @@
 [Unit]
 Description=Set up USB gadget on wlan0
+Before=network-pre.target
+Wants=network-pre.target
 
 [Service]
 Type=oneshot
