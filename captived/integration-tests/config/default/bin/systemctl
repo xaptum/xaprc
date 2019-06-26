@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ "$1" == "restart" ]
+then
+    echo Restarting $2
+    exit 0
+fi
+
+
 if [ "$1" != "list-units" ] 
 then
     echo $1 - unrecognized argument

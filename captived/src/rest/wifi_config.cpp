@@ -82,6 +82,8 @@ wifi_config::put(resource::req_type body) {
         return internal_server_error(json::string(msg));
     }
 
+    int ret_code = system_.execute(COMMAND_RESTART_CONNMAN);
+    
     return get(json::null());
 }
 
