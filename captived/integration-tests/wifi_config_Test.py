@@ -36,8 +36,14 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(wifi_config_Test, self).setUp()
+        self.last_restart_file = os.path.join(DATA_PATH, 'bin', 'connman.service_restart.txt')
+        if os.path.isfile(self.last_restart_file):
+            os.remove(self.last_restart_file)
 
     def tearDown(self):
+        # delete the last_reboot file
+        if os.path.isfile(self.last_restart_file):
+            os.remove(self.last_restart_file)
         super(wifi_config_Test, self).tearDown()
 
     def test_get_wifi_config_passthrough(self):
@@ -55,32 +61,34 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
                                      resp.json()['sha256'])
 
     def test_put_wifi_config_passthrough(self):
-        # get and store value to put back
-        resp = requests.get(URL_PASSTHROUGH)
-        orig_json_config = resp.json()
-        new_json = {'contents':new_config}
-        resp = requests.put(URL_PASSTHROUGH, headers=HEADERS, json=new_json)
-        self.assertEqual(new_config, resp.json()['contents'].strip('\n'))
-
-        # put the original values back
-        resp = requests.put(URL_PASSTHROUGH, headers=HEADERS, json=orig_json_config)
-        self.assertNotEqual(new_config, resp.json()['contents'])
-        self.assertMatchesFileContents(DATA_PATH + FILE_WIFI_CONFIG_PASSTHROUGH,
-                        resp.json()['contents'])
+        self.run_put_test (URL_PASSTHROUGH, FILE_WIFI_CONFIG_PASSTHROUGH)
 
     def test_put_wifi_config_secure_host(self):
+        self.run_put_test (URL_SECURE_HOST, FILE_WIFI_CONFIG_SECURE_HOST)
+
+
+    def run_put_test(self, url, wifi_config_file):
         # get and store value to put back
-        resp = requests.get(URL_SECURE_HOST)
+        resp = requests.get(url)
         orig_json_config = resp.json()
         new_json = {'contents':new_config}
-        resp = requests.put(URL_SECURE_HOST, headers=HEADERS, json=new_json)
+        resp = requests.put(url, headers=HEADERS, json=new_json)
         self.assertEqual(new_config, resp.json()['contents'].strip('\n'))
+        self.assertTrue(os.path.isfile(self.last_restart_file))
+
+        # check that the file was just created
+        modified_time = os.path.getmtime(self.last_restart_file)
+        cur_time = time.time()
+        self.assertLess(cur_time - modified_time, 3.0)
 
         # put the original values back
-        resp = requests.put(URL_SECURE_HOST, headers=HEADERS, json=orig_json_config)
+        resp = requests.put(url, headers=HEADERS, json=orig_json_config)
         self.assertNotEqual(new_config, resp.json()['contents'])
-        self.assertMatchesFileContents(DATA_PATH + FILE_WIFI_CONFIG_SECURE_HOST,
+        self.assertMatchesFileContents(DATA_PATH + wifi_config_file,
                         resp.json()['contents'])
+
+        # check that the restart-file was modified again
+        self.assertLess(modified_time, os.path.getmtime(self.last_restart_file))
 
 
 if __name__ == '__main__':
