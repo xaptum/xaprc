@@ -1,5 +1,24 @@
 #!/bin/bash
 
+
+echo
+echo Running fake SYSTEMCTL script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+echo DIR variable = 
+echo $DIR
+
+if [ "$1" == "restart" ]
+then
+    echo Restarting service: $2
+    echo Attempting to write to 
+    echo $DIR/$2_restart.txt
+    date > $DIR/$2_restart.txt
+    echo SYSTEMCTL done
+    echo
+    exit 0
+fi
+
+
 if [ "$1" != "list-units" ] 
 then
     echo $1 - unrecognized argument

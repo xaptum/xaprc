@@ -24,6 +24,8 @@ const std::string PATH_MODE_TARGET = "/etc/systemd/system";
 
 const std::string COMMAND_GET_ACTIVE_TARGETS =
     "/bin/systemctl list-units --type target";
+const std::string COMMAND_RESTART_CONNMAN =
+    "/bin/systemctl restart connman.service";
 
 const std::string URI_SERIAL_NUMBER = "/serial_number";
 const std::string URI_WIFI_MAC_ADDRESS = "/mac_address";
