@@ -32,7 +32,7 @@
 #error Variable XAP_PRODUCT_STR not specified
 #endif
 
-#define XAP_VENDOR_ID	0x2fe
+#define XAP_VENDOR_ID	0x2fe0
 #define XAP_REV_ID	0x414
 #define XAP_MANUFACTURER_STR "Xaptum, Inc."
 #define XAP_USBG_STR "g1"
