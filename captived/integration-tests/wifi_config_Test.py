@@ -14,13 +14,14 @@ import xaptum.test as test
 TESTDIR = os.getcwd()
 CWD = os.path.abspath(os.path.join(os.pardir, os.pardir))
 URL_PASSTHROUGH = 'http://[::1]:4000/wifi/config/passthrough'
-URL_SECURE_HOST = 'http://[::1]:4000/wifi/config/secure_host'
+URL_SECURE = 'http://[::1]:4000/wifi/config/secure'
 # use this directory as the root path for this test
 DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
 
 HEADERS = {'Content-Type':'application/json'}
 FILE_WIFI_CONFIG_PASSTHROUGH = '/data/connman/passthrough/wifi.config'
 FILE_WIFI_CONFIG_SECURE_HOST = '/data/connman/secure-host/wifi.config'
+FILE_WIFI_CONFIG_SECURE_LAN = '/data/connman/secure-lan/wifi.config'
 
 new_config = 'ctrl_interface=/var/run/wpa_supplicant\nap_scan=1\n\nnetwork={\nssid="customer_private"\npsk="none"\n}'
 
@@ -53,18 +54,23 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertMatchesFileSHA256(DATA_PATH + FILE_WIFI_CONFIG_PASSTHROUGH,
                                      resp.json()['sha256'])
 
-    def test_get_wifi_config_secure_host(self):
-        resp = requests.get(URL_SECURE_HOST)
+    def test_get_wifi_config_secure(self):
+        resp = requests.get(URL_SECURE)
         self.assertMatchesFileContents(DATA_PATH + FILE_WIFI_CONFIG_SECURE_HOST,
                                        resp.json()['contents'])
         self.assertMatchesFileSHA256(DATA_PATH + FILE_WIFI_CONFIG_SECURE_HOST,
                                      resp.json()['sha256'])
+        self.assertMatchesFileContents(DATA_PATH + FILE_WIFI_CONFIG_SECURE_LAN,
+                                       resp.json()['contents'])
+        self.assertMatchesFileSHA256(DATA_PATH + FILE_WIFI_CONFIG_SECURE_LAN,
+                                     resp.json()['sha256'])
 
     def test_put_wifi_config_passthrough(self):
-        self.run_put_test (URL_PASSTHROUGH, FILE_WIFI_CONFIG_PASSTHROUGH)
+        self.run_put_test(URL_PASSTHROUGH, FILE_WIFI_CONFIG_PASSTHROUGH)
 
-    def test_put_wifi_config_secure_host(self):
-        self.run_put_test (URL_SECURE_HOST, FILE_WIFI_CONFIG_SECURE_HOST)
+    def test_put_wifi_config_secure(self):
+        self.run_put_test(URL_SECURE, FILE_WIFI_CONFIG_SECURE_HOST)
+        self.run_put_test(URL_SECURE, FILE_WIFI_CONFIG_SECURE_LAN)
 
 
     def run_put_test(self, url, wifi_config_file):
