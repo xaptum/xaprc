@@ -65,10 +65,10 @@ main(int argc, char* argv[]) {
         URI_FIRMWARE_VERSION, sys, FILE_FIRMWARE_VERSION);
 
     rest::wifi_config wifi_config_passthrough(
-        URI_WIFI_CONFIG_PASSTHROUGH, sys, FILE_WIFI_CONFIG_PASSTHROUGH);
+        URI_WIFI_CONFIG_PASSTHROUGH, sys, {FILE_WIFI_CONFIG_PASSTHROUGH});
 
     rest::wifi_config wifi_config_secure_host(
-        URI_WIFI_CONFIG_SECURE_HOST, sys, FILE_WIFI_CONFIG_SECURE_HOST);
+        URI_WIFI_CONFIG_SECURE_HOST, sys, {FILE_WIFI_CONFIG_SECURE_HOST});
 
     rest::aggregate_resource wifi_configs(URI_WIFI_CONFIG);
     wifi_configs.add("passthrough", wifi_config_passthrough);
