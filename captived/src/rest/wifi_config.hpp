@@ -2,7 +2,6 @@
 
 #include <experimental/optional>
 #include <string>
-#include <vector>
 
 #include "rest/resource.hpp"
 #include "system.hpp"
@@ -12,18 +11,7 @@ namespace rest {
 
 class wifi_config : public resource {
   public:
-    /**
-     * secure-host and secure-lan share the same config. The connman
-     * interactions are simplest if each mode has its own config file,
-     * but the API is simplest if just one config is exposed.
-     *
-     * This resource optimizes for both by storing the same config in
-     * multiple files.  The first one in the vector is used for
-     * GETs. All are updated on PUT/POSTs.
-     */
-    wifi_config(std::string path,
-                system& system,
-                std::vector<std::string> config_files);
+    wifi_config(std::string path, system& system, std::string config_file);
     ~wifi_config() override = default;
 
     resp_type get(req_type) override;
@@ -52,7 +40,7 @@ class wifi_config : public resource {
 
   protected:
     system& system_;
-    std::vector<std::string> config_files_;
+    std::string config_file_;
 };
 
 }    // namespace rest

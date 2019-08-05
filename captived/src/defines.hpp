@@ -18,8 +18,6 @@ const std::string FILE_WIFI_CONFIG_PASSTHROUGH =
     "/data/connman/passthrough/wifi.config";
 const std::string FILE_WIFI_CONFIG_SECURE_HOST =
     "/data/connman/secure-host/wifi.config";
-const std::string FILE_WIFI_CONFIG_SECURE_LAN =
-    "/data/connman/secure-lan/wifi.config";
 const std::string FILE_REBOOT_EXE = "/sbin/reboot";
 const std::string LINK_MODE = "/data/systemd/system/default.target";
 const std::string PATH_MODE_TARGET = "/etc/systemd/system";
@@ -44,7 +42,7 @@ const std::string URI_UPTIME = "/uptime";
 const std::string URI_WIFI = "/wifi";
 const std::string URI_WIFI_CONFIG = "/wifi/config";
 const std::string URI_WIFI_CONFIG_PASSTHROUGH = "/wifi/config/passthrough";
-const std::string URI_WIFI_CONFIG_SECURE = "/wifi/config/secure";
+const std::string URI_WIFI_CONFIG_SECURE_HOST = "/wifi/config/secure_host";
 const std::string URI_WIFI_STATUS = "/wifi/status";
 const std::string URI_REBOOT = "/reboot";
 
