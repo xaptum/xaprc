@@ -173,6 +173,57 @@ class system {
         return (result == 0);
     }
 
+    /**
+     * Add, verify, or change the secure-lan symbolic link.
+     *
+     * If a link already exists, verify that it has a wifi config file.
+     * If a file or directory exists at that location, erase the file and
+     * insert the symbolic link.
+     *
+     */
+    bool create_symlink_to_config_dir(std::string target, std::string link) {
+        std::string fq_target = chroot_ + target;
+        std::string fq_link = chroot_ + link;
+
+        // check if directory or link exists
+        struct stat buffer_dir;
+        int stat_result_dir = lstat(fq_link.c_str(), &buffer_dir);
+
+        // handle the situation where a file exists
+        if (stat_result_dir == 0) {
+            if (S_ISLNK(buffer_dir.st_mode)) {
+                // file exists and is a link - check that it points to the
+                // correct location.
+                char buf[512];
+                ssize_t path_len = readlink(fq_link.c_str(), buf, 512);
+                if (path_len > 0) {
+                    std::string old_target(buf, path_len);
+                    if (old_target == fq_target) {
+                        return true;
+                    }
+                }
+
+                if (remove(fq_link.c_str()) != 0) {
+                    return false;
+                }
+            } else if (S_ISDIR(buffer_dir.st_mode)) {
+                std::string rmrf_cmd = "rm -rf " + fq_link;
+                int res = ::system(rmrf_cmd.c_str());
+                if (res != 0) {
+                    return false;
+                }
+            } else if (S_ISREG(buffer_dir.st_mode)) {
+                if (remove(fq_link.c_str()) != 0) {
+                    return false;
+                }
+            }
+        }
+
+        // create new symbolic link
+        int result = symlink(fq_target.c_str(), fq_link.c_str());
+        return (result == 0);
+    }
+
   private:
     std::string chroot_;
 };
