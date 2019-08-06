@@ -76,7 +76,7 @@ main(int argc, char* argv[]) {
 
     rest::aggregate_resource wifi_configs(URI_WIFI_CONFIG);
     wifi_configs.add("passthrough", wifi_config_passthrough);
-    wifi_configs.add("secure-host", wifi_config_secure);
+    wifi_configs.add("secure", wifi_config_secure);
 
     rest::aggregate_resource wifi(URI_WIFI);
     wifi.add("config", wifi_configs);
