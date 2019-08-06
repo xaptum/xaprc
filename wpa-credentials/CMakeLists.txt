@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake-modules)
+include(InstallSymlink)
+
 project(wpa-credentials)
 
 set(WPA_INSTALL_PATH "/data/connman" CACHE PATH "The full path to store WPA credentials")
@@ -26,6 +29,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/secure-host-wifi.config
 	RENAME wifi.config
 )
 
+install_symlink(${WPA_INSTALL_PATH}/secure-host ${WPA_INSTALL_PATH}/secure-lan)
+
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/passthrough-recovery.config
         DESTINATION ${WPA_RECOVERY_INSTALL_PATH}/passthrough
 	RENAME recovery.config
@@ -35,3 +40,5 @@ install(FILES ${CMAKE_CURRENT_LIST_DIR}/secure-host-recovery.config
         DESTINATION ${WPA_RECOVERY_INSTALL_PATH}/secure-host
 	RENAME recovery.config
 )
+
+install_symlink(${WPA_RECOVERY_INSTALL_PATH}/secure-host ${WPA_RECOVERY_INSTALL_PATH}/secure-lan)
