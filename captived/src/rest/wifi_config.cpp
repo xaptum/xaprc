@@ -17,21 +17,17 @@ namespace rest {
 
 wifi_config::wifi_config(std::string path,
                          system& system,
-                         std::vector<std::string> config_files)
-    : resource(path), config_files_(config_files), system_(system) {}
+                         std::string config_file)
+    : resource(path), config_file_(config_file), system_(system) {}
 
 std::experimental::optional<std::string>
 wifi_config::contents() {
-    return system_.read(config_files_.front());
+    return system_.read(config_file_);
 }
 
 bool
 wifi_config::contents(std::string new_contents) {
-    bool res = true;
-    for (auto const& file : config_files_) {
-        res = res && system_.write(file, new_contents);
-    }
-    return res;
+    return system_.write(config_file_, new_contents);
 }
 
 std::experimental::optional<std::string>

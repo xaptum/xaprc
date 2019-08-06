@@ -68,9 +68,8 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
     def test_put_wifi_config_passthrough(self):
         self.run_put_test(URL_PASSTHROUGH, FILE_WIFI_CONFIG_PASSTHROUGH)
 
-    def test_put_wifi_config_secure(self):
+    def test_put_wifi_config_secure_host(self):
         self.run_put_test(URL_SECURE, FILE_WIFI_CONFIG_SECURE_HOST)
-        self.run_put_test(URL_SECURE, FILE_WIFI_CONFIG_SECURE_LAN)
 
 
     def run_put_test(self, url, wifi_config_file):

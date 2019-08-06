@@ -4,6 +4,7 @@
 
 #include "defines.hpp"
 #include "system.hpp"
+#include "tasks.hpp"
 
 #include "http/server.hpp"
 #include "rest/aggregate_resource.hpp"
@@ -33,6 +34,9 @@ main(int argc, char* argv[]) {
     }
 
     captived::system sys(root_path);
+
+    captived::tasks init_tasks(sys);
+    init_tasks.run_init_tasks();
 
     rest::line_resource serial_number(
         URI_SERIAL_NUMBER, sys, FILE_SERIAL_NUMBER, false);
@@ -65,16 +69,14 @@ main(int argc, char* argv[]) {
         URI_FIRMWARE_VERSION, sys, FILE_FIRMWARE_VERSION);
 
     rest::wifi_config wifi_config_passthrough(
-        URI_WIFI_CONFIG_PASSTHROUGH, sys, {FILE_WIFI_CONFIG_PASSTHROUGH});
+        URI_WIFI_CONFIG_PASSTHROUGH, sys, FILE_WIFI_CONFIG_PASSTHROUGH);
 
     rest::wifi_config wifi_config_secure(
-        URI_WIFI_CONFIG_SECURE,
-        sys,
-        {FILE_WIFI_CONFIG_SECURE_HOST, FILE_WIFI_CONFIG_SECURE_LAN});
+        URI_WIFI_CONFIG_SECURE, sys, FILE_WIFI_CONFIG_SECURE_HOST);
 
     rest::aggregate_resource wifi_configs(URI_WIFI_CONFIG);
     wifi_configs.add("passthrough", wifi_config_passthrough);
-    wifi_configs.add("secure", wifi_config_secure);
+    wifi_configs.add("secure-host", wifi_config_secure);
 
     rest::aggregate_resource wifi(URI_WIFI);
     wifi.add("config", wifi_configs);
