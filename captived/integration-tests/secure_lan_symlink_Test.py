@@ -1,35 +1,22 @@
 #!/usr/bin/env python3
 
-import hashlib
-import json
 import os
 import requests
-import shutil
-import time
 import unittest
-import stat
 
 import xaptum.embedded_server as eserver
 import xaptum.test as test
 
 TESTDIR = os.getcwd()
-CWD = os.path.abspath(os.path.join(os.pardir, os.pardir))
-URL_PASSTHROUGH = 'http://[::1]:4000/wifi/config/passthrough'
-URL_SECURE = 'http://[::1]:4000/wifi/config/secure'
 # use this directory as the root path for this test
 DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
 LINK_TARGET = os.path.join(DATA_PATH, 'data', 'connman', 'secure-host')
 
-HEADERS = {'Content-Type':'application/json'}
-FILE_WIFI_CONFIG_PASSTHROUGH = '/data/connman/passthrough/wifi.config'
-FILE_WIFI_CONFIG_SECURE_HOST = '/data/connman/secure-host/wifi.config'
-FILE_WIFI_CONFIG_SECURE_LAN = '/data/connman/secure-lan/wifi.config'
-
-new_config = 'ctrl_interface=/var/run/wpa_supplicant\nap_scan=1\n\nnetwork={\nssid="customer_private"\npsk="none"\n}'
 
 ################################################################################
 ### secure_lan_symlink_Test
-### Test /wifi/config REST resource
+### Test the captived ability to create the correct symlink
+### secure-lan -> secure-host
 ################################################################################
 class secure_lan_symlink_Test(test.SharedServer, test.IntegrationTestCase):
 
@@ -99,7 +86,6 @@ class secure_lan_symlink_Test(test.SharedServer, test.IntegrationTestCase):
     def test_secure_lan_was_file(self):
         secure_lan_symlink_Test.stopServer()
         self.remove_file(self.symlink)
-        #os.mknod(self.symlink, stat.S_IFREG)
         output = open(self.symlink, 'w')
         output.write('Hello World\n')
         output.close()
@@ -126,31 +112,6 @@ class secure_lan_symlink_Test(test.SharedServer, test.IntegrationTestCase):
             os.removed(fq_filename)
         else:
             print (fq_filename, " did not exist.")
-
-
-
-    def run_put_test(self, url, wifi_config_file):
-        # get and store value to put back
-        resp = requests.get(url)
-        orig_json_config = resp.json()
-        new_json = {'contents':new_config}
-        resp = requests.put(url, headers=HEADERS, json=new_json)
-        self.assertEqual(new_config, resp.json()['contents'].strip('\n'))
-        self.assertTrue(os.path.isfile(self.last_restart_file))
-
-        # check that the file was just created
-        modified_time = os.path.getmtime(self.last_restart_file)
-        cur_time = time.time()
-        self.assertLess(cur_time - modified_time, 3.0)
-
-        # put the original values back
-        resp = requests.put(url, headers=HEADERS, json=orig_json_config)
-        self.assertNotEqual(new_config, resp.json()['contents'])
-        self.assertMatchesFileContents(DATA_PATH + wifi_config_file,
-                        resp.json()['contents'])
-
-        # check that the restart-file was modified again
-        self.assertLess(modified_time, os.path.getmtime(self.last_restart_file))
 
 
 if __name__ == '__main__':
