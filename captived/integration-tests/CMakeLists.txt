@@ -14,6 +14,7 @@ set(TEST_FILES
   simple_get_Test.py
   reboot_Test.py
   uptime_Test.py
+  secure_lan_symlink_Test.py
   )
 
 add_custom_target(integration-tests ALL)
