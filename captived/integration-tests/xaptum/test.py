@@ -120,3 +120,11 @@ class SharedServer(object):
         cls._server.kill()
 
         super(SharedServer, cls).tearDownClass()
+
+    @classmethod
+    def stopServer(cls):
+        cls._server.kill()
+
+    @classmethod
+    def startServer(cls):
+        cls._server.start()
