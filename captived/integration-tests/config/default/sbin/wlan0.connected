@@ -1,0 +1,12 @@
+Connected to e4:95:de:ad:be:ef (on wlan0)
+        SSID: test_wifi_1
+        freq: 2412
+        RX: 1234 bytes (7 packets)
+        TX: 3238 bytes (17 packets)
+        signal: -40 dBm
+        tx bitrate: 11.0 MBit/s
+
+        bss flags:      short-preamble short-slot-time
+        dtim period:    2
+        beacon int:     100
+

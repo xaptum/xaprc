@@ -32,6 +32,7 @@ const std::string COMMAND_GET_ACTIVE_TARGETS =
     "/bin/systemctl list-units --type target";
 const std::string COMMAND_RESTART_CONNMAN =
     "/bin/systemctl restart connman.service";
+const std::string COMMAND_GET_SSID = "/sbin/iw dev wlan0 link";
 
 const std::string URI_SERIAL_NUMBER = "/serial_number";
 const std::string URI_WIFI_MAC_ADDRESS = "/mac_address";
@@ -61,5 +62,7 @@ extern const char* CONTENT_TYPE_JSON;
 
 // define this so we don't use OS-specific values
 const int ROUTER_CARD_PATH_MAX = 1024;
+
+const std::string WIFI_INTERFACE_NAME = "wlan0";
 
 }    // namespace captived

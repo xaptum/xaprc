@@ -14,6 +14,7 @@
 #include "rest/reboot.hpp"
 #include "rest/uptime.hpp"
 #include "rest/wifi_config.hpp"
+#include "rest/wifi_status.hpp"
 
 namespace captived {
 const char* CONTENT_TYPE_JSON = "application/json";
@@ -78,8 +79,11 @@ main(int argc, char* argv[]) {
     wifi_configs.add("passthrough", wifi_config_passthrough);
     wifi_configs.add("secure", wifi_config_secure);
 
+    rest::wifi_status wifi_status(URI_WIFI_STATUS, sys);
+
     rest::aggregate_resource wifi(URI_WIFI);
     wifi.add("config", wifi_configs);
+    wifi.add("status", wifi_status);
 
     rest::uptime uptime(URI_UPTIME, sys);
 
@@ -88,7 +92,7 @@ main(int argc, char* argv[]) {
     rest::mode router_mode(
         URI_ROUTER_MODE, sys, PATH_MODE_TARGET, LINK_MODE, reboot);
 
-    rest::aggregate_resource root("/");
+    rest::aggregate_resource root(URI_ROUTER_STATUS);
     root.add("serial_number", serial_number);
     root.add("firmware_version", firmware_version);
     root.add("mac_address", mac_addrs);
@@ -114,6 +118,7 @@ main(int argc, char* argv[]) {
     embed_server.register_resource(wifi_config_passthrough);
     embed_server.register_resource(wifi_config_secure);
     embed_server.register_resource(wifi_configs);
+    embed_server.register_resource(wifi_status);
     embed_server.register_resource(wifi);
     embed_server.register_resource(reboot);
     embed_server.register_resource(root);
