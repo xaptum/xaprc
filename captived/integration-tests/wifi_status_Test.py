@@ -32,16 +32,39 @@ class wifi_status_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(wifi_status_Test, self).setUp()
+        self.iw_response_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.iw.response')
 
     def tearDown(self):
         super(wifi_status_Test, self).tearDown()
 
-    @unittest.skip('Not implemented and test needs updating')
+    # This can't be compared to a file because the status depends on the
+    # specific machine on which the tests are running.
     def test_get_wifi_status(self):
+        connected_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.connected')
+        shutil.copyfile(connected_file, self.iw_response_file)
         resp = requests.get(URL)
-        self.assertMatchesFileContents(DATA_PATH + '/some-status',
-                        resp.json()['contents'])
+        jresp = resp.json()
+        print ('\nJSON status response = \n')
+        print (json.dumps(jresp, indent=4), '\n')
+        
+        self.assertIn('connected', jresp)
+        self.assertIn('SSID', jresp)
+        self.assertEqual('test_wifi_1', jresp['SSID'], 'SSID did not match expected value.')
+        # can't compare IP addresses because we may not have
+        # wifi connection on the test machine.
 
+    def test_get_wifi_status_not_connected(self):
+        not_connected_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.not')
+        shutil.copyfile(not_connected_file, self.iw_response_file)
+        resp = requests.get(URL)
+        jresp = resp.json()
+        print ('\nJSON status response = \n')
+        print (json.dumps(jresp, indent=4), '\n')
+        
+        self.assertIn('connected', jresp)
+        self.assertNotIn('SSID', jresp, 'Test should not find SSID, but did.')
+        # can't compare IP addresses because we may not have
+        # wifi connection on the test machine.
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

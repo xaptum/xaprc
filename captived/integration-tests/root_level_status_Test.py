@@ -3,6 +3,7 @@
 import json
 import os
 import requests
+import shutil
 import time
 import unittest
 
@@ -28,11 +29,15 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(root_level_status_Test, self).setUp()
+        # test uses fake 'iw' command which returns the contents of wlan0.iw.response
+        self.iw_response_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.iw.response')
 
     def tearDown(self):
         super(root_level_status_Test, self).tearDown()
 
     def test_get_root(self):
+        connected_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.connected')
+        shutil.copyfile(connected_file, self.iw_response_file)
         resp = requests.get(URL)
         jresp = resp.json()
 
@@ -55,6 +60,16 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
             firmware_file = f.readline().strip('\n')
             firmware_file = firmware_file.split('=')[1]
             self.assertEqual(firmware_file, firmware_resp)
+
+        # test that wifi contains a status & status contains "connected"
+        # We're not guaranteed to be able to retrieve IP addresses on test
+        # machine because we're looking for `wlan0`
+        self.assertIn('wifi', jresp)
+        self.assertIn('status', jresp['wifi'])
+        self.assertIn('connected', jresp['wifi']['status'])
+        self.assertIn('SSID', jresp['wifi']['status'])
+        self.assertEqual('test_wifi_1', jresp['wifi']['status']['SSID'],
+                'SSID did not match expected value.')
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

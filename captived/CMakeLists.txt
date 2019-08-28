@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
 project(captived
-  VERSION "0.1.3"
+  VERSION "0.1.4"
   )
 
 include(GNUInstallDirs)
@@ -35,6 +35,7 @@ set(SERVER_SRCS
     src/rest/reboot.cpp
     src/rest/uptime.cpp
     src/rest/wifi_config.cpp
+    src/rest/wifi_status.cpp
     )
 
 add_executable(captived ${SERVER_SRCS})

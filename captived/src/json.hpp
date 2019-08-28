@@ -63,6 +63,11 @@ object_set(json_type obj, std::string key, json_type val) {
     return json_object_set(obj.get(), key.c_str(), val.get());
 }
 
+static int
+array_append(json_type array, json_type obj) {
+    return json_array_append(array.get(), obj.get());
+}
+
 static std::string
 dumps(json_type json) {
     auto flags = JSON_ENCODE_ANY | JSON_INDENT(2);
