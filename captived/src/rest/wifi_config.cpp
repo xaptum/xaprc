@@ -76,14 +76,18 @@ wifi_config::put(resource::req_type body) {
 
     std::string newval = json_string_value(contents_json);
 
-    // Update the config
-    if (!contents(newval)) {
-        auto msg = "Error: failed to update config";
-        return internal_server_error(json::string(msg));
+    // check if the file needs to be updated by comparing sha256
+    auto oldSHA = sha256();
+    std::string newSHA = sha256_hex(newval);
+    if (!(oldSHA && (newSHA == *oldSHA))) {
+        // SHA256 are not the same - Update the config
+        if (!contents(newval)) {
+            auto msg = "Error: failed to update config";
+            return internal_server_error(json::string(msg));
+        }
+
+        int ret_code = system_.execute(COMMAND_RESTART_CONNMAN);
     }
-
-    int ret_code = system_.execute(COMMAND_RESTART_CONNMAN);
-
     return get(json::null());
 }
 

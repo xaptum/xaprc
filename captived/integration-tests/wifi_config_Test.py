@@ -72,6 +72,44 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
         self.run_put_test(URL_SECURE, FILE_WIFI_CONFIG_SECURE_HOST)
 
 
+    ###
+    # Test that putting the same file twice will not restart connman
+    # a second time
+    ###
+    def test_put_wifi_config_secure_twice(self):
+        # get and store value to put back
+        resp = requests.get(URL_SECURE)
+        orig_json_config = resp.json()
+
+        # put new config file
+        new_json = {'contents':new_config}
+        resp = requests.put(URL_SECURE, headers=HEADERS, json=new_json)
+        self.assertEqual(new_config, resp.json()['contents'].strip('\n'))
+        self.assertTrue(os.path.isfile(self.last_restart_file))
+
+        # check that the file was just created
+        modified_time = os.path.getmtime(self.last_restart_file)
+        cur_time = time.time()
+        self.assertLess(cur_time - modified_time, 3.0)
+
+        # put the same values a second time
+        resp = requests.put(URL_SECURE, headers=HEADERS, json=new_json)
+        self.assertEqual(new_config, resp.json()['contents'].strip('\n'))
+        self.assertTrue(os.path.isfile(self.last_restart_file))
+
+        # check that the last_restart_time wasn't modified.
+        self.assertEqual(modified_time, os.path.getmtime(self.last_restart_file))
+
+        # put the original values back
+        resp = requests.put(URL_SECURE, headers=HEADERS, json=orig_json_config)
+        self.assertNotEqual(new_config, resp.json()['contents'])
+        self.assertMatchesFileContents(DATA_PATH + FILE_WIFI_CONFIG_SECURE_HOST,
+                        resp.json()['contents'])
+
+        # check that the restart-file was modified again
+        self.assertLess(modified_time, os.path.getmtime(self.last_restart_file))
+
+
     def run_put_test(self, url, wifi_config_file):
         # get and store value to put back
         resp = requests.get(url)
