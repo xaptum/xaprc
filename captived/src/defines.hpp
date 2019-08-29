@@ -30,7 +30,7 @@ const std::string PATH_MODE_TARGET = "/etc/systemd/system";
 
 const std::string COMMAND_GET_ACTIVE_TARGETS =
     "/bin/systemctl list-units --type target";
-const std::string COMMAND_CONNMAN_SIGHUP =
+const std::string COMMAND_RELOAD_CONNMAN =
     "/bin/systemctl kill -s HUP connman.service";
 const std::string COMMAND_GET_SSID = "/sbin/iw dev wlan0 link";
 
