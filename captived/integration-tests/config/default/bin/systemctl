@@ -7,6 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo DIR variable = 
 echo $DIR
 
+# Mock the "restart" command
 if [ "$1" == "restart" ]
 then
     echo Restarting service: $2
@@ -18,6 +19,17 @@ then
     exit 0
 fi
 
+# Mock the "kill" command for sending a sighup
+if [ "$1" == "kill" ] && [ "$3" == "HUP" ]
+then
+    echo Sending HUP to: $4
+    echo Attempting to write to 
+    echo $DIR/$4_sighup.txt
+    date > $DIR/$4_sighup.txt
+    echo SYSTEMCTL done
+    echo
+    exit 0
+fi
 
 if [ "$1" != "list-units" ] 
 then

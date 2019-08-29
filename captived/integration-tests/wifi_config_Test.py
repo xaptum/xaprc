@@ -37,7 +37,7 @@ class wifi_config_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(wifi_config_Test, self).setUp()
-        self.last_restart_file = os.path.join(DATA_PATH, 'bin', 'connman.service_restart.txt')
+        self.last_restart_file = os.path.join(DATA_PATH, 'bin', 'connman.service_sighup.txt')
         if os.path.isfile(self.last_restart_file):
             os.remove(self.last_restart_file)
 

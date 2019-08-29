@@ -33,7 +33,7 @@ wifi_config::contents(std::string new_contents) {
     }
 
     if (system_.write(config_file_, new_contents)) {
-        int ret_code = system_.execute(COMMAND_RESTART_CONNMAN);
+        int ret_code = system_.execute(COMMAND_RELOAD_CONNMAN);
         return true;
     }
 
