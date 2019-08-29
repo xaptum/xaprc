@@ -27,7 +27,17 @@ wifi_config::contents() {
 
 bool
 wifi_config::contents(std::string new_contents) {
-    return system_.write(config_file_, new_contents);
+    // Don't need to update if the contents did not change.
+    if (sha256_hex(new_contents) == *sha256()) {
+        return true;
+    }
+
+    if (system_.write(config_file_, new_contents)) {
+        int ret_code = system_.execute(COMMAND_RESTART_CONNMAN);
+        return true;
+    }
+
+    return false;
 }
 
 std::experimental::optional<std::string>
@@ -76,17 +86,9 @@ wifi_config::put(resource::req_type body) {
 
     std::string newval = json_string_value(contents_json);
 
-    // check if the file needs to be updated by comparing sha256
-    auto oldSHA = sha256();
-    std::string newSHA = sha256_hex(newval);
-    if (!(oldSHA && (newSHA == *oldSHA))) {
-        // SHA256 are not the same - Update the config
-        if (!contents(newval)) {
-            auto msg = "Error: failed to update config";
-            return internal_server_error(json::string(msg));
-        }
-
-        int ret_code = system_.execute(COMMAND_RESTART_CONNMAN);
+    if (!contents(newval)) {
+        auto msg = "Error: failed to update config";
+        return internal_server_error(json::string(msg));
     }
     return get(json::null());
 }
