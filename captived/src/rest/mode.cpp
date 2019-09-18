@@ -7,8 +7,12 @@ namespace captived {
 namespace {
 bool
 is_valid_mode(std::string mode) {
-    return (mode == MODE_PASSTHROUGH || mode == MODE_SECURE_HOST ||
-            mode == MODE_SECURE_LAN);
+    /*
+     * As a safeguard, allow only the modes actually supported by the firmware.
+     */
+    // return (mode == MODE_PASSTHROUGH || mode == MODE_SECURE_HOST ||
+    //        mode == MODE_SECURE_LAN);
+    return (mode == MODE_SECURE_HOST);
 }
 }    // namespace
 
