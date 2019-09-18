@@ -53,6 +53,7 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         resp = requests.put(URL, headers=HEADERS, json='invalid-mode')
         self.assertEqual(resp.status_code, 400)
 
+    @unittest.skip("passthrough not supported by firmware")
     def test_03_put_passthrough(self):
         resp = requests.put(URL, headers=HEADERS, json='passthrough')
         self.assertEqual(resp.status_code, 200)
@@ -66,11 +67,12 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         # now set an invalid mode
         resp = requests.put(URL, headers=HEADERS, json='invalid2')
         self.assertEqual(resp.status_code, 400)
-        
+
         # check mode - should not have changed.
         resp = requests.get(URL)
         self.assertEqual(resp.json(), orig_mode)
-        
+
+    @unittest.skip("secure-lan not supported by firmware")
     def test_05_put_secure_lan(self):
         resp = requests.put(URL, headers=HEADERS, json='secure-lan')
         self.assertEqual(resp.status_code, 200)
