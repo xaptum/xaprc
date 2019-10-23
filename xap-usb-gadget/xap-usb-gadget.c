@@ -117,7 +117,7 @@ static void create_usb_gadget(usbg_state *state)
 {
 	usbg_gadget *gadget;
 	usbg_config *config;
-	usbg_function *f_acm0, *f_acm1, *f_ecm, *f_psock;
+	usbg_function *f_acm0, *f_acm1, *f_ecm, *f_scm;
 	usbg_function *f_ffs0;
 	int ret = -EINVAL;
 	int usbg_ret;
@@ -180,10 +180,10 @@ static void create_usb_gadget(usbg_state *state)
 		goto exit_clean;
 	}
 
-	usbg_ret = usbg_create_function(gadget, USBG_F_PSOCK, "tst0", NULL, &f_psock);
+	usbg_ret = usbg_create_function(gadget, USBG_F_SCM, "tst0", NULL, &f_scm);
 	if (usbg_ret != USBG_SUCCESS)
 	{
-		print_usbg_error( "Error creating psock function",usbg_ret);
+		print_usbg_error( "Error creating scm function",usbg_ret);
 		goto exit_clean;
 	}
 
@@ -211,10 +211,10 @@ static void create_usb_gadget(usbg_state *state)
 		goto exit_clean;
 	}
 
-	usbg_ret = usbg_add_config_function(config, "psock.tst0", f_psock);
+	usbg_ret = usbg_add_config_function(config, "scm.tst0", f_scm);
 	if (usbg_ret != USBG_SUCCESS)
 	{
-		print_usbg_error( "Error adding psock.tst0",usbg_ret);
+		print_usbg_error( "Error adding scm.tst0",usbg_ret);
 		goto exit_clean;
 	}
 
