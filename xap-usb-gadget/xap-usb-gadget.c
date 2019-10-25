@@ -180,12 +180,14 @@ static void create_usb_gadget(usbg_state *state)
 		goto exit_clean;
 	}
 
+	#ifdef XAP_SCM
 	usbg_ret = usbg_create_function(gadget, USBG_F_SCM, "tst0", NULL, &f_scm);
 	if (usbg_ret != USBG_SUCCESS)
 	{
 		print_usbg_error( "Error creating scm function",usbg_ret);
 		goto exit_clean;
 	}
+	#endif
 
 	/* NULL can be passed to use kernel defaults */
 	usbg_ret = usbg_create_config(gadget, 1, "The only one", NULL, &c_strs, &config);
@@ -211,12 +213,15 @@ static void create_usb_gadget(usbg_state *state)
 		goto exit_clean;
 	}
 
+
+	#ifdef XAP_SCM
 	usbg_ret = usbg_add_config_function(config, "scm.tst0", f_scm);
 	if (usbg_ret != USBG_SUCCESS)
 	{
 		print_usbg_error( "Error adding scm.tst0",usbg_ret);
 		goto exit_clean;
 	}
+	#endif
 
 	usbg_ret = usbg_enable_gadget(gadget, DEFAULT_UDC);
 	if (usbg_ret != USBG_SUCCESS)
