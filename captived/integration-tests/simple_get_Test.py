@@ -84,10 +84,8 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
     def test_model_get(self):
         model_url = URL + '/model'
         resp = requests.get(model_url)
-        with open (DATA_PATH + '/etc/mender/artifact_info') as f:
-            firmware_file = f.readline().strip('\n')
-            model_from_file = re.search('^artifact_name=(\w+)', firmware_file).group(1)
-            self.assertEqual(model_from_file, resp.json())
+        model_from_file = open(DATA_PATH + '/etc/mender/test-model', 'r').read().strip('\n')
+        self.assertEqual(model_from_file, resp.json())
 
     def test_model_put(self):
         model_url = URL + '/model'
