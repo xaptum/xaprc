@@ -36,8 +36,6 @@
 #define XAP_REV_ID	0x414
 #define XAP_MANUFACTURER_STR "Xaptum, Inc."
 #define XAP_USBG_STR "g1"
-
-#define FUNCTIONFS_MOUNT_POINT "/functionfs/"
 /**
  * @brief Read a file of a known length to a string
  * @param path The path of the file to read
@@ -117,8 +115,7 @@ static void create_usb_gadget(usbg_state *state)
 {
 	usbg_gadget *gadget;
 	usbg_config *config;
-	usbg_function *f_acm0, *f_acm1, *f_ecm, *f_scm;
-	usbg_function *f_ffs0;
+	usbg_function *f_acm0, *f_ecm, *f_scm;
 	int ret = -EINVAL;
 	int usbg_ret;
 
