@@ -5,6 +5,7 @@ import os
 import requests
 import time
 import unittest
+import re
 
 import xaptum.embedded_server as eserver
 import xaptum.test as test
@@ -78,6 +79,23 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertEqual(resp.status_code, 405)
         resp = requests.get(firmware_url)
         print ('GET response for: ', firmware_url, '\n', resp.text)
+        self.assertNotEqual('junk-data', resp.json())
+
+    def test_model_get(self):
+        model_url = URL + '/model'
+        resp = requests.get(model_url)
+        with open (DATA_PATH + '/etc/mender/artifact_info') as f:
+            firmware_file = f.readline().strip('\n')
+            model_from_file = re.search('^artifact_name=(\w+)', firmware_file).group(1)
+            self.assertEqual(model_from_file, resp.json())
+
+    def test_model_put(self):
+        model_url = URL + '/model'
+        resp = requests.put(model_url, headers=HEADERS, json='junk-data')
+        print ('PUT response for: ', model_url, '\n', resp.text)
+        self.assertEqual(resp.status_code, 405)
+        resp = requests.get(model_url)
+        print ('GET response for: ', model_url, '\n', resp.text)
         self.assertNotEqual('junk-data', resp.json())
 
 

@@ -11,6 +11,7 @@
 #include "rest/firmware.hpp"
 #include "rest/line_resource.hpp"
 #include "rest/mode.hpp"
+#include "rest/model.hpp"
 #include "rest/reboot.hpp"
 #include "rest/uptime.hpp"
 #include "rest/wifi_config.hpp"
@@ -69,6 +70,8 @@ main(int argc, char* argv[]) {
     rest::firmware firmware_version(
         URI_FIRMWARE_VERSION, sys, FILE_FIRMWARE_VERSION);
 
+    rest::model model_number(URI_MODEL, sys, FILE_FIRMWARE_VERSION);
+
     rest::wifi_config wifi_config_passthrough(
         URI_WIFI_CONFIG_PASSTHROUGH, sys, FILE_WIFI_CONFIG_PASSTHROUGH);
 
@@ -95,6 +98,7 @@ main(int argc, char* argv[]) {
     rest::aggregate_resource root(URI_ROUTER_STATUS);
     root.add("serial_number", serial_number);
     root.add("firmware_version", firmware_version);
+    root.add("model", model_number);
     root.add("mac_address", mac_addrs);
     root.add("control_address", control_addr);
     root.add("data_address", data_addr);
@@ -113,6 +117,7 @@ main(int argc, char* argv[]) {
     embed_server.register_resource(control_addr);
     embed_server.register_resource(data_addr);
     embed_server.register_resource(firmware_version);
+    embed_server.register_resource(model_number);
     embed_server.register_resource(router_mode);
     embed_server.register_resource(uptime);
     embed_server.register_resource(wifi_config_passthrough);
