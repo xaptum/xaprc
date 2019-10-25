@@ -6,7 +6,6 @@ import requests
 import shutil
 import time
 import unittest
-import re
 
 import xaptum.embedded_server as eserver
 import xaptum.test as test
@@ -63,10 +62,8 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
             self.assertEqual(firmware_file, firmware_resp)
 
         model_resp = jresp['model']
-        with open(DATA_PATH + '/etc/mender/artifact_info') as f:
-            firmware_file = f.readline().strip('\n')
-            model_from_file = re.search('^artifact_name=(\w+)', firmware_file).group(1)
-            self.assertEqual(model_from_file, model_resp)
+        model_from_file = open(DATA_PATH + '/etc/mender/test-model', 'r').read().strip('\n')
+        self.assertEqual(model_from_file, model_resp)
 
         # test that wifi contains a status & status contains "connected"
         # We're not guaranteed to be able to retrieve IP addresses on test

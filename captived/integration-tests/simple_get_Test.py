@@ -5,7 +5,6 @@ import os
 import requests
 import time
 import unittest
-import re
 
 import xaptum.embedded_server as eserver
 import xaptum.test as test
