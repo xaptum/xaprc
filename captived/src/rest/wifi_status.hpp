@@ -27,7 +27,7 @@ class wifi_status : public resource {
     system& system_;
     std::vector<std::string> ipv4_addrs_;
     std::vector<std::string> ipv6_addrs_;
-    std::experimental::optional<std::string> ssid_;
+    std::string ssid_;
     bool connected_;
 
     void refresh_connection_status();
@@ -37,7 +37,7 @@ class wifi_status : public resource {
     void reset_connection() {
         ipv4_addrs_.clear();
         ipv6_addrs_.clear();
-        ssid_ = std::experimental::nullopt;
+        ssid_ = "";
         connected_ = false;
     }
 };

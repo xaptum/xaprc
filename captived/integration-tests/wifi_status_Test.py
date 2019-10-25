@@ -50,6 +50,8 @@ class wifi_status_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertIn('connected', jresp)
         self.assertIn('SSID', jresp)
         self.assertEqual('test_wifi_1', jresp['SSID'], 'SSID did not match expected value.')
+        self.assertIn('IPv4_addresses', jresp)
+        self.assertIn('IPv6_addresses', jresp)
         # can't compare IP addresses because we may not have
         # wifi connection on the test machine.
 
@@ -62,7 +64,11 @@ class wifi_status_Test(test.SharedServer, test.IntegrationTestCase):
         print (json.dumps(jresp, indent=4), '\n')
         
         self.assertIn('connected', jresp)
-        self.assertNotIn('SSID', jresp, 'Test should not find SSID, but did.')
+        self.assertIn('SSID', jresp, 'Test did not find SSID -- it should always be present.')
+        self.assertEqual('', jresp['SSID'], 'SSID should be empty')
+        self.assertIn('IPv4_addresses', jresp)
+        self.assertIn('IPv6_addresses', jresp)
+
         # can't compare IP addresses because we may not have
         # wifi connection on the test machine.
 

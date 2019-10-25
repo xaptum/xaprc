@@ -77,6 +77,7 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
         print ('Model retrieved from file = ', model_from_file)
         self.assertEqual(model_from_file, model_resp)
 
+        self.assertIn('uptime', jresp)
         # test that wifi contains a status & status contains "connected"
         # We're not guaranteed to be able to retrieve IP addresses on test
         # machine because we're looking for `wlan0`
@@ -86,6 +87,8 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertIn('SSID', jresp['wifi']['status'])
         self.assertEqual('test_wifi_1', jresp['wifi']['status']['SSID'],
                 'SSID did not match expected value.')
+        self.assertIn('IPv4_addresses', jresp['wifi']['status'])
+        self.assertIn('IPv6_addresses', jresp['wifi']['status'])
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
