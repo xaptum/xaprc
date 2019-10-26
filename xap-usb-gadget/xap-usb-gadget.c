@@ -23,6 +23,8 @@
 #include <usbg/function/net.h>
 #include <string.h>
 
+#define USB_PROTO_IAD 0x01
+
 /* Check for required defines */
 #ifndef XAP_PRODUCT_ID
 #error Variable XAP_PRODUCT_ID not specified
@@ -125,9 +127,9 @@ static void create_usb_gadget(usbg_state *state)
 
 	struct usbg_gadget_attrs g_attrs = {
 		.bcdUSB = 0x0200,
-		.bDeviceClass =	0x00,
-		.bDeviceSubClass = 0x00,
-		.bDeviceProtocol = 0x00,
+		.bDeviceClass = USB_CLASS_MISC,
+		.bDeviceSubClass = USB_CLASS_COMM,
+		.bDeviceProtocol = USB_PROTO_IAD,
 		.bMaxPacketSize0 = 64, /* Max allowed ep0 packet size */
 		.idVendor = XAP_VENDOR_ID,
 		.idProduct = XAP_PRODUCT_ID,
