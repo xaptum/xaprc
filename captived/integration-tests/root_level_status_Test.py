@@ -31,13 +31,23 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
         super(root_level_status_Test, self).setUp()
         # test uses fake 'iw' command which returns the contents of wlan0.iw.response
         self.iw_response_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.iw.response')
+        self.mender_dir = os.path.join(DATA_PATH, 'etc', 'mender')
 
     def tearDown(self):
         super(root_level_status_Test, self).tearDown()
 
     def test_get_root(self):
+        # use the connected configuration
         connected_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.connected')
         shutil.copyfile(connected_file, self.iw_response_file)
+
+        # use the dev model
+        mender_data_dir = os.path.join(self.mender_dir, 'dev-test')
+        print ('\nMender data dir = ', mender_data_dir)
+        shutil.copyfile(mender_data_dir + '/artifact_info', self.mender_dir + '/artifact_info')
+        
+
+
         resp = requests.get(URL)
         jresp = resp.json()
 
@@ -62,7 +72,9 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
             self.assertEqual(firmware_file, firmware_resp)
 
         model_resp = jresp['model']
-        model_from_file = open(DATA_PATH + '/etc/mender/test-model', 'r').read().strip('\n')
+        with open(mender_data_dir + '/model', 'r') as f:
+            model_from_file = f.read().strip('\n')
+        print ('Model retrieved from file = ', model_from_file)
         self.assertEqual(model_from_file, model_resp)
 
         # test that wifi contains a status & status contains "connected"

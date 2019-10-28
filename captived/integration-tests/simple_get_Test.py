@@ -3,6 +3,7 @@
 import json
 import os
 import requests
+import shutil
 import time
 import unittest
 
@@ -42,6 +43,8 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
 
     def setUp(self):
         super(simple_get_Test, self).setUp()
+        self.mender_dir = os.path.join(DATA_PATH, 'etc', 'mender')
+
 
     def tearDown(self):
         # put back to secure_host
@@ -80,10 +83,34 @@ class simple_get_Test(test.SharedServer, test.IntegrationTestCase):
         print ('GET response for: ', firmware_url, '\n', resp.text)
         self.assertNotEqual('junk-data', resp.json())
 
-    def test_model_get(self):
+    def test_model_get_dev(self):
+        # copy dev file
+        mender_data_dir = os.path.join(self.mender_dir, 'dev-test')
+        print ('Mender data dir = ', mender_data_dir)
+        shutil.copyfile(mender_data_dir + '/artifact_info', 
+                        self.mender_dir + '/artifact_info')
+
         model_url = URL + '/model'
         resp = requests.get(model_url)
-        model_from_file = open(DATA_PATH + '/etc/mender/test-model', 'r').read().strip('\n')
+        with open(mender_data_dir + '/model', 'r') as f:
+            model_from_file = f.read().strip('\n')
+
+        print ('Model retrieved from file = ', model_from_file)
+        self.assertEqual(model_from_file, resp.json())
+
+    def test_model_get_prod(self):
+        # copy dev file
+        mender_data_dir = os.path.join(self.mender_dir, 'prod-test')
+        print ('Mender data dir = ', mender_data_dir)
+        shutil.copyfile(mender_data_dir + '/artifact_info', 
+                        self.mender_dir + '/artifact_info')
+
+        model_url = URL + '/model'
+        resp = requests.get(model_url)
+        with open(mender_data_dir + '/model', 'r') as f:
+            model_from_file = f.read().strip('\n')
+
+        print ('Model retrieved from file = ', model_from_file)
         self.assertEqual(model_from_file, resp.json())
 
     def test_model_put(self):
