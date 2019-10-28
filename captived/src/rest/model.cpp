@@ -13,7 +13,7 @@ model::model_number() {
     if (!line_opt)
         return {};
 
-    std::regex re("artifact_name=(\\w+(-dev)?)");
+    std::regex re("artifact_name=([\\w-]+)-v\\d+\\.\\d+\\.\\d+-\\d+-g[0-9a-hA-H]+$");
     std::smatch match;
     std::regex_search(*line_opt, match, re);
     if (match.size() < 1)
