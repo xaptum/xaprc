@@ -21,27 +21,25 @@ wifi_status::get(req_type) {
     auto root = json::object();
     json::object_set(root, "connected", json::boolean(connected_));
 
+    // Get the IPv4 Addresses
+    auto v4_addrs = json::array();
     if (!ipv4_addrs_.empty()) {
-        auto v4_addrs = json::array();
         for (auto addr : ipv4_addrs_) {
             json::array_append(v4_addrs, json::string(addr));
         }
-
-        json::object_set(root, "IPv4_addresses", v4_addrs);
     }
+    json::object_set(root, "IPv4_addresses", v4_addrs);
 
+    // get the IPv6 Addresses
+    auto v6_addrs = json::array();
     if (!ipv6_addrs_.empty()) {
-        auto v6_addrs = json::array();
         for (auto addr : ipv6_addrs_) {
             json::array_append(v6_addrs, json::string(addr));
         }
-
-        json::object_set(root, "IPv6_addresses", v6_addrs);
     }
+    json::object_set(root, "IPv6_addresses", v6_addrs);
 
-    if (ssid_) {
-        json::object_set(root, "SSID", json::string(*ssid_));
-    }
+    json::object_set(root, "SSID", json::string(ssid_));
 
     return ok(root);
 }
@@ -101,7 +99,7 @@ wifi_status::refresh_ssid() {
     std::string result;
     int ret_code = system_.execute(COMMAND_GET_SSID, result);
     if (ret_code != 0) {
-        ssid_ = std::experimental::nullopt;
+        ssid_ = "";
         return;
     }
 
@@ -110,7 +108,7 @@ wifi_status::refresh_ssid() {
     std::smatch match;
     std::regex_search(result, match, re);
     if (match.size() < 1) {
-        ssid_ = std::experimental::nullopt;
+        ssid_ = "";
         return;
     }
 
