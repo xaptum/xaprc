@@ -43,6 +43,7 @@ const std::string URI_WIFI_MAC_ADDRESS_4 = "/mac_address/4";
 const std::string URI_ENF_CONTROL_ADDRESS = "/control_address";
 const std::string URI_ENF_DATA_ADDRESS = "/data_address";
 const std::string URI_FIRMWARE_VERSION = "/firmware_version";
+const std::string URI_MODEL = "/model";
 const std::string URI_ROUTER_MODE = "/mode";
 const std::string URI_ROUTER_STATUS = "/";
 const std::string URI_UPTIME = "/uptime";
