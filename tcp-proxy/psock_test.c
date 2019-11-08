@@ -12,7 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define PF_PSOCK PF_NFC
+#define PF_PSOCK 44
 
 const char *msg = "Hello World\n";
 char buffer[255];
