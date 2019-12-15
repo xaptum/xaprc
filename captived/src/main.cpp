@@ -1,5 +1,7 @@
+#include <event2/event.h>
 #include <fstream>
 #include <iostream>
+#include <signal.h>
 #include <string>
 
 #include "defines.hpp"
@@ -9,6 +11,10 @@
 #include "http/server.hpp"
 #include "rest/aggregate_resource.hpp"
 #include "rest/firmware.hpp"
+#include "rest/firmware_commit.hpp"
+#include "rest/firmware_image.hpp"
+#include "rest/firmware_update_state.hpp"
+#include "rest/firmware_version.hpp"
 #include "rest/line_resource.hpp"
 #include "rest/mode.hpp"
 #include "rest/model.hpp"
@@ -67,8 +73,31 @@ main(int argc, char* argv[]) {
     rest::line_resource data_addr(
         URI_ENF_DATA_ADDRESS, sys, FILE_ENF_DATA_ADDRESS, false);
 
-    rest::firmware firmware_version(
+    // Initializes the libevent event base
+    // Needed for the http server and the event handling
+    std::shared_ptr<event_base> base(event_base_new(), &event_base_free);
+
+    // This handles the specifics of the firmware update mechanism (mender)
+    firmware_manager fw_mgr(sys, base);
+
+    rest::firmware_image firmware_image(
         URI_FIRMWARE_VERSION, sys, FILE_FIRMWARE_VERSION);
+
+    rest::firmware_version firmware_running_ver(
+        URI_FIRMWARE_RUNNING_VERSION, sys, FILE_FIRMWARE_VERSION);
+
+    rest::firmware_update_state firmware_state(URI_FIRMWARE_UPDATE_STATE,
+                                               fw_mgr);
+
+    rest::firmware_uri firmware_uri(URI_FIRMWARE_UPDATE_URI);
+
+    rest::firmware firmware(URI_FIRMWARE, sys, fw_mgr, firmware_uri);
+    firmware.add("running_version", firmware_running_ver);
+    firmware.add("running_image", firmware_image);
+    firmware.add("update_state", firmware_state);
+
+    rest::firmware_commit commit(
+        URI_FIRMWARE_COMMIT, sys, fw_mgr, COMMAND_MENDER_COMMIT);
 
     rest::model model_number(URI_MODEL, sys, FILE_FIRMWARE_VERSION);
 
@@ -97,7 +126,8 @@ main(int argc, char* argv[]) {
 
     rest::aggregate_resource root(URI_ROUTER_STATUS);
     root.add("serial_number", serial_number);
-    root.add("firmware_version", firmware_version);
+    root.add("firmware_version", firmware_image);
+    root.add("firmware", firmware);
     root.add("model", model_number);
     root.add("mac_address", mac_addrs);
     root.add("control_address", control_addr);
@@ -106,7 +136,7 @@ main(int argc, char* argv[]) {
     root.add("uptime", uptime);
     root.add("wifi", wifi);
 
-    http::server embed_server(4000, root_path);
+    http::server embed_server(4000, root_path, base);
 
     embed_server.register_resource(serial_number);
     embed_server.register_resource(mac_addr_1);
@@ -116,7 +146,9 @@ main(int argc, char* argv[]) {
     embed_server.register_resource(mac_addrs);
     embed_server.register_resource(control_addr);
     embed_server.register_resource(data_addr);
-    embed_server.register_resource(firmware_version);
+    embed_server.register_resource(firmware_image);
+    embed_server.register_resource(firmware);
+    embed_server.register_resource(commit);
     embed_server.register_resource(model_number);
     embed_server.register_resource(router_mode);
     embed_server.register_resource(uptime);
@@ -128,7 +160,30 @@ main(int argc, char* argv[]) {
     embed_server.register_resource(reboot);
     embed_server.register_resource(root);
 
-    embed_server.loop_dispatch();
+    using atomic_bool = std::atomic<bool>;
+    atomic_bool continue_running(true);
+
+    // Callback function for signals that will exit the loop.
+    auto op = [](evutil_socket_t fd, short what, void* arg) {
+        atomic_bool* continue_running = static_cast<atomic_bool*>(arg);
+        *continue_running = false;
+        std::cout << "Exiting Web Server loop." << std::endl;
+    };
+
+    event_ptr sigint_event(event_ptr(
+        evsignal_new(base.get(), SIGINT, op, base.get()), event_free));
+    evsignal_add(sigint_event.get(), NULL);
+
+    event_ptr sigterm_event(event_ptr(
+        evsignal_new(base.get(), SIGTERM, op, base.get()), event_free));
+    evsignal_add(sigterm_event.get(), NULL);
+
+    // Runs the dispatch loop.
+    struct timeval one_sec = {1, 0};
+    while (continue_running) {
+        event_base_loopexit(base.get(), &one_sec);
+        event_base_dispatch(base.get());
+    }
 
     std::cout << "Finished running web server - exiting." << std::endl;
 

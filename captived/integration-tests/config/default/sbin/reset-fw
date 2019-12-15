@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Reset firmware state to "normal"
+
+# get local directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+echo upgrade_available=0 > $DIR/fw_env_upgrade_available
+echo bootcount=4 > $DIR/fw_env_bootcount
+

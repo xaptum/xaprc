@@ -1,31 +1,29 @@
 #pragma once
 
-#include <regex>
+#include <functional>
 #include <string>
+#include <vector>
 
-#include "rest/resource.hpp"
-#include "system.hpp"
+#include "firmware_manager.hpp"
+#include "rest/aggregate_resource.hpp"
+#include "rest/firmware_uri.hpp"
 
 namespace captived {
 namespace rest {
 
-class firmware : public resource {
+class firmware : public aggregate_resource {
   public:
-    firmware(std::string path, system& system, std::string filename);
-    ~firmware() override = default;
+    firmware(std::string path,
+             system& system,
+             firmware_manager& fw_mgr,
+             firmware_uri& fw_uri);
 
-    resp_type get(req_type) override;
-
-    /**
-     * Return the firmware version.
-     *
-     * @returns The version or None on an error.
-     */
-    virtual std::experimental::optional<std::string> version();
+    resp_type put(req_type body) override;
 
   protected:
     system& system_;
-    std::string filename_;
+    firmware_manager& fw_mgr_;
+    firmware_uri& fw_uri_;
 };
 
 }    // namespace rest

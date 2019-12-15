@@ -81,9 +81,9 @@ server::get_control_address() {
             infile.close();
             return return_value;
         }
-        usleep(1000000);    // sleep for 1 sec
         std::cerr << "Failed to get server address from: " << fq_filename
                   << std::endl;
+        usleep(1000000);    // sleep for 1 sec
     }
 
     return "::1";    // dead code - return loopback
@@ -93,12 +93,13 @@ server::get_control_address() {
 //  Constructor
 //
 ////////////////////////////////////////////////////////////////////////////////
-server::server(const int port, const std::string root_path)
+server::server(const int port,
+               const std::string root_path,
+               std::shared_ptr<event_base> base)
     : port_(port),
       root_path_(root_path),
-      base_(event_base_new(), &event_base_free),
-      httpd_(evhttp_new(base_.get()), &evhttp_free),
-      running_(false) {
+      base_(base),
+      httpd_(evhttp_new(base.get()), &evhttp_free) {
     std::cout << "Starting up" << std::endl;
 
     evhttp_set_gencb(httpd_.get(), &not_found_cb, this);
@@ -122,8 +123,6 @@ server::server(const int port, const std::string root_path)
 
     } while (false == bound_to_socket);
 
-    running_ = true;
-
     std::cout << "Listening on port " << port_ << std::endl;
 }
 
@@ -131,25 +130,7 @@ server::server(const int port, const std::string root_path)
 //  Destructor
 //
 ////////////////////////////////////////////////////////////////////////////////
-server::~server() {
-    std::cout << "Shutting down" << std::endl;
-
-    running_ = false;
-    std::cout << "Stopped" << std::endl;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//  loop_dispatch
-//
-////////////////////////////////////////////////////////////////////////////////
-void
-server::loop_dispatch() {
-    const struct timeval one_sec = {1, 0};
-    while (running_) {
-        event_base_loopexit(base_.get(), &one_sec);
-        event_base_dispatch(base_.get());
-    }
-}
+server::~server() { std::cout << "Server shutting down" << std::endl; }
 
 }    // namespace http
 }    // namespace captived

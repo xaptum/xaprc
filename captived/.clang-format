@@ -5,7 +5,7 @@ PointerAlignment: Left
 AllowAllParametersOfDeclarationOnNextLine: false
 AlwaysBreakAfterReturnType: TopLevelDefinitions
 AlwaysBreakBeforeMultilineStrings: true
-AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakTemplateDeclarations: true
 BinPackArguments: false
 BinPackParameters: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: true

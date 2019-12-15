@@ -15,9 +15,10 @@ namespace http {
 
 class server {
   public:
-    server(const int port, const std::string root_path);
+    server(const int port,
+           const std::string root_path,
+           std::shared_ptr<event_base> base);
     virtual ~server();
-    void loop_dispatch();
 
     static void respond_not_allowed(struct evhttp_request* req,
                                     std::string err);
@@ -45,9 +46,8 @@ class server {
   private:
     const int port_;
     const std::string root_path_;
-    std::unique_ptr<event_base, decltype(&event_base_free)> base_;
+    std::shared_ptr<event_base> base_;
     std::unique_ptr<evhttp, decltype(&evhttp_free)> httpd_;
-    std::atomic<bool> running_;
 };
 
 inline void
