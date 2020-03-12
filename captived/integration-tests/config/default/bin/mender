@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Fake 'mender' binary
+#
+# It supports -install and -commit
+
+# get local directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SBIN_DIR="$DIR/../sbin"
+
+echo "DIR = $DIR"
+echo "SBIN_DIR = $SBIN_DIR"
+
+if [ -z "$1" ]
+then
+    echo mock mender was improperly called
+    echo valid options are:
+    echo "    -commit"
+    echo "    -install http://URL/to/binary"
+    exit -1
+fi
+
+# echo mock mender was called with option: $1
+
+# install won't change the state of the firmware - it only starts the download
+# The state won't change until the download is complete
+if [ "$1" == "-install" ]
+then
+    echo mock mender is installing from URL:
+    echo $2
+    printf Downloading 
+    STOPFILE=$DIR/stop
+    while [ ! -f "$STOPFILE" ]
+    do
+        sleep 1
+        printf .
+    done
+
+    echo
+    echo download complete
+    echo upgrade_available=1 > $SBIN_DIR/fw_env_upgrade_available
+    echo bootcount=0 > $SBIN_DIR/fw_env_bootcount
+    exit 0
+fi
+
+# commit changes state
+if [ "$1" == "-commit" ]
+then
+    echo Running commit
+    echo
+    echo upgrade_available=0 > $SBIN_DIR/fw_env_upgrade_available
+    echo mock mender commit complete.
+    exit 0
+fi
+
+echo mock mender was called with illegal argument: $1
+exit -1

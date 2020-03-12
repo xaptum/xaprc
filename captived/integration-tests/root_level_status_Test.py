@@ -16,6 +16,9 @@ URL = 'http://[::1]:4000'
 # use this directory as the root path for this test
 DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
 
+FIRMWARE_PREFIX = 'fw_env'
+PRINT_FIRMWARE = 'fw_printenv'
+
 
 ################################################################################
 ### root_level_status_Test
@@ -36,6 +39,15 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
     def tearDown(self):
         super(root_level_status_Test, self).tearDown()
 
+    # These two methods set up the responses from the mock fw_printenv
+    def set_bootcount(self, num):
+        with open(DATA_PATH + '/sbin/fw_env_bootcount', 'w') as f:
+            f.write("bootcount={}\n".format(num))
+
+    def set_upgrade_available(self, num):
+        with open(DATA_PATH + '/sbin/fw_env_upgrade_available', 'w') as f:
+            f.write("upgrade_available={}\n".format(num))
+
     def test_get_root(self):
         # use the connected configuration
         connected_file = os.path.join(DATA_PATH, 'sbin', 'wlan0.connected')
@@ -46,7 +58,8 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
         print ('\nMender data dir = ', mender_data_dir)
         shutil.copyfile(mender_data_dir + '/artifact_info', self.mender_dir + '/artifact_info')
         
-
+        self.set_bootcount(2)
+        self.set_upgrade_available(0)
 
         resp = requests.get(URL)
         jresp = resp.json()
@@ -70,6 +83,13 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
             firmware_file = f.readline().strip('\n')
             firmware_file = firmware_file.split('=')[1]
             self.assertEqual(firmware_file, firmware_resp)
+
+        # assert that the two firmware versions are equal - this also proves
+        # that firmware.running_version is correct
+        self.assertEqual(firmware_resp, jresp['firmware']['running_image'])
+
+        # should be in state "normal"
+        self.assertEqual('normal', jresp['firmware']['update_state'])
 
         model_resp = jresp['model']
         with open(mender_data_dir + '/model', 'r') as f:

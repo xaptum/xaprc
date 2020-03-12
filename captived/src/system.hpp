@@ -2,14 +2,15 @@
 
 #include <array>
 #include <cstdlib>
+#include <experimental/optional>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <sys/stat.h>
 #include <unistd.h>
 
-#include <experimental/optional>
-#include <sys/stat.h>
+#include "defines.hpp"
 
 namespace captived {
 
