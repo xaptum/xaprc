@@ -228,7 +228,17 @@ class root_level_status_Test(test.SharedServer, test.IntegrationTestCase):
         commit_url = URL + '/firmware/commit'
         put_json = 'garbage data'
         resp = requests.put(commit_url, headers=HEADERS, json=put_json)
+        jresp = resp.json()
+        print ("\nResponse from commit:")
+        print (json.dumps(jresp, indent=4))
         self.assertEqual(resp.status_code, 200)
+
+        # Verify that commit sent back a firmware object.
+        self.assertIn('running_version', jresp)
+        self.assertEqual(self.version_from_artifact_file(), jresp['running_version'])
+
+        self.assertIn('update_state', jresp)
+        self.assertEqual('normal', jresp['update_state'])
 
 
         # get the firmware and check it

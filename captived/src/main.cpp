@@ -97,7 +97,7 @@ main(int argc, char* argv[]) {
     firmware.add("update_state", firmware_state);
 
     rest::firmware_commit commit(
-        URI_FIRMWARE_COMMIT, sys, fw_mgr, COMMAND_MENDER_COMMIT);
+        URI_FIRMWARE_COMMIT, sys, fw_mgr, COMMAND_MENDER_COMMIT, firmware);
 
     rest::model model_number(URI_MODEL, sys, FILE_FIRMWARE_VERSION);
 
