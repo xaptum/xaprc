@@ -7,11 +7,13 @@ namespace rest {
 firmware_commit::firmware_commit(std::string path,
                                  system& system,
                                  firmware_manager& fw_mgr,
-                                 std::string commit_exe)
+                                 std::string commit_exe,
+                                 firmware& fw)
     : resource(path),
       system_(system),
       fw_mgr_(fw_mgr),
-      commit_exe_(commit_exe) {}
+      commit_exe_(commit_exe),
+      fw_(fw) {}
 
 int
 firmware_commit::execute() {
@@ -37,8 +39,8 @@ firmware_commit::put(req_type body) {
     int result = execute();
 
     if (0 == result) {
-        auto msg = "Firmware was committed";
-        return ok(json::string(msg));
+        auto empty_req = req_type();
+        return fw_.get(empty_req);
     } else {
         std::stringstream ss;
         ss << "Failed to firmware_commit with error code: " << result;

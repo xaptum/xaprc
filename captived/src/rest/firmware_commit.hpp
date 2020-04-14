@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "firmware.hpp"
 #include "firmware_manager.hpp"
 #include "rest/resource.hpp"
 #include "system.hpp"
@@ -14,7 +15,8 @@ class firmware_commit : public resource {
     firmware_commit(std::string path,
                     system& system,
                     firmware_manager& fw_mgr,
-                    std::string commit_exe);
+                    std::string commit_exe,
+                    firmware& fw);
 
     resp_type put(req_type body) override;
 
@@ -29,6 +31,7 @@ class firmware_commit : public resource {
     system& system_;
     std::string commit_exe_;
     firmware_manager& fw_mgr_;
+    firmware& fw_;
 };
 
 }    // namespace rest
