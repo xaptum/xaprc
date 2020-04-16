@@ -1,10 +1,10 @@
 [Unit]
 Description=xbridge service (secure mode)
-BindsTo=enftun@enf0.service
-After=enftun@enf0.service xap-usb-gadget.service
+After=enftun-data@enf0.service xap-usb-gadget.service
 
 [Service]
 Type=simple
+ExecStartPre=@CMAKE_INSTALL_FULL_BINDIR@/wait_for_iface_up enf0
 ExecStartPre=/sbin/ip link set dev usb0 up
 ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/xbridge -2 -n enf0
 ExecStopPost=/sbin/ip link set dev usb0 down
@@ -14,4 +14,5 @@ Restart=always
 RestartSec=3
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=secure-host.target
+
