@@ -1,7 +1,7 @@
 [Unit]
 Description=xbridge service (secure mode)
-BindsTo=enftun@enf0.service
-After=enftun@enf0.service xap-usb-gadget.service
+BindsTo=enftun-data@enf0.service
+After=enftun-data@enf0.service xap-usb-gadget.service
 
 [Service]
 Type=simple
@@ -15,3 +15,4 @@ RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
+
