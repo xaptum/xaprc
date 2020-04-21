@@ -7,7 +7,6 @@ set(MENDER_ENV "dev" CACHE STRING "Install certs for the prod or dev environment
 
 install(
   FILES
-  ${MENDER_ENV}/Xaptum-Mender.crt
   ${MENDER_ENV}/xaptum-mender.signer.pub.pem
   DESTINATION
   ${MENDER_INSTALL_PATH}

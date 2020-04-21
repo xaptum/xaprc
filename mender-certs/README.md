@@ -1,8 +1,7 @@
 # mender-certs
 
-This package installs the public certificates used by the mender client to
+This package installs the public certificate used by the mender client to
 
-- authenticate the Xaptum mender server when establishing a TLS connection
 - validate the signature on firmware artifacts
 
 ## CMake Options
