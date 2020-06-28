@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(GNUInstallDirs)
 
 
-option(ENABLE_SCM "Enable support for Socket Control Model" OFF)
+option(ENABLE_HSS "Enable support for Host Socket Sharing" OFF)
 option(ENABLE_SERIAL_CONSOLE "Expose a serial console via the USB device" OFF)
 
 add_executable(xap-usb-gadget
@@ -16,9 +16,9 @@ PUBLIC -DXAP_PRODUCT_ID=${XAP_PRODUCT_ID}
        -DXAP_PRODUCT_STR=\"${XAP_PRODUCT_STR}\"
 )
 
-if (ENABLE_SCM)
+if (ENABLE_HSS)
   target_compile_definitions(xap-usb-gadget
-  PUBLIC -DXAP_SCM=y
+  PUBLIC -DXAP_HSS=y
   )
 endif()
 

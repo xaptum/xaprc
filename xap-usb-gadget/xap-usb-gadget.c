@@ -117,7 +117,7 @@ static void create_usb_gadget(usbg_state *state)
 {
 	usbg_gadget *gadget;
 	usbg_config *config;
-	usbg_function *f_acm0, *f_ecm, *f_scm;
+	usbg_function *f_acm0, *f_ecm, *f_hss;
 	int ret = -EINVAL;
 	int usbg_ret;
 
@@ -179,11 +179,11 @@ static void create_usb_gadget(usbg_state *state)
 		goto exit_clean;
 	}
 
-	#ifdef XAP_SCM
-	usbg_ret = usbg_create_function(gadget, USBG_F_SCM, "scm0", NULL, &f_scm);
+	#ifdef XAP_HSS
+	usbg_ret = usbg_create_function(gadget, USBG_F_HSS, "hss0", NULL, &f_hss);
 	if (usbg_ret != USBG_SUCCESS)
 	{
-		print_usbg_error( "Error creating scm function",usbg_ret);
+		print_usbg_error( "Error creating hss function",usbg_ret);
 		goto exit_clean;
 	}
 	#endif
@@ -213,11 +213,11 @@ static void create_usb_gadget(usbg_state *state)
 	}
 
 
-	#ifdef XAP_SCM
-	usbg_ret = usbg_add_config_function(config, "scm.scm0", f_scm);
+	#ifdef XAP_HSS
+	usbg_ret = usbg_add_config_function(config, "hss.hss0", f_hss);
 	if (usbg_ret != USBG_SUCCESS)
 	{
-		print_usbg_error( "Error adding scm.scm0",usbg_ret);
+		print_usbg_error( "Error adding hss.hss0",usbg_ret);
 		goto exit_clean;
 	}
 	#endif
