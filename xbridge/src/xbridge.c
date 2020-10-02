@@ -355,8 +355,9 @@ int main(int argc, char **argv)
 
     int snaplen = 8192;
     int opt;
+    int promiscuous = 0;
 
-    while(-1 != (opt = getopt(argc, argv, "2h:n:s:"))) {
+    while(-1 != (opt = getopt(argc, argv, "2h:n:s:p"))) {
         switch(opt) {
         case '2':
             net_if.l2handling = eL2Strip; // Strip L2 data from each packet
@@ -371,8 +372,11 @@ int main(int argc, char **argv)
         case 'n':
             net_if.name = optarg;
             break;
+        case 'p':
+            promiscuous = 1;
+            break;
         default:
-            fprintf(stderr, "Usage: %s [-2] [-h host_if] [-n net_if] [-s snaplen]\n", argv[0]);
+            fprintf(stderr, "Usage: %s [-2] [-h host_if] [-n net_if] [-s snaplen] [-p]\n", argv[0]);
             exit(EXIT_FAILURE);
         }
     }
@@ -389,7 +393,7 @@ int main(int argc, char **argv)
     host_if.descr = createDesc(host_if.name, snaplen, 1);
     host_if.fd = pcap_get_selectable_fd(host_if.descr);
 
-    net_if.descr = createDesc(net_if.name, snaplen, 0);
+    net_if.descr = createDesc(net_if.name, snaplen, promiscuous);
     net_if.fd = pcap_get_selectable_fd(net_if.descr);
 
     if (eL2DoneTouch != net_if.l2handling) {
