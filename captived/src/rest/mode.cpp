@@ -12,7 +12,7 @@ is_valid_mode(std::string mode) {
      */
     // return (mode == MODE_PASSTHROUGH || mode == MODE_SECURE_HOST ||
     //        mode == MODE_SECURE_LAN);
-    return (mode == MODE_SECURE_HOST);
+    return (mode == MODE_SECURE_HOST || mode == MODE_PASSTHROUGH);
 }
 }    // namespace
 
