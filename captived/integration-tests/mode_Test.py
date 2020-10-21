@@ -15,6 +15,7 @@ URL = 'http://[::1]:4000/mode'
 HEADERS = {'Content-Type':'application/json'}
 # use this directory as the root path for this test
 DATA_PATH = os.path.join(TESTDIR, 'config', 'default')
+DEFAULT_TARGET = os.path.join(DATA_PATH, 'data', 'systemd', 'system', 'default.target')
 
 ################################################################################
 ### mode_Test
@@ -53,12 +54,12 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         resp = requests.put(URL, headers=HEADERS, json='invalid-mode')
         self.assertEqual(resp.status_code, 400)
 
-    @unittest.skip("passthrough not supported by firmware")
     def test_03_put_passthrough(self):
         resp = requests.put(URL, headers=HEADERS, json='passthrough')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), 'passthrough')
         self.assertFalse(os.path.isfile(self.last_reboot_file))
+        self.assertEqual(self.get_mode_from_default_target(), 'passthrough')
 
     def test_04_put_invalid2(self):
         # get mode before test starts
@@ -84,15 +85,21 @@ class mode_Test(test.SharedServer, test.IntegrationTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), 'secure-host')
         self.assertFalse(os.path.isfile(self.last_reboot_file))
+        self.assertEqual(self.get_mode_from_default_target(), 'secure-host')
 
     def test_get_mode(self):
-        link_path = os.path.join(DATA_PATH, 'data', 'systemd', 'system', 'default.target')
-        real_path = os.path.realpath(link_path)
-        filename = os.path.basename(real_path)
-        router_mode = os.path.splitext(filename)[0]
+        router_mode = self.get_mode_from_default_target()
         resp = requests.get(URL)
         self.assertEqual(router_mode, resp.json())
         
+    # 
+    # Gest the router mode from the default target file in /data/systemd/system
+    #
+    def get_mode_from_default_target(self):
+        real_path = os.path.realpath(DEFAULT_TARGET)
+        filename = os.path.basename(real_path)
+        router_mode = os.path.splitext(filename)[0]
+        return(router_mode)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
